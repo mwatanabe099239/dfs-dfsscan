@@ -1,103 +1,173 @@
-import Image from "next/image";
+import SearchBar from './components/SearchBar'
+import NetworkStatsSection from './components/home/NetworkStats'
+import LatestBlocks from './components/home/LatestBlocks'
+import LatestTransactions from './components/home/LatestTransactions'
+
+// Temporary mock data - replace with Firebase data later
+const mockNetworkStats = {
+  bnbPrice: 610.63,
+  transactions24h: 6952.75,
+  tps: 82.1,
+  medianGasPrice: '1 Gwei',
+  medianGasPriceUSD: '$0.01',
+  bnbMarketCap: 91809388782.00,
+  bnbSupply: 150352322,
+  latestBlock: 47605447,
+  blockTime: 3,
+  votingPower: 30307620.04,
+  btcPrice: 0.007243,
+  priceChange: -2.71
+}
+
+const mockBlocks = [
+  {
+    number: 47605447,
+    timestamp: Date.now() / 1000,
+    transactions: 169,
+    validator: 'MathWallet',
+    validatorAddress: '0x2465176C461AfB316ebc773C61fA2E77491D44D7',
+    reward: 0.25841
+  },
+  {
+    number: 47605446,
+    timestamp: Date.now() / 1000 - 3,
+    transactions: 203,
+    validator: 'MathWallet',
+    validatorAddress: '0x2465176C461AfB316ebc773C61fA2E77491D44D7',
+    reward: 0.05587
+  },
+  {
+    number: 47605445,
+    timestamp: Date.now() / 1000 - 6,
+    transactions: 211,
+    validator: 'MathWallet',
+    validatorAddress: '0x2465176C461AfB316ebc773C61fA2E77491D44D7',
+    reward: 0.05591
+  },
+  {
+    number: 47605444,
+    timestamp: Date.now() / 1000 - 9,
+    transactions: 203,
+    validator: 'MathWallet',
+    validatorAddress: '0x2465176C461AfB316ebc773C61fA2E77491D44D7',
+    reward: 0.07574
+  },
+  {
+    number: 47605443,
+    timestamp: Date.now() / 1000 - 12,
+    transactions: 223,
+    validator: 'The48Club',
+    validatorAddress: '0x70F657164e5b75689b64B7fd1fA275F334f28e18',
+    reward: 0.05132
+  },
+  {
+    number: 47605442,
+    timestamp: Date.now() / 1000 - 15,
+    transactions: 263,
+    validator: 'The48Club',
+    validatorAddress: '0x70F657164e5b75689b64B7fd1fA275F334f28e18',
+    reward: 0.04872
+  }
+]
+
+const mockTransactions = [
+  {
+    hash: '0x36baeb08a3c79b79725b6fd6d423c89d46f228e7d2f3bbdb7ad4c031fb0ec2c5',
+    timestamp: Date.now() / 1000,
+    from: '0x96c8D1bD...Cd42F3b7E',
+    to: '0x48B2665E...B660BB48',
+    value: 0.25841
+  },
+  {
+    hash: '0xd28c85e7f5b7d8c8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8',
+    timestamp: Date.now() / 1000 - 3,
+    from: '0x96c8D1bD...Cd42F3b7E',
+    to: '0x48B2665E...B660BB48',
+    value: 0
+  },
+  {
+    hash: '0xc86ec65dd4c8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8',
+    timestamp: Date.now() / 1000 - 6,
+    from: '0x39864e16...f9EBab8C',
+    to: '0x3199A64B...d81D8a9a',
+    value: 0
+  },
+  {
+    hash: '0xa562e010e8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8',
+    timestamp: Date.now() / 1000 - 9,
+    from: '0xeC5f1817...544d11242',
+    to: '0x55d39832...B3197955',
+    value: 0
+  },
+  {
+    hash: '0xb75748da87c8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8',
+    timestamp: Date.now() / 1000 - 12,
+    from: '0xb0471E22...c6C48D4ee',
+    to: '0x81DA6BCd...0B7e16D97',
+    value: 1.00278
+  },
+  {
+    hash: '0x461b0920a0c8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8',
+    timestamp: Date.now() / 1000 - 15,
+    from: '0x8AfC9b37...b3adC68df',
+    to: '0x55d39832...B3197955',
+    value: 0
+  }
+]
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div>
+      {/* Full width black background section */}
+      <div className="absolute top-0 left-0 w-full h-[300px] bg-[#131313] bg-[url('/icons/waves-light.svg')] bg-repeat opacity-90 z-[-1]">
+        {/* Content container */}
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      </div>
+
+      {/* Overview section - positioned to overlap the black background */}
+      <div className="container mx-auto px-4 -mt-16">
+        <div className="container px-4 pt-16 mb-8">
+          <div className="text-center mb-8">
+            <h1 className="text-2xl font-semibold text-white mb-2">
+              BNB Smart Chain Explorer
+            </h1>
+          </div>
+          <SearchBar />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <div className="bg-white rounded-lg shadow mb-6">
+          {/* Overview content */}
+          <div className="p-6">
+            <NetworkStatsSection stats={mockNetworkStats} />
+          </div>
+        </div>
+
+        {/* Blocks and Transactions section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Latest Blocks */}
+          <div className="bg-white rounded-lg shadow">
+            <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
+              <h2 className="text-lg font-medium text-gray-700">Latest Blocks</h2>
+              <button className="text-sm text-gray-600 hover:text-gray-900">
+                <i className="fas fa-cog mr-1"></i>
+                Customize
+              </button>
+            </div>
+            <LatestBlocks blocks={mockBlocks} />
+          </div>
+
+          {/* Latest Transactions */}
+          <div className="bg-white rounded-lg shadow">
+            <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
+              <h2 className="text-lg font-medium text-gray-700">Latest Transactions</h2>
+              <button className="text-sm text-gray-600 hover:text-gray-900">
+                <i className="fas fa-cog mr-1"></i>
+                Customize
+              </button>
+            </div>
+            <LatestTransactions transactions={mockTransactions} />
+          </div>
+        </div>
+      </div>
     </div>
-  );
+  )
 }
