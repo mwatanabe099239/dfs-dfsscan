@@ -140,9 +140,9 @@ export default function AddressDetail({ params }: { params: Promise<{ address: s
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 bg-gray-100 dark:bg-gray-900 min-h-screen">
       {/* Header with address */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 bg-white dark:bg-gray-800 p-4 rounded-lg">
         <div className="flex items-center gap-2">
           <img 
             src={identicon} 
@@ -167,7 +167,7 @@ export default function AddressDetail({ params }: { params: Promise<{ address: s
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
         {/* Left column - Overview */}
         <div className="lg:col-span-4">
-          <div className="bg-white rounded-lg shadow p-4 h-full">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 h-full">
             <h2 className="text-lg mb-4">Overview</h2>
             
             {/* BNB Balance */}
@@ -253,7 +253,7 @@ export default function AddressDetail({ params }: { params: Promise<{ address: s
 
         {/* Middle column - More Info */}
         <div className="lg:col-span-4">
-          <div className="bg-white rounded-lg shadow p-4 h-full">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 h-full">
             <h2 className="text-lg mb-4">More Info</h2>
             
             {/* Private Name Tags */}
@@ -290,7 +290,7 @@ export default function AddressDetail({ params }: { params: Promise<{ address: s
 
         {/* Right column - Multichain Info */}
         <div className="lg:col-span-4">
-          <div className="bg-white rounded-lg shadow p-4 h-full">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 h-full">
             <h2 className="text-lg mb-4">Multichain Info</h2>
             <div className="text-gray-600">No addresses found</div>
           </div>
@@ -298,8 +298,8 @@ export default function AddressDetail({ params }: { params: Promise<{ address: s
       </div>
 
       {/* Tabs section */}
-      <div className="bg-white rounded-lg shadow">
-        <div className="border-b border-gray-200">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
+        <div className="border-b border-gray-200 dark:border-gray-700">
           <div className="flex overflow-x-auto">
             <button className="px-4 py-2 text-blue-500 border-b-2 border-blue-500">Transactions</button>
             <button className="px-4 py-2 text-gray-600 hover:text-gray-900">Internal Transactions</button>
@@ -313,7 +313,7 @@ export default function AddressDetail({ params }: { params: Promise<{ address: s
         {/* Transaction List */}
         <div>
           {/* Header */}
-          <div className="p-4 border-b border-gray-200">
+          <div className="p-4 border-b border-gray-200 dark:border-gray-700">
             <div className="flex items-center gap-2">
               <span>Latest {mockTransactions.latest} from a total of </span>
               <span className="text-blue-500">{formatNumber(mockTransactions.total)}</span>
@@ -325,7 +325,7 @@ export default function AddressDetail({ params }: { params: Promise<{ address: s
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="text-left text-sm border-b border-gray-200 bg-gray-50">
+                <tr className="text-left text-sm border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
                   <th className="p-3 whitespace-nowrap">Transaction Hash</th>
                   <th className="p-3 whitespace-nowrap">Method</th>
                   <th className="p-3 whitespace-nowrap">Block</th>
@@ -338,7 +338,7 @@ export default function AddressDetail({ params }: { params: Promise<{ address: s
               </thead>
               <tbody>
                 {mockTransactions.transactions.map((tx, index) => (
-                  <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
+                  <tr key={index} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900">
                     <td className="p-3">
                       <Link href={`/tx/${tx.hash}`} className="text-blue-500 hover:text-blue-600">
                         {tx.hash}
@@ -387,7 +387,7 @@ export default function AddressDetail({ params }: { params: Promise<{ address: s
         </div>
 
         {/* View All Transactions Link */}
-        <div className="p-4 text-center border-t border-gray-200">
+        <div className="p-4 text-center border-t border-gray-200 dark:border-gray-700">
           <Link 
             href={`/txs?a=${address}`}
             className="text-blue-500 hover:text-blue-600 flex items-center justify-center gap-2"
@@ -398,7 +398,7 @@ export default function AddressDetail({ params }: { params: Promise<{ address: s
         </div>
 
         {/* Info Text */}
-        <div className="p-4 bg-gray-50 text-sm text-gray-600 border-t border-gray-200">
+        <div className="p-4 bg-gray-50 dark:bg-gray-900 text-sm text-gray-600 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700">
           <span className="mr-1">ℹ️</span>
           A wallet address is a publicly available address that allows its owner to receive funds from another party. To access the funds in an address, you must have its private key.{' '}
           <Link href="/knowledge-base" className="text-blue-500 hover:text-blue-600">
