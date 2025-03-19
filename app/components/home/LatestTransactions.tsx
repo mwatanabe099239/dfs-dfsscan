@@ -14,6 +14,7 @@ interface TransactionProps {
 }
 
 export default function LatestTransactions({ transactions }: { transactions: TransactionProps[] }) {
+  
   const timeNow = Math.floor(Date.now() / 1000)
 
   return (
