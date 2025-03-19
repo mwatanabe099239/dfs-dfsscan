@@ -16,7 +16,10 @@ interface TransactionProps {
 export default function LatestTransactions({ transactions }: { transactions: TransactionProps[] }) {
   
   const timeNow = Math.floor(Date.now() / 1000)
-
+  const formatAddress = (address: string) => {
+    if (!address) return '';
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  };
   return (
     <div className="divide-y divide-gray-200">
       {transactions.map((tx) => (
@@ -43,7 +46,7 @@ export default function LatestTransactions({ transactions }: { transactions: Tra
                   href={`/address/${tx.from}`}
                   className="text-blue-500 hover:text-blue-600"
                 >
-                  {tx.from}
+                  {formatAddress(tx.from)}
                 </Link>
               </div>
               <div>
@@ -52,7 +55,7 @@ export default function LatestTransactions({ transactions }: { transactions: Tra
                   href={`/address/${tx.to}`}
                   className="text-blue-500 hover:text-blue-600"
                 >
-                  {tx.to}
+                  {formatAddress(tx.to)}
                 </Link>
               </div>
             </div>

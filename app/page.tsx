@@ -74,43 +74,43 @@ const mockTransactions = [
   {
     hash: '0x36baeb08a3c79b79725b6fd6d423c89d46f228e7d2f3bbdb7ad4c031fb0ec2c5',
     timestamp: Date.now() / 1000,
-    from: '0x96c8D1bD...Cd42F3b7E',
-    to: '0x48B2665E...B660BB48',
+    from: '0x96c8D1bD7C8811DCe5d95C107383D4EB45Cd42F3b7E',
+    to: '0x48B2665E8c86f675f2C4B4B2665EB660BB48',
     value: 0.25841
   },
   {
     hash: '0xd28c85e7f5b7d8c8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8',
     timestamp: Date.now() / 1000 - 3,
-    from: '0x96c8D1bD...Cd42F3b7E',
-    to: '0x48B2665E...B660BB48',
+    from: '0x96c8D1bD7C8811DCe5d95C107383D4EB45Cd42F3b7E',
+    to: '0x48B2665E8c86f675f2C4B4B2665EB660BB48',
     value: 0
   },
   {
     hash: '0xc86ec65dd4c8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8',
     timestamp: Date.now() / 1000 - 6,
-    from: '0x39864e16...f9EBab8C',
-    to: '0x3199A64B...d81D8a9a',
+    from: '0x39864e16f5b7d8c8f8d8f8d8f8d8f8d8f9EBab8C',
+    to: '0x3199A64B8c86f675f2C4B4B2665Ed81D8a9a',
     value: 0
   },
   {
     hash: '0xa562e010e8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8',
     timestamp: Date.now() / 1000 - 9,
-    from: '0xeC5f1817...544d11242',
-    to: '0x55d39832...B3197955',
+    from: '0xeC5f18177C8811DCe5d95C107383D4EB544d11242',
+    to: '0x55d398326f99059fF775485246999027B3197955',
     value: 0
   },
   {
     hash: '0xb75748da87c8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8',
     timestamp: Date.now() / 1000 - 12,
-    from: '0xb0471E22...c6C48D4ee',
-    to: '0x81DA6BCd...0B7e16D97',
+    from: '0xb0471E227C8811DCe5d95C107383D4EBc6C48D4ee',
+    to: '0x81DA6BCd8c86f675f2C4B4B26650B7e16D97',
     value: 1.00278
   },
   {
     hash: '0x461b0920a0c8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8f8d8',
     timestamp: Date.now() / 1000 - 15,
-    from: '0x8AfC9b37...b3adC68df',
-    to: '0x55d39832...B3197955',
+    from: '0x8AfC9b377C8811DCe5d95C107383D4EBb3adC68df',
+    to: '0x55d398326f99059fF775485246999027B3197955',
     value: 0
   }
 ]
@@ -134,7 +134,7 @@ export default function Home() {
           </div>
           <SearchBar />
         </div>
-        <div className="bg-white rounded-lg shadow mb-6">
+        <div className="bg-white rounded-lg shadow-lg mb-6">
           {/* Overview content */}
           <div className="p-6">
             <NetworkStatsSection stats={mockNetworkStats} />
@@ -142,28 +142,17 @@ export default function Home() {
         </div>
 
         {/* Blocks and Transactions section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+
           {/* Latest Blocks */}
-          <div className="bg-white rounded-lg shadow">
-            <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
-              <h2 className="text-lg font-medium text-gray-700">Latest Blocks</h2>
-              <button className="text-sm text-gray-600 hover:text-gray-900">
-                <i className="fas fa-cog mr-1"></i>
-                Customize
-              </button>
-            </div>
+          <div className="bg-white rounded-lg shadow-lg lg:col-span-1">
+            <h2 className="text-xl p-4 border-b border-gray-200">Latest Blocks</h2>
             <LatestBlocks blocks={mockBlocks} />
           </div>
 
           {/* Latest Transactions */}
-          <div className="bg-white rounded-lg shadow">
-            <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
-              <h2 className="text-lg font-medium text-gray-700">Latest Transactions</h2>
-              <button className="text-sm text-gray-600 hover:text-gray-900">
-                <i className="fas fa-cog mr-1"></i>
-                Customize
-              </button>
-            </div>
+          <div className="bg-white rounded-lg shadow-lg lg:col-span-1">
+            <h2 className="text-xl p-4 border-b border-gray-200">Latest Transactions</h2>
             <LatestTransactions transactions={mockTransactions} />
           </div>
         </div>
