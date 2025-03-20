@@ -1,6 +1,6 @@
 'use client'
 
-import { use } from 'react'
+import { use, Suspense } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 
@@ -57,7 +57,7 @@ const mockTransactions = {
   ]
 }
 
-export default function Transactions({ params }: { params: Promise<{ address?: string }> }) {
+function TransactionsContent() {
   const searchParams = useSearchParams()
   const address = searchParams.get('a')
   
@@ -233,5 +233,22 @@ export default function Transactions({ params }: { params: Promise<{ address?: s
         </div>
       </div>
     </div>
+  )
+}
+
+// Loading component
+function TransactionsLoading() {
+  return (
+    <div className="flex justify-center items-center min-h-screen">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+    </div>
+  )
+}
+
+export default function Transactions({ params }: { params: Promise<{ address?: string }> }) {
+  return (
+    <Suspense fallback={<TransactionsLoading />}>
+      <TransactionsContent />
+    </Suspense>
   )
 } 
