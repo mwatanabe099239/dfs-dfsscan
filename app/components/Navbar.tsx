@@ -1,44 +1,61 @@
 'use client'
 
-import { useTheme } from 'next-themes'
+import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSun, faMoon } from '@fortawesome/free-solid-svg-icons'
-import { useEffect, useState } from 'react'
+import { faSearch } from '@fortawesome/free-solid-svg-icons'
+import { useState } from 'react'
 
 export default function Navbar() {
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
 
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted) {
-    return null
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    // Handle search logic here
+    console.log('Search query:', searchQuery)
   }
 
   return (
-    <nav className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="bg-white border-b border-gray-200">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
+          {/* Left section */}
           <div className="flex">
-          <a href="/" className="flex items-center">
-          <span className="text-xl font-bold text-blue-600">DFS Scan</span>
-        </a>
+            {/* Logo */}
+            <div className="flex-shrink-0 flex items-center">
+              <Link href="/" className="text-xl font-bold text-blue-500">
+                DFS Scan
+              </Link>
+            </div>
+
+            {/* Navigation Links */}
+            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+              <Link 
+                href="/blocks" 
+                className="border-transparent text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+              >
+                Blockchain
+              </Link>
+              <Link 
+                href="/tokens" 
+                className="border-transparent text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+              >
+                Tokens
+              </Link>
+              <Link 
+                href="/resources" 
+                className="border-transparent text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+              >
+                Resources
+              </Link>
+              <Link 
+                href="/more" 
+                className="border-transparent text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+              >
+                More
+              </Link>
+            </div>
           </div>
-          
-          <div className="flex items-center">
-            <button
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
-              aria-label="Toggle theme"
-            >
-              <FontAwesomeIcon 
-                icon={theme === 'dark' ? faSun : faMoon} 
-                className="h-5 w-5 text-gray-500 dark:text-gray-400"
-              />
-            </button>
-          </div>
+
         </div>
       </div>
     </nav>

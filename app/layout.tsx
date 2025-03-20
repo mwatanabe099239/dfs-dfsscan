@@ -4,7 +4,6 @@ import "./globals.css";
 import '@fortawesome/fontawesome-svg-core/styles.css'
 import { config } from '@fortawesome/fontawesome-svg-core'
 import { Toaster } from 'react-hot-toast'
-import { ThemeProvider } from 'next-themes'
 import Navbar from './components/Navbar'
 config.autoAddCss = false
 
@@ -26,13 +25,11 @@ export default function RootLayout({
         <link rel="stylesheet" href="@fortawesome/fontawesome-svg-core/styles.css" />
       </head>
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-          <Navbar />
-          <main className="container mx-auto px-4 py-8">
-            {children}
-          </main>
-          <Toaster />
-        </ThemeProvider>
+        <Navbar />
+        <main className="container mx-auto px-4 py-8">
+          {children}
+        </main>
+        <Toaster />
       </body>
     </html>
   );
