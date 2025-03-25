@@ -1,52 +1,45 @@
 'use client'
 
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 export default function Navbar() {
+  const pathname = usePathname()
+
+  const getMenuStyle = (path: string) => {
+    const isActive = pathname === path
+    return `inline-flex items-center px-4 text-[15px] ${
+      isActive 
+        ? 'text-[#3498db]' 
+        : 'text-black hover:text-[#3498db]'
+    }`
+  }
+
   return (
     <nav className="bg-white border-b border-gray-200">
-      <div className="container mx-auto px-4 pl-8">
-        <div className="flex h-16">
-          {/* Navigation Links with Logo */}
+      <div className="container mx-auto">
+        <div className="flex justify-between h-[60px] px-8">
+          {/* Left section with Logo */}
           <div className="flex items-center">
-            {/* Logo */}
-            <Link href="/" className="text-xl font-bold text-blue-500 mr-6">
-              DFS Scan
+            <Link href="/" className="text-xl font-bold text-[#3498db]">
+              DWC Scan
             </Link>
+          </div>
 
-            {/* Navigation Links */}
-            <div className="flex space-x-8">
-              <Link 
-                href="/blocks" 
-                className="border-transparent text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-              >
-                Blockchain
-              </Link>
-              <Link 
-                href="/txs" 
-                className="border-transparent text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-              >
-                Transactions
-              </Link>
-              <Link 
-                href="/tokens" 
-                className="border-transparent text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-              >
-                Tokens
-              </Link>
-              <Link 
-                href="/resources" 
-                className="border-transparent text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-              >
-                Resources
-              </Link>
-              <Link 
-                href="/more" 
-                className="border-transparent text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-              >
-                More
-              </Link>
-            </div>
+          {/* Right section with navigation links */}
+          <div className="flex h-full -mr-4">
+            <Link 
+              href="/" 
+              className={getMenuStyle('/')}
+            >
+              Home
+            </Link>
+            <Link 
+              href="/txs" 
+              className={getMenuStyle('/txs')}
+            >
+              Transactions
+            </Link>
           </div>
         </div>
       </div>

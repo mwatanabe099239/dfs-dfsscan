@@ -299,12 +299,9 @@ export default function AddressDetail({ params }: { params: Promise<{ address: s
       <div className="bg-white rounded-lg shadow">
         <div className="border-b border-gray-200">
           <div className="flex overflow-x-auto">
-            <button className="px-4 py-2 text-blue-500 border-b-2 border-blue-500">Transactions</button>
-            <button className="px-4 py-2 text-gray-600 hover:text-gray-900">Internal Transactions</button>
-            <button className="px-4 py-2 text-gray-600 hover:text-gray-900">Token Transfers (BEP-20)</button>
-            <button className="px-4 py-2 text-gray-600 hover:text-gray-900">NFT Transfers</button>
-            <button className="px-4 py-2 text-gray-600 hover:text-gray-900">Analytics</button>
-            <button className="px-4 py-2 text-gray-600 hover:text-gray-900">Assets</button>
+            <button className="px-4 py-2 text-blue-500 border-b-2 border-blue-500">
+              Transactions
+            </button>
           </div>
         </div>
 

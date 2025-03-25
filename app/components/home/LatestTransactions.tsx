@@ -21,27 +21,27 @@ export default function LatestTransactions({ transactions }: { transactions: Tra
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
   return (
-    <div className="divide-y divide-gray-200">
+    <div className="divide-y divide-gray-200 text-sm">
       {transactions.map((tx) => (
         <div key={tx.hash} className="p-4 hover:bg-gray-50">
           <div className="flex items-center gap-3">
             <div className="text-gray-400">
-              <FontAwesomeIcon icon={faFileAlt} className="w-5 h-5" />
+              <FontAwesomeIcon icon={faFileAlt} className="w-6 h-6!" />
             </div>
-            <div className="min-w-[120px]">
+            <div className="min-w-[180px]">
               <Link 
                 href={`/tx/${tx.hash}`}
                 className="text-blue-500 hover:text-blue-600 block"
               >
                 {tx.hash.slice(0, 12)}...
               </Link>
-              <span className="text-sm text-gray-500">
+              <span className="text-xs text-gray-500">
                 {Math.floor(timeNow - tx.timestamp)} secs ago
               </span>
             </div>
             <div className="flex-1">
               <div>
-                <span className="text-gray-500">From </span>
+                <span className="text-black">From </span>
                 <Link 
                   href={`/address/${tx.from}`}
                   className="text-blue-500 hover:text-blue-600"
@@ -50,7 +50,7 @@ export default function LatestTransactions({ transactions }: { transactions: Tra
                 </Link>
               </div>
               <div>
-                <span className="text-gray-500">To </span>
+                <span className="text-black">To </span>
                 <Link 
                   href={`/address/${tx.to}`}
                   className="text-blue-500 hover:text-blue-600"
@@ -60,17 +60,17 @@ export default function LatestTransactions({ transactions }: { transactions: Tra
               </div>
             </div>
             <div className="text-right whitespace-nowrap">
-              <span className="bg-gray-100 text-gray-800 py-1 px-2 rounded text-sm">
+              <span className="bg-transparent border border-gray-300 text-black py-1 px-2 rounded-md text-xs">
                 {tx.value} BNB
               </span>
             </div>
           </div>
         </div>
       ))}
-      <div className="p-4 text-center border-t">
+      <div className="p-4 text-center border-t border-gray-200 bg-gray-50">
         <Link 
           href="/txs" 
-          className="text-blue-500 hover:text-blue-600 uppercase text-sm"
+          className="text-grey-100 hover:text-blue-600 uppercase text-sm"
         >
           View All Transactions →
         </Link>

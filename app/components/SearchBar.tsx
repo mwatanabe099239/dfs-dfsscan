@@ -8,22 +8,22 @@ export default function SearchBar() {
   const [isFiltersOpen, setIsFiltersOpen] = useState(false)
 
   return (
-    <div className="relative w-full max-w-4xl mx-auto">
+    <div className="relative w-full max-w-4xl">
       <div className="flex">
         <button 
-          className="flex items-center gap-2 px-4 py-2 bg-white border border-r-0 border-gray-300 rounded-l text-gray-600 hover:bg-gray-50"
+          className="flex items-center gap-2 px-4 py-3 bg-white border border-r-0 border-gray-300 rounded-l-lg text-gray-600 hover:bg-gray-50"
           onClick={() => setIsFiltersOpen(!isFiltersOpen)}
         >
           All Filters
           <FontAwesomeIcon icon={faChevronDown} className="text-xs" />
         </button>
-        <div className="flex-1 relative rounded-md">
+        <div className="flex-1 relative rounded-lg">
           <input
             type="text"
             placeholder="Search by Address / Txn Hash / Block / Token / Domain Name"
-            className="w-full text-black bg-white px-4 py-2 border border-gray-300 focus:outline-none focus:border-blue-500 rounded-r-md"
+            className="w-full text-black bg-white px-4 py-3 border border-gray-300 focus:outline-none focus:border-blue-500 rounded-r-lg"
           />
-          <button className="absolute right-1 top-1 bottom-1 px-2 rounded-md bg-blue-500 hover:bg-blue-600 text-white flex items-center">
+          <button className="absolute right-2 top-2 bottom-2 px-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white flex items-center">
             <FontAwesomeIcon icon={faSearch} />
           </button>
         </div>

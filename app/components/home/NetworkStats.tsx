@@ -1,88 +1,65 @@
 'use client'
 
 import { NetworkStats } from '../../types'
-import Image from 'next/image'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { 
-  faServer, 
-  faGlobe, 
-  faGauge 
+  faList,
+  faClock,
+  faCube
 } from '@fortawesome/free-solid-svg-icons'
 
 interface StatsItemProps {
-  icon?: React.ReactNode
-  title: string
+  icon: React.ReactNode
+  label: string
   mainValue: string
   subValue?: string
-  className?: string
 }
 
-const StatsItem = ({ icon, title, mainValue, subValue, className = '' }: StatsItemProps) => (
-  <div className={`flex items-start gap-3 ${className}`}>
-    {icon && (
-      <div className="w-8 h-8 flex-shrink-0 flex items-center justify-center text-gray-500">
+const StatsItem = ({ icon, label, mainValue, subValue }: StatsItemProps) => (
+  <div className='flex gap-2 items-start pl-2'>
+    <div className="flex items-center gap-1.5 mb-0.5">
+      <div className="text-gray-600 text-2xl w-6">
         {icon}
       </div>
-    )}
-    <div>
-      <h3 className="text-sm text-gray-500 mb-1">{title}</h3>
-      <p className="text-base font-medium">{mainValue}</p>
-      {subValue && <p className="text-sm text-gray-500">{subValue}</p>}
     </div>
+    <div className='flex flex-col gap-0.5'>
+      <div className="uppercase text-sm text-gray-600">
+        {label}
+      </div>
+      <div className="flex items-baseline gap-0.5">
+        <span className="text-base">{mainValue}</span>
+        {subValue && <span className="text-sm text-gray-600">({subValue})</span>}
+      </div>
+    </div>
+    
   </div>
 )
 
-// Helper function for consistent number formatting
-const formatNumber = (num: number): string => {
-  return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  }).format(num)
-}
-
 export default function NetworkStatsSection({ stats }: { stats: NetworkStats }) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4">
-      <StatsItem
-        icon={
-          <Image 
-            src="/icons/bnb.svg" 
-            alt="BNB" 
-            width={24} 
-            height={24}
-          />
-        }
-        title="BNB PRICE"
-        mainValue={`$${formatNumber(stats.bnbPrice)}`}
-        subValue={`@ ${stats.bnbPrice} BTC (-2.71%)`}
-      />
-      <StatsItem
-        icon={<FontAwesomeIcon icon={faServer} className="text-xl" />}
-        title="TRANSACTIONS"
-        mainValue={new Intl.NumberFormat('en-US').format(stats.transactions24h)}
-        subValue={`(${stats.tps} TPS)`}
-      />
-      <StatsItem
-        title="MED GAS PRICE"
-        mainValue={stats.medianGasPrice}
-        subValue="($0.01)"
-      />
-      <StatsItem
-        icon={<FontAwesomeIcon icon={faGlobe} className="text-xl" />}
-        title="BNB MARKET CAP ON BSC"
-        mainValue={`$${new Intl.NumberFormat('en-US').format(stats.bnbMarketCap)}`}
-        subValue={`(${new Intl.NumberFormat('en-US').format(stats.bnbSupply)} BNB)`}
-      />
-      <StatsItem
-        icon={<FontAwesomeIcon icon={faGauge} className="text-xl" />}
-        title="LATEST BLOCK"
-        mainValue={new Intl.NumberFormat('en-US').format(stats.latestBlock)}
-        subValue={`(${stats.blockTime}s)`}
-      />
-      <StatsItem
-        title="VOTING POWER"
-        mainValue={`${new Intl.NumberFormat('en-US').format(stats.votingPower)} BNB`}
-      />
+    <div className="flex flex-col gap-4 md:flex-row md:gap-0 py-0 ">
+      <div className="w-full md:w-1/3 flex items-center border-b md:border-b-0 md:border-r border-gray-200">
+        <StatsItem
+          icon={<FontAwesomeIcon icon={faList} />}
+          label="Transactions"
+          mainValue="397.51 M"
+          subValue="1.2 TPS"
+        />
+      </div>
+      <div className="w-full md:w-1/3 flex items-center px-2 border-b md:border-b-0 md:border-r border-gray-200">
+        <StatsItem
+          icon={<FontAwesomeIcon icon={faClock} />}
+          label="Base Fee"
+          mainValue="114,336.3 Gwei"
+        />
+      </div>
+      <div className="w-full md:w-1/3 flex items-center pl-2">
+        <StatsItem
+          icon={<FontAwesomeIcon icon={faCube} />}
+          label="Latest Block"
+          mainValue="49399186"
+        />
+      </div>
     </div>
   )
 } 

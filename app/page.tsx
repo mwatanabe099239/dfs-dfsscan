@@ -119,16 +119,16 @@ export default function Home() {
   return (
     <div>
       {/* Full width black background section */}
-      <div className="absolute top-0 left-0 w-full h-[300px] bg-[#131313] bg-[url('/icons/waves-light.svg')] bg-repeat opacity-90 z-[-1]">
+      <div className="absolute top-0 left-0 w-full h-[350px] bg-[#131313] bg-[url('/icons/waves-light.svg')] bg-repeat z-[-1]">
         {/* Content container */}
 
       </div>
 
       {/* Overview section - positioned to overlap the black background */}
-      <div className="container mx-auto px-4 -mt-16">
-        <div className="container px-4 pt-16 mb-8">
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-semibold text-white mb-2">
+      <div className="px-4 -mt-12">
+        <div className="pt-16 mb-16">
+          <div className="text-left mb-2">
+            <h1 className="text-xl text-white mb-1">
               BNB Smart Chain Explorer
             </h1>
           </div>
@@ -136,23 +136,23 @@ export default function Home() {
         </div>
         <div className="bg-white rounded-lg shadow-lg mb-6">
           {/* Overview content */}
-          <div className="p-6">
+          <div className="p-4">
             <NetworkStatsSection stats={mockNetworkStats} />
           </div>
         </div>
 
         {/* Blocks and Transactions section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
           {/* Latest Blocks */}
           <div className="bg-white rounded-lg shadow-lg lg:col-span-1">
-            <h2 className="text-xl p-4 border-b border-gray-200">Latest Blocks</h2>
+            <h2 className="text-md font-semibold p-4 border-b border-gray-200">Latest Blocks</h2>
             <LatestBlocks blocks={mockBlocks} />
           </div>
 
           {/* Latest Transactions */}
           <div className="bg-white rounded-lg shadow-lg lg:col-span-1">
-            <h2 className="text-xl p-4 border-b border-gray-200">Latest Transactions</h2>
+            <h2 className="text-md font-semibold p-4 border-b border-gray-200">Latest Transactions</h2>
             <LatestTransactions transactions={mockTransactions} />
           </div>
         </div>

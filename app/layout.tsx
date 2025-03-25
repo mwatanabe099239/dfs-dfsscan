@@ -5,9 +5,17 @@ import '@fortawesome/fontawesome-svg-core/styles.css'
 import { config } from '@fortawesome/fontawesome-svg-core'
 import { Toaster } from 'react-hot-toast'
 import Navbar from './components/Navbar'
+import TopBar from './components/TopBar'
+import { Roboto } from 'next/font/google'
 config.autoAddCss = false
 
 const inter = Inter({ subsets: ["latin"] });
+
+const roboto = Roboto({
+  weight: ['300', '400', '500', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: "DFS Scan",
@@ -24,7 +32,8 @@ export default function RootLayout({
       <head>
         <link rel="stylesheet" href="@fortawesome/fontawesome-svg-core/styles.css" />
       </head>
-      <body className={inter.className}>
+      <body className={roboto.className}>
+        <TopBar />
         <Navbar />
         <main className="container mx-auto px-4 py-8">
           {children}
