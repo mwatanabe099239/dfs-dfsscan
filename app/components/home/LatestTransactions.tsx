@@ -65,9 +65,6 @@ export default function LatestTransactions() {
                 >
                   {formatAddress(tx.fromAddress)}
                 </Link>
-                <span className="text-xs text-gray-500 ml-1">
-                  ({tx.fromEmail})
-                </span>
               </div>
               <div>
                 <span className="text-black">To </span>
@@ -77,9 +74,6 @@ export default function LatestTransactions() {
                 >
                   {formatAddress(tx.toAddress)}
                 </Link>
-                <span className="text-xs text-gray-500 ml-1">
-                  ({tx.toEmail})
-                </span>
               </div>
             </div>
             <div className="text-right whitespace-nowrap">
