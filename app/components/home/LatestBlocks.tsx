@@ -41,12 +41,9 @@ export default function LatestBlocks() {
               <FontAwesomeIcon icon={faCube} className="w-6 h-6!" />
             </div>
             <div className="min-w-[180px]">
-              <Link 
-                href={`/block/${block.number}`}
-                className="text-blue-500 hover:text-blue-600 block"
-              >
+              <span className="block text-black">
                 {block.number}
-              </Link>
+              </span>
               <span className="text-xs text-gray-500">
                 {formatTimeAgo(block.timestamp)}
               </span>

@@ -81,10 +81,8 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
                 label="Block:"
                 tooltip="Number of the block in which the transaction is recorded."
               />
-              <div className="flex-1">
-                <Link href={`/block/${transaction.blockNumber}`} className="text-blue-500 hover:text-blue-600">
-                  {transaction.blockNumber}
-                </Link>
+              <div className="flex-1 text-black">
+                {transaction.blockNumber}
               </div>
             </div>
 

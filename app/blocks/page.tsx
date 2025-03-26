@@ -97,9 +97,9 @@ function BlocksContent() {
                   <td className="p-3">
                     <div className="flex items-center gap-2">
                       <FontAwesomeIcon icon={faCube} className="text-gray-400" />
-                      <Link href={`/block/${block.number}`} className="text-blue-500 hover:text-blue-600">
+                      <span className="text-black">
                         {block.number}
-                      </Link>
+                      </span>
                     </div>
                   </td>
                   <td className="p-3 text-gray-500">{formatTimeAgo(block.timestamp)}</td>

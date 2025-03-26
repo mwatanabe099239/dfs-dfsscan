@@ -42,10 +42,7 @@ export async function getNetworkStats() {
 } 
 
 export async function getLatestBlocks(): Promise<Block[]> {
-  // Get the latest block number from network stats
-  const { latestBlock } = await getNetworkStats();
-
-  // Generate array of last 6 block numbers
+  const latestBlock = calculateBlockNumber();
   const blockNumbers = Array.from({ length: 6 }, (_, i) => latestBlock - i);
 
   // Fetch transactions for these blocks
@@ -54,31 +51,22 @@ export async function getLatestBlocks(): Promise<Block[]> {
     where('blockNumber', 'in', blockNumbers)
   );
   const txSnapshot = await getDocs(txQuery);
-  const transactions = txSnapshot.docs.map(doc => ({
-    ...doc.data(),
-    createdAt: doc.data().createdAt.toDate()
-  })) as Transaction[];
-
-  // Get latest timestamp from transactions
-  const latestTimestamp = transactions.length > 0
-    ? Math.max(...transactions.map(tx => tx.createdAt.getTime() / 1000))
-    : Math.floor(Date.now() / 1000);
+  const transactions = txSnapshot.docs.map(doc => doc.data());
 
   // Group transactions by block number and calculate stats
   const blockMap = new Map<number, Block>();
   
-  blockNumbers.forEach((blockNum, index) => {
+  blockNumbers.forEach(blockNum => {
     const blockTxs = transactions.filter(tx => tx.blockNumber === blockNum);
     const totalReward = blockTxs
       .reduce((sum, tx) => sum + parseFloat(tx.gasFee), 0)
       .toString();
     
-    // Calculate timestamp by subtracting 5 minutes for each block from the latest
-    const timestamp = latestTimestamp - (index * 5 * 60); // 5 minutes in seconds
+    const timestamp = new Date(FIRST_BLOCK_TIME).getTime() + (blockNum * BLOCK_GENERATION_TIME);
 
     blockMap.set(blockNum, {
       number: blockNum,
-      timestamp,
+      timestamp: timestamp / 1000, // Convert to seconds
       transactions: blockTxs.length,
       reward: totalReward
     });
@@ -87,55 +75,52 @@ export async function getLatestBlocks(): Promise<Block[]> {
   return Array.from(blockMap.values()).sort((a, b) => b.number - a.number);
 }
 
+export const BLOCK_GENERATION_TIME = 5 * 60 * 1000; // 5 minutes
+export const FIRST_BLOCK_TIME = "2025-03-26T00:00:00Z";
+
+export function calculateBlockNumber() {
+  const currentTimestamp = new Date();
+  const blockNumber = Math.floor(
+    (currentTimestamp.getTime() - new Date(FIRST_BLOCK_TIME).getTime()) /
+      BLOCK_GENERATION_TIME
+  );
+  return blockNumber;
+}
+
 export async function getBlocks(page: number, perPage: number): Promise<Block[]> {
-  // Get the latest block number from network stats
-  const { latestBlock } = await getNetworkStats();
+  const latestBlock = calculateBlockNumber();
   
   // Calculate the range of blocks for the current page
   const startBlock = latestBlock - ((page - 1) * perPage);
   const endBlock = Math.max(0, startBlock - (perPage - 1));
   
-  // Generate array of block numbers for this page
-  const blockNumbers = Array.from(
-    { length: startBlock - endBlock + 1 },
-    (_, i) => startBlock - i
-  );
-
-  // Fetch transactions for these blocks
-  const txQuery = query(
-    collection(db, 'transactions'),
-    where('blockNumber', 'in', blockNumbers)
-  );
-  const txSnapshot = await getDocs(txQuery);
-  const transactions = txSnapshot.docs.map(doc => ({
-    ...doc.data(),
-    createdAt: doc.data().createdAt.toDate()
-  })) as Transaction[];
-
-  // Get latest timestamp from transactions
-  const latestTimestamp = transactions.length > 0
-    ? Math.max(...transactions.map(tx => tx.createdAt.getTime() / 1000))
-    : Math.floor(Date.now() / 1000);
-
-  // Group transactions by block number and calculate stats
+  // Get transactions for each block
   const blockMap = new Map<number, Block>();
   
-  blockNumbers.forEach((blockNum, index) => {
-    const blockTxs = transactions.filter(tx => tx.blockNumber === blockNum);
-    const totalReward = blockTxs
-      .reduce((sum, tx) => sum + parseFloat(tx.gasFee), 0)
-      .toString();
+  for (let blockNum = startBlock; blockNum >= endBlock; blockNum--) {
+    const timestamp = new Date(FIRST_BLOCK_TIME).getTime() + (blockNum * BLOCK_GENERATION_TIME);
     
-    // Calculate timestamp by subtracting 5 minutes for each block from the latest
-    const timestamp = latestTimestamp - (index * 5 * 60); // 5 minutes in seconds
+    // Get transactions for this block
+    const txQuery = query(
+      collection(db, 'transactions'),
+      where('blockNumber', '==', blockNum)
+    );
+    
+    const txSnapshot = await getDocs(txQuery);
+    const blockTxs = txSnapshot.docs;
+    
+    // Calculate total reward (sum of gas fees)
+    const totalReward = blockTxs.reduce((sum, tx) => {
+      return sum + (tx.data().gasFee || 0);
+    }, 0);
 
     blockMap.set(blockNum, {
       number: blockNum,
-      timestamp,
+      timestamp: timestamp / 1000, // Convert to seconds for consistency
       transactions: blockTxs.length,
-      reward: totalReward
+      reward: totalReward.toString()
     });
-  });
+  }
 
   return Array.from(blockMap.values()).sort((a, b) => b.number - a.number);
 }
