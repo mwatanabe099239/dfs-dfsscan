@@ -62,7 +62,7 @@ function TransactionsContent() {
   const address = searchParams.get('a')
   
   return (
-    <div className="space-y-4">
+    <div className="container mx-auto px-4 space-y-4">
       {/* Stats Cards - only show when no address filter */}
       {!address && (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

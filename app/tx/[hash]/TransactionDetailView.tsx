@@ -78,7 +78,7 @@ export default function TransactionDetailView({ hash }: ViewProps) {
         <h1 className="text-xl">Transaction Details</h1>
       </div>
 
-      <div className="bg-white rounded-lg shadow">
+      <div className="bg-white rounded-lg shadow-[0_2px_4px_0_rgba(0,0,0,0.05)] border border-gray-200">
         <div className="p-6">
           <div className="space-y-6">
             {/* Transaction Hash */}

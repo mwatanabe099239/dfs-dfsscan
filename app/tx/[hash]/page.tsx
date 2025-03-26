@@ -7,7 +7,11 @@ interface PageProps {
 
 async function TransactionDetail({ params }: PageProps) {
   const { hash } = await params
-  return <TransactionDetailView hash={hash} />
+  return (
+    <div className="container mx-auto px-4">
+      <TransactionDetailView hash={hash} />
+    </div>
+  )
 }
 
 export default TransactionDetail

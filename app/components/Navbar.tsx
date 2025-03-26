@@ -16,7 +16,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="bg-white border-b border-gray-200">
+    <nav className="bg-white border-b border-gray-200 shadow-[0_2px_4px_0_rgba(0,0,0,0.05)]">
       <div className="container mx-auto">
         <div className="flex justify-between h-[60px] px-8">
           {/* Left section with Logo */}
