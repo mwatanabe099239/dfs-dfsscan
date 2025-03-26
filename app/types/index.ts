@@ -1,21 +1,28 @@
 export interface Transaction {
-  hash: string;
+  amount: string;
+  blockNumber: number;
+  createdAt: Date;
+  fromAddress: string;
+  fromEmail: string;
+  gasFee: string;
+  message: string;
   method: string;
-  block: number;
-  timestamp: number;
-  from: string;
-  to: string;
-  value: string;
-  fee: string;
-  status: 'Success' | 'Failed' | 'Pending';
-  gasPrice: string;
+  toAddress: string;
+  toEmail: string;
+  token: {
+    id: string;
+    logoUrl: string;
+    name: string;
+    symbol: string;
+    tokenAddress: string;
+  };
+  transactionHash: string;
 }
 
 export interface Block {
   number: number;
   timestamp: number;
   transactions: number;
-  miner: string;
   reward: string;
 }
 

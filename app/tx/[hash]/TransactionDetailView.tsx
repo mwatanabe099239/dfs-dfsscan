@@ -48,7 +48,7 @@ const mockTransaction = {
 }
 
 const InfoLabel = ({ label, tooltip }: { label: string; tooltip: string }) => (
-  <div className="w-48 text-gray-500 flex items-center gap-2">
+  <div className="w-80 text-gray-500 flex items-center gap-2">
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger>
@@ -78,11 +78,11 @@ export default function TransactionDetailView({ hash }: ViewProps) {
         <h1 className="text-xl">Transaction Details</h1>
       </div>
 
-      <div className="bg-white rounded-lg shadow-[0_2px_4px_0_rgba(0,0,0,0.05)] border border-gray-200">
+      <div className="bg-white rounded-lg shadow-[0_2px_4px_0_rgba(0,0,0,0.05)] border border-gray-200 text-sm font-light">
         <div className="p-6">
-          <div className="space-y-6">
+          <div className="space-y-4">
             {/* Transaction Hash */}
-            <div className="flex py-3 border-b border-gray-200">
+            <div className="flex">
               <InfoLabel 
                 label="Transaction Hash:"
                 tooltip="A TxHash or transaction hash is a uniquie 66-character identifer that is generated whenever a transaction is executed."
@@ -96,7 +96,7 @@ export default function TransactionDetailView({ hash }: ViewProps) {
             </div>
 
             {/* Status */}
-            <div className="flex py-3 border-b border-gray-200">
+            <div className="flex">
               <InfoLabel 
                 label="Status:"
                 tooltip="The status of the transaction"
@@ -110,7 +110,7 @@ export default function TransactionDetailView({ hash }: ViewProps) {
             </div>
 
             {/* Block */}
-            <div className="flex py-3 border-b border-gray-200">
+            <div className="flex">
               <InfoLabel 
                 label="Block:"
                 tooltip="Number of the block in which the transaction is recorded. Block confirmations indicate how many blocks have been added since the transaction was produced."
@@ -126,7 +126,7 @@ export default function TransactionDetailView({ hash }: ViewProps) {
             </div>
 
             {/* Timestamp */}
-            <div className="flex py-3 border-b border-gray-200">
+            <div className="flex pb-3 border-b border-gray-100">
               <InfoLabel 
                 label="Timestamp:"
                 tooltip="The date and time at which a transaction is validated."
@@ -156,7 +156,7 @@ export default function TransactionDetailView({ hash }: ViewProps) {
             </div>
 
             {/* From */}
-            <div className="flex py-3 border-b border-gray-200">
+            <div className="flex">
               <InfoLabel 
                 label="From:"
                 tooltip="The sending party of the transaction"
@@ -170,7 +170,7 @@ export default function TransactionDetailView({ hash }: ViewProps) {
             </div>
 
             {/* To */}
-            <div className="flex py-3 border-b border-gray-200">
+            <div className="flex pb-3 border-b border-gray-200">
               <InfoLabel 
                 label="To:"
                 tooltip="The receiving party of the transaction (could be a contract address)"

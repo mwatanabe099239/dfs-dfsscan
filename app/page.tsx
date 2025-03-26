@@ -147,13 +147,13 @@ export default function Home() {
           {/* Latest Blocks */}
           <div className="bg-white rounded-lg shadow-lg lg:col-span-1">
             <h2 className="text-md font-semibold p-4 border-b border-gray-200">Latest Blocks</h2>
-            <LatestBlocks blocks={mockBlocks} />
+            <LatestBlocks />
           </div>
 
           {/* Latest Transactions */}
           <div className="bg-white rounded-lg shadow-lg lg:col-span-1">
             <h2 className="text-md font-semibold p-4 border-b border-gray-200">Latest Transactions</h2>
-            <LatestTransactions transactions={mockTransactions} />
+            <LatestTransactions />
           </div>
         </div>
       </div>

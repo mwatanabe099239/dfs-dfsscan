@@ -1,21 +1,23 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCube } from '@fortawesome/free-solid-svg-icons'
+import { Block } from '../../types'
+import { getLatestBlocks } from '../../lib/firebase'
+import { formatTimeAgo } from '../../lib/utils'
 
-interface BlockProps {
-  number: number
-  timestamp: number
-  transactions: number
-  validator: string
-  validatorAddress: string
-  reward: number
-}
+export default function LatestBlocks() {
+  const [blocks, setBlocks] = useState<Block[]>([]);
 
-export default function LatestBlocks({ blocks }: { blocks: BlockProps[] }) {
-  const timeNow = Math.floor(Date.now() / 1000)
+  useEffect(() => {
+    const fetchBlocks = async () => {
+      const blocksData = await getLatestBlocks();
+      setBlocks(blocksData);
+    };
+    fetchBlocks();
+  }, []);
 
   return (
     <div className="divide-y divide-gray-200 text-sm">
@@ -33,24 +35,17 @@ export default function LatestBlocks({ blocks }: { blocks: BlockProps[] }) {
                 {block.number}
               </Link>
               <span className="text-xs text-gray-500">
-                {Math.floor(timeNow - block.timestamp)} secs ago
+                {formatTimeAgo(block.timestamp)}
               </span>
             </div>
             <div className="flex-1">
-              <span className="text-black text-sm">Validated By </span>
-              <Link 
-                href={`/address/${block.validatorAddress}`}
-                className="text-blue-500 hover:text-blue-600"
-              >
-                {block.validator}
-              </Link>
               <div className="text-xs text-gray-500">
-                {block.transactions} txns <span className="mx-1">in</span> {3} secs
+                {block.transactions} txns <span className="mx-1">in</span> 5 mins
               </div>
             </div>
             <div className="text-right whitespace-nowrap">
               <span className="bg-transparent border border-gray-300 text-black py-1 px-2 rounded-md text-xs">
-                {block.reward} BNB
+                {block.reward} DFS
               </span>
             </div>
           </div>

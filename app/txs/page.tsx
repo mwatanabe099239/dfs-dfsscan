@@ -3,6 +3,7 @@
 import { use, Suspense } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
+import Pagination from '../components/common/Pagination'
 
 // Helper function for consistent number formatting
 const formatNumber = (num: number) => {
@@ -187,40 +188,12 @@ function TransactionsContent() {
         </div>
 
         {/* Pagination */}
-        <div className="p-4 border-t border-gray-200 flex items-center justify-between">
-          <div className="text-sm text-gray-600">
-            Showing page {mockTransactions.currentPage} of {Math.ceil(mockTransactions.total / mockTransactions.perPage)}
-          </div>
-          <div className="flex items-center gap-2">
-            <Link 
-              href={`/txs?page=1${address ? `&a=${address}` : ''}`}
-              className="px-3 py-1 border rounded hover:bg-gray-50"
-            >
-              First
-            </Link>
-            <Link 
-              href={`/txs?page=${mockTransactions.currentPage - 1}${address ? `&a=${address}` : ''}`}
-              className="px-3 py-1 border rounded hover:bg-gray-50"
-            >
-              ‹
-            </Link>
-            <span className="px-3 py-1">
-              Page {mockTransactions.currentPage} of {Math.ceil(mockTransactions.total / mockTransactions.perPage)}
-            </span>
-            <Link 
-              href={`/txs?page=${mockTransactions.currentPage + 1}${address ? `&a=${address}` : ''}`}
-              className="px-3 py-1 border rounded hover:bg-gray-50"
-            >
-              ›
-            </Link>
-            <Link 
-              href={`/txs?page=${Math.ceil(mockTransactions.total / mockTransactions.perPage)}${address ? `&a=${address}` : ''}`}
-              className="px-3 py-1 border rounded hover:bg-gray-50"
-            >
-              Last
-            </Link>
-          </div>
-        </div>
+        <Pagination 
+          currentPage={mockTransactions.currentPage}
+          totalPages={Math.ceil(mockTransactions.total / mockTransactions.perPage)}
+          basePath="/txs"
+          queryParams={address ? { a: address } : {}}
+        />
 
         {/* Info Text */}
         <div className="p-4 bg-gray-50 text-sm text-gray-600 border-t border-gray-200">

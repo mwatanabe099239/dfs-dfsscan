@@ -1,67 +1,77 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons'
+import { Transaction } from '../../types'
+import { getLatestTransactions } from '../../lib/firebase'
+import { formatTimeAgo } from '../../lib/utils'
 
-interface TransactionProps {
-  hash: string
-  timestamp: number
-  from: string
-  to: string
-  value: number
-}
+export default function LatestTransactions() {
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-export default function LatestTransactions({ transactions }: { transactions: TransactionProps[] }) {
-  
-  const timeNow = Math.floor(Date.now() / 1000)
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      const txs = await getLatestTransactions();
+      setTransactions(txs);
+    };
+    fetchTransactions();
+  }, []);
+
   const formatAddress = (address: string) => {
     if (!address) return '';
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
+
   return (
     <div className="divide-y divide-gray-200 text-sm">
       {transactions.map((tx) => (
-        <div key={tx.hash} className="p-4 hover:bg-gray-50">
+        <div key={tx.transactionHash} className="p-4 hover:bg-gray-50">
           <div className="flex items-center gap-3">
             <div className="text-gray-400">
               <FontAwesomeIcon icon={faFileAlt} className="w-6 h-6!" />
             </div>
             <div className="min-w-[180px]">
               <Link 
-                href={`/tx/${tx.hash}`}
+                href={`/tx/${tx.transactionHash}`}
                 className="text-blue-500 hover:text-blue-600 block"
               >
-                {tx.hash.slice(0, 12)}...
+                {tx.transactionHash.slice(0, 12)}...
               </Link>
               <span className="text-xs text-gray-500">
-                {Math.floor(timeNow - tx.timestamp)} secs ago
+                {formatTimeAgo(tx.createdAt.getTime() / 1000)}
               </span>
             </div>
             <div className="flex-1">
               <div>
                 <span className="text-black">From </span>
                 <Link 
-                  href={`/address/${tx.from}`}
+                  href={`/address/${tx.fromAddress}`}
                   className="text-blue-500 hover:text-blue-600"
                 >
-                  {formatAddress(tx.from)}
+                  {formatAddress(tx.fromAddress)}
                 </Link>
+                <span className="text-xs text-gray-500 ml-1">
+                  ({tx.fromEmail})
+                </span>
               </div>
               <div>
                 <span className="text-black">To </span>
                 <Link 
-                  href={`/address/${tx.to}`}
+                  href={`/address/${tx.toAddress}`}
                   className="text-blue-500 hover:text-blue-600"
                 >
-                  {formatAddress(tx.to)}
+                  {formatAddress(tx.toAddress)}
                 </Link>
+                <span className="text-xs text-gray-500 ml-1">
+                  ({tx.toEmail})
+                </span>
               </div>
             </div>
             <div className="text-right whitespace-nowrap">
               <span className="bg-transparent border border-gray-300 text-black py-1 px-2 rounded-md text-xs">
-                {tx.value} BNB
+                {tx.gasFee} DFS
               </span>
             </div>
           </div>
