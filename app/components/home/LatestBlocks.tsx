@@ -7,17 +7,30 @@ import { faCube } from '@fortawesome/free-solid-svg-icons'
 import { Block } from '../../types'
 import { getLatestBlocks } from '../../lib/firebase'
 import { formatTimeAgo } from '../../lib/utils'
+import ItemSkeleton from '../common/ItemSkeleton'
 
 export default function LatestBlocks() {
   const [blocks, setBlocks] = useState<Block[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchBlocks = async () => {
       const blocksData = await getLatestBlocks();
       setBlocks(blocksData);
+      setLoading(false);
     };
     fetchBlocks();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="divide-y divide-gray-200">
+        {[...Array(6)].map((_, i) => (
+          <ItemSkeleton key={i} />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="divide-y divide-gray-200 text-sm">

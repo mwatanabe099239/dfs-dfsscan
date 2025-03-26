@@ -153,3 +153,23 @@ export async function getLatestTransactions(): Promise<Transaction[]> {
     createdAt: doc.data().createdAt.toDate()
   })) as Transaction[];
 }
+
+export async function getTransactionByHash(hash: string): Promise<Transaction | null> {
+  const txQuery = query(
+    collection(db, 'transactions'),
+    where('transactionHash', '==', hash),
+    limit(1)
+  );
+
+  const snapshot = await getDocs(txQuery);
+  
+  if (snapshot.empty) {
+    return null;
+  }
+
+  const doc = snapshot.docs[0];
+  return {
+    ...doc.data(),
+    createdAt: doc.data().createdAt.toDate()
+  } as Transaction;
+}

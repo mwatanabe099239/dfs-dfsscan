@@ -7,17 +7,30 @@ import { faFileAlt } from '@fortawesome/free-solid-svg-icons'
 import { Transaction } from '../../types'
 import { getLatestTransactions } from '../../lib/firebase'
 import { formatTimeAgo } from '../../lib/utils'
+import ItemSkeleton from '../common/ItemSkeleton'
 
 export default function LatestTransactions() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchTransactions = async () => {
       const txs = await getLatestTransactions();
       setTransactions(txs);
+      setLoading(false);
     };
     fetchTransactions();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="divide-y divide-gray-200">
+        {[...Array(6)].map((_, i) => (
+          <ItemSkeleton key={i} />
+        ))}
+      </div>
+    );
+  }
 
   const formatAddress = (address: string) => {
     if (!address) return '';
