@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore } from 'firebase/firestore'
+import { getFirestore, getDoc, doc } from 'firebase/firestore'
 import { collection, query, orderBy, limit, getDocs, where } from 'firebase/firestore'
 import { Transaction } from '../types'
 import { Block } from '../types'
@@ -25,14 +25,9 @@ export async function getNetworkStats() {
   )
   
   const snapshot = await getDocs(txQuery)
-  const transactions = snapshot.docs.map(doc => ({
-    ...doc.data(),
-    createdAt: doc.data().createdAt.toDate()
-  })) as Transaction[]
-
-  const latestBlock = transactions[0]?.blockNumber || 0
   const totalTransactions = snapshot.size
   const baseFee = "1" // Assuming 1 DFS as mentioned
+  const latestBlock = calculateBlockNumber()
 
   return {
     latestBlock,
@@ -157,4 +152,124 @@ export async function getTransactionByHash(hash: string): Promise<Transaction | 
     ...doc.data(),
     createdAt: doc.data().createdAt.toDate()
   } as Transaction;
+}
+
+export async function getTransactions(page: number, perPage: number): Promise<Transaction[]> {
+  const txQuery = query(
+    collection(db, 'transactions'),
+    orderBy('createdAt', 'desc'),
+    limit(perPage)
+  );
+
+  const snapshot = await getDocs(txQuery);
+  return snapshot.docs.map(doc => ({
+    ...doc.data(),
+    createdAt: doc.data().createdAt.toDate()
+  })) as Transaction[];
+}
+
+export async function getTransactionsByAddress(address: string): Promise<Transaction[]> {
+  const txQuery = query(
+    collection(db, 'transactions'),
+    where('fromAddress', '==', address),
+    orderBy('createdAt', 'desc')
+  );
+
+  const toQuery = query(
+    collection(db, 'transactions'),
+    where('toAddress', '==', address),
+    orderBy('createdAt', 'desc')
+  );
+
+  const [fromSnapshot, toSnapshot] = await Promise.all([
+    getDocs(txQuery),
+    getDocs(toQuery)
+  ]);
+
+  // Create a Map to store unique transactions by hash
+  const uniqueTransactions = new Map();
+
+  // Add all transactions to the Map (this will automatically handle duplicates)
+  [...fromSnapshot.docs, ...toSnapshot.docs].forEach(doc => {
+    const data = doc.data();
+    uniqueTransactions.set(data.transactionHash, {
+      ...data,
+      createdAt: data.createdAt.toDate()
+    });
+  });
+
+  // Convert Map values back to array
+  return Array.from(uniqueTransactions.values()) as Transaction[];
+}
+
+export async function getNativeBalance(address: string): Promise<string> {
+  const userQuery = query(
+    collection(db, 'users'),
+    where('walletAddress', '==', address),
+    limit(1)
+  );
+  
+  const snapshot = await getDocs(userQuery);
+  if (snapshot.empty) {
+    return '0';
+  }
+  
+  return snapshot.docs[0].data().nativeTokenBalance || '0';
+}
+
+export async function getUserTokens(address: string): Promise<any[]> {
+  const userQuery = query(
+    collection(db, 'users'),
+    where('walletAddress', '==', address),
+    limit(1)
+  );
+  
+  const snapshot = await getDocs(userQuery);
+  if (snapshot.empty) {
+    return [];
+  }
+  
+  const userData = snapshot.docs[0].data();
+  return userData.tokens || [];
+}
+
+export async function getTokenData(tokenAddress: string) {
+  const tokenQuery = query(
+    collection(db, 'tokens'),
+    where('tokenAddress', '==', tokenAddress),
+    limit(1)
+  );
+  
+  const snapshot = await getDocs(tokenQuery);
+  if (snapshot.empty) {
+    return null;
+  }
+  
+  return snapshot.docs[0].data();
+}
+
+export async function getTokenHolders(tokenAddress: string) {
+  const usersQuery = query(
+    collection(db, 'users'),
+    where('tokenHoldings', 'array-contains', tokenAddress)
+  );
+  
+  const snapshot = await getDocs(usersQuery);
+  return snapshot.docs.map(doc => doc.data());
+}
+
+export async function getTokenTransactions(tokenAddress: string) {
+  const txQuery = query(
+    collection(db, 'transactions'),
+    where('token.tokenAddress', '==', tokenAddress)
+  );
+  
+  const snapshot = await getDocs(txQuery);
+  const transactions = snapshot.docs.map(doc => ({
+    ...doc.data(),
+    createdAt: doc.data().createdAt.toDate()
+  }));
+
+  // Sort in memory instead
+  return transactions.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 }

@@ -1,9 +1,15 @@
 'use client'
 
-import { use, Suspense } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFileAlt } from '@fortawesome/free-solid-svg-icons'
+import { Transaction } from '../types'
+import { getNetworkStats, getTransactions } from '../lib/firebase'
+import { formatTimeAgo } from '../lib/utils'
 import Pagination from '../components/common/Pagination'
+import { Suspense } from 'react'
 
 // Helper function for consistent number formatting
 const formatNumber = (num: number) => {
@@ -13,22 +19,19 @@ const formatNumber = (num: number) => {
 // Mock data for transactions stats
 const statsData = {
   total24h: {
-    count: 5955503,
-    change: -0.58
+    count: 5955503
   },
   pending: {
     count: 320,
     label: 'Average'
   },
   networkFee24h: {
-    amount: '2,253.65',
-    unit: 'BNB',
-    change: 14.83
+    amount: '5,955,503',
+    unit: 'DFS'
   },
   avgTxnFee24h: {
-    amount: '0.2342',
-    unit: 'USD',
-    change: 7.17
+    amount: '1.00',
+    unit: 'DFS'
   }
 }
 
@@ -58,51 +61,133 @@ const mockTransactions = {
   ]
 }
 
+function TableSkeleton() {
+  return (
+    <div className="animate-pulse">
+      <table className="w-full">
+        <thead>
+          <tr className="text-left text-sm border-b border-gray-200 bg-gray-50">
+            <th className="p-3 whitespace-nowrap">Transaction Hash</th>
+            <th className="p-3 whitespace-nowrap">Method</th>
+            <th className="p-3 whitespace-nowrap">Age</th>
+            <th className="p-3 whitespace-nowrap">From</th>
+            <th className="p-3 whitespace-nowrap">To</th>
+            <th className="p-3 whitespace-nowrap text-right">Amount</th>
+            <th className="p-3 whitespace-nowrap text-right">Gas Fee</th>
+          </tr>
+        </thead>
+        <tbody>
+          {[...Array(10)].map((_, i) => (
+            <tr key={i} className="border-b border-gray-200">
+              <td className="p-3">
+                <div className="flex items-center gap-2">
+                  <div className="text-gray-200">
+                    <FontAwesomeIcon icon={faFileAlt} className="w-4 h-4" />
+                  </div>
+                  <div className="w-24 h-4 bg-gray-200 rounded" />
+                </div>
+              </td>
+              <td className="p-3">
+                <div className="w-20 h-4 bg-gray-200 rounded" />
+              </td>
+              <td className="p-3">
+                <div className="w-24 h-4 bg-gray-200 rounded" />
+              </td>
+              <td className="p-3">
+                <div className="w-32 h-4 bg-gray-200 rounded" />
+              </td>
+              <td className="p-3">
+                <div className="w-32 h-4 bg-gray-200 rounded" />
+              </td>
+              <td className="p-3">
+                <div className="w-20 h-4 bg-gray-200 rounded ml-auto" />
+              </td>
+              <td className="p-3">
+                <div className="w-20 h-4 bg-gray-200 rounded ml-auto" />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
 function TransactionsContent() {
   const searchParams = useSearchParams()
-  const address = searchParams.get('a')
-  
+  const page = parseInt(searchParams.get('page') || '1')
+  const [perPage, setPerPage] = useState(10)
+  const [loading, setLoading] = useState(true)
+  const [stats, setStats] = useState({
+    total24h: 0,
+    networkFee24h: '0',
+    avgTxnFee24h: '1.00'
+  })
+  const [txData, setTxData] = useState({
+    total: 0,
+    perPage: 10,
+    currentPage: page,
+    transactions: [] as Transaction[]
+  })
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true)
+      const { totalTransactions } = await getNetworkStats()
+      const transactions = await getTransactions(page, perPage)
+      
+      // Calculate 24h transactions
+      const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000)
+      const last24hTxs = transactions.filter(tx => tx.createdAt > oneDayAgo)
+      const total24h = last24hTxs.length
+      const networkFee24h = total24h.toString() // Assuming 1 DFS per transaction
+
+      setStats({
+        total24h,
+        networkFee24h,
+        avgTxnFee24h: '1.00'
+      })
+      
+      setTxData({
+        total: totalTransactions,
+        perPage,
+        currentPage: page,
+        transactions
+      })
+      setLoading(false)
+    }
+
+    fetchData()
+  }, [page, perPage])
+
+  const handlePerPageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const newPerPage = parseInt(event.target.value)
+    setPerPage(newPerPage)
+  }
+
+  const formatAddress = (address: string) => {
+    if (!address) return ''
+    return `${address.slice(0, 6)}...${address.slice(-4)}`
+  }
+
   return (
     <div className="container mx-auto px-4 space-y-4">
       {/* Stats Cards - only show when no address filter */}
-      {!address && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {!searchParams.get('a') && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-white rounded-lg shadow p-4">
             <div className="text-sm text-gray-600 mb-1">TRANSACTIONS (24H)</div>
-            <div className="flex items-baseline gap-2">
-              <div className="text-lg font-medium">{formatNumber(statsData.total24h.count)}</div>
-              <div className={`text-sm ${statsData.total24h.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                ({statsData.total24h.change}%)
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-4">
-            <div className="text-sm text-gray-600 mb-1">PENDING TRANSACTIONS (LAST 1H)</div>
-            <div className="flex items-baseline gap-2">
-              <div className="text-lg font-medium">{statsData.pending.count}</div>
-              <div className="text-sm text-gray-500">({statsData.pending.label})</div>
-            </div>
+            <div className="text-lg font-medium">{stats.total24h.toLocaleString()}</div>
           </div>
 
           <div className="bg-white rounded-lg shadow p-4">
             <div className="text-sm text-gray-600 mb-1">NETWORK TRANSACTIONS FEE (24H)</div>
-            <div className="flex items-baseline gap-2">
-              <div className="text-lg font-medium">{statsData.networkFee24h.amount} {statsData.networkFee24h.unit}</div>
-              <div className={`text-sm ${statsData.networkFee24h.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                ({statsData.networkFee24h.change}%)
-              </div>
-            </div>
+            <div className="text-lg font-medium">{stats.networkFee24h} DFS</div>
           </div>
 
           <div className="bg-white rounded-lg shadow p-4">
             <div className="text-sm text-gray-600 mb-1">AVG. TRANSACTION FEE (24H)</div>
-            <div className="flex items-baseline gap-2">
-              <div className="text-lg font-medium">{statsData.avgTxnFee24h.amount} {statsData.avgTxnFee24h.unit}</div>
-              <div className={`text-sm ${statsData.avgTxnFee24h.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                ({statsData.avgTxnFee24h.change}%)
-              </div>
-            </div>
+            <div className="text-lg font-medium">{stats.avgTxnFee24h} DFS</div>
           </div>
         </div>
       )}
@@ -113,9 +198,9 @@ function TransactionsContent() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <h2 className="text-lg">Transactions</h2>
-              {address && (
+              {searchParams.get('a') && (
                 <span className="text-sm text-gray-500">
-                  For <span className="text-blue-500">{address}</span>
+                  For <span className="text-blue-500">{searchParams.get('a')}</span>
                 </span>
               )}
             </div>
@@ -124,7 +209,8 @@ function TransactionsContent() {
                 Show rows:
                 <select 
                   className="ml-2 border rounded p-1"
-                  defaultValue="50"
+                  value={perPage}
+                  onChange={handlePerPageChange}
                 >
                   <option value="10">10</option>
                   <option value="25">25</option>
@@ -137,62 +223,75 @@ function TransactionsContent() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="text-left text-sm border-b border-gray-200 bg-gray-50">
-                <th className="p-3 whitespace-nowrap">Transaction Hash</th>
-                <th className="p-3 whitespace-nowrap">Method</th>
-                <th className="p-3 whitespace-nowrap">Block</th>
-                <th className="p-3 whitespace-nowrap">Age</th>
-                <th className="p-3 whitespace-nowrap">From</th>
-                <th className="p-3 whitespace-nowrap">To</th>
-                <th className="p-3 whitespace-nowrap text-right">Amount</th>
-                <th className="p-3 whitespace-nowrap text-right">Txn Fee</th>
-              </tr>
-            </thead>
-            <tbody>
-              {mockTransactions.transactions.map((tx, index) => (
-                <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
-                  <td className="p-3">
-                    <Link href={`/tx/${tx.hash}`} className="text-blue-500 hover:text-blue-600">
-                      {tx.hash}
-                    </Link>
-                  </td>
-                  <td className="p-3">
-                    <span className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">
-                      {tx.method}
-                    </span>
-                  </td>
-                  <td className="p-3">
-                    <Link href={`/block/${tx.block}`} className="text-blue-500 hover:text-blue-600">
-                      {tx.block}
-                    </Link>
-                  </td>
-                  <td className="p-3 text-gray-500">{tx.age}</td>
-                  <td className="p-3">
-                    <Link href={`/address/${tx.from.address}`} className="text-blue-500 hover:text-blue-600">
-                      {tx.from.address}
-                    </Link>
-                  </td>
-                  <td className="p-3">
-                    <Link href={`/address/${tx.to.address}`} className="text-blue-500 hover:text-blue-600">
-                      {tx.to.address}
-                    </Link>
-                  </td>
-                  <td className="p-3 text-right">{tx.amount}</td>
-                  <td className="p-3 text-right">{tx.fee}</td>
+          {loading ? (
+            <TableSkeleton />
+          ) : (
+            <table className="w-full">
+              <thead>
+                <tr className="text-left text-sm border-b border-gray-200 bg-gray-50">
+                  <th className="p-3 whitespace-nowrap">Transaction Hash</th>
+                  <th className="p-3 whitespace-nowrap">Method</th>
+                  <th className="p-3 whitespace-nowrap">Age</th>
+                  <th className="p-3 whitespace-nowrap">From</th>
+                  <th className="p-3 whitespace-nowrap">To</th>
+                  <th className="p-3 whitespace-nowrap text-right">Amount</th>
+                  <th className="p-3 whitespace-nowrap text-right">Gas Fee</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {txData.transactions.map((tx) => (
+                  <tr key={tx.transactionHash} className="border-b border-gray-200 hover:bg-gray-50">
+                    <td className="p-3">
+                      <div className="flex items-center gap-2">
+                        <FontAwesomeIcon icon={faFileAlt} className="text-gray-400" />
+                        <Link 
+                          href={`/tx/${tx.transactionHash}`}
+                          className="text-blue-500 hover:text-blue-600"
+                        >
+                          {tx.transactionHash.slice(0, 12)}...
+                        </Link>
+                      </div>
+                    </td>
+                    <td className="p-3 text-gray-500">
+                      {tx.method || 'Transfer'}
+                    </td>
+                    <td className="p-3 text-gray-500">
+                      {formatTimeAgo(tx.createdAt.getTime() / 1000)}
+                    </td>
+                    <td className="p-3">
+                      <Link 
+                        href={`/address/${tx.fromAddress}`}
+                        className="text-blue-500 hover:text-blue-600"
+                      >
+                        {formatAddress(tx.fromAddress)}
+                      </Link>
+                    </td>
+                    <td className="p-3">
+                      <Link 
+                        href={`/address/${tx.toAddress}`}
+                        className="text-blue-500 hover:text-blue-600"
+                      >
+                        {formatAddress(tx.toAddress)}
+                      </Link>
+                    </td>
+                    <td className="p-3 text-right">
+                      {tx.amount} {tx.method === 'Token Created' ? 'DFS' : tx.token.symbol}
+                    </td>
+                    <td className="p-3 text-right">
+                      {tx.gasFee} DFS
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
 
-        {/* Pagination */}
         <Pagination 
-          currentPage={mockTransactions.currentPage}
-          totalPages={Math.ceil(mockTransactions.total / mockTransactions.perPage)}
+          currentPage={txData.currentPage}
+          totalPages={Math.ceil(txData.total / txData.perPage)}
           basePath="/txs"
-          queryParams={address ? { a: address } : {}}
+          queryParams={searchParams.get('a') ? { a: searchParams.get('a')! } : undefined}
         />
 
         {/* Info Text */}
@@ -218,9 +317,9 @@ function TransactionsLoading() {
   )
 }
 
-export default function Transactions({ params }: { params: Promise<{ address?: string }> }) {
+export default function TransactionsPage() {
   return (
-    <Suspense fallback={<TransactionsLoading />}>
+    <Suspense fallback={<div>Loading...</div>}>
       <TransactionsContent />
     </Suspense>
   )

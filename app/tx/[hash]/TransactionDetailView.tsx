@@ -125,6 +125,17 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
               </div>
             </div>
 
+            {/* Method */}
+            <div className="flex pb-3 border-b border-gray-200">
+              <InfoLabel 
+                label="Method:"
+                tooltip="The type of transaction that was executed"
+              />
+              <div className="flex-1">
+                {transaction.method || 'Transfer'}
+              </div>
+            </div>
+
             {/* Value */}
             <div className="flex py-3 border-b border-gray-200">
               <InfoLabel 
@@ -133,7 +144,7 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
               />
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  {transaction.amount} {transaction.token.symbol}
+                  {transaction.amount} {transaction.method === 'Token Created' ? 'DFS' : transaction.token.symbol}
                 </div>
               </div>
             </div>

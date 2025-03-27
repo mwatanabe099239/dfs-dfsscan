@@ -18,10 +18,51 @@ interface BlocksData {
   blocks: Block[]
 }
 
+function TableSkeleton() {
+  return (
+    <div className="animate-pulse">
+      <table className="w-full">
+        <thead>
+          <tr className="text-left text-sm border-b border-gray-200 bg-gray-50">
+            <th className="p-3 whitespace-nowrap">Block</th>
+            <th className="p-3 whitespace-nowrap">Age</th>
+            <th className="p-3 whitespace-nowrap text-right">Txn</th>
+            <th className="p-3 whitespace-nowrap text-right">Gas Fee (DFS)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {[...Array(10)].map((_, i) => (
+            <tr key={i} className="border-b border-gray-200">
+              <td className="p-3">
+                <div className="flex items-center gap-2">
+                  <div className="text-gray-200">
+                    <FontAwesomeIcon icon={faCube} className="w-4 h-4" />
+                  </div>
+                  <div className="w-16 h-4 bg-gray-200 rounded" />
+                </div>
+              </td>
+              <td className="p-3">
+                <div className="w-24 h-4 bg-gray-200 rounded" />
+              </td>
+              <td className="p-3">
+                <div className="w-8 h-4 bg-gray-200 rounded ml-auto" />
+              </td>
+              <td className="p-3">
+                <div className="w-20 h-4 bg-gray-200 rounded ml-auto" />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
 function BlocksContent() {
   const searchParams = useSearchParams()
   const page = parseInt(searchParams.get('page') || '1')
   const [perPage, setPerPage] = useState(10)
+  const [loading, setLoading] = useState(true)
   const [blocksData, setBlocksData] = useState<BlocksData>({
     total: 0,
     perPage: 10,
@@ -31,6 +72,7 @@ function BlocksContent() {
 
   useEffect(() => {
     const fetchBlocks = async () => {
+      setLoading(true)
       const { latestBlock } = await getNetworkStats();
       const total = latestBlock + 1; // Including genesis block
       
@@ -42,6 +84,7 @@ function BlocksContent() {
         currentPage: page,
         blocks
       });
+      setLoading(false)
     };
 
     fetchBlocks();
@@ -82,33 +125,37 @@ function BlocksContent() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="text-left text-sm border-b border-gray-200 bg-gray-50">
-                <th className="p-3 whitespace-nowrap">Block</th>
-                <th className="p-3 whitespace-nowrap">Age</th>
-                <th className="p-3 whitespace-nowrap text-right">Txn</th>
-                <th className="p-3 whitespace-nowrap text-right">Gas Fee (DFS)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {blocksData.blocks.map((block) => (
-                <tr key={block.number} className="border-b border-gray-200 hover:bg-gray-50">
-                  <td className="p-3">
-                    <div className="flex items-center gap-2">
-                      <FontAwesomeIcon icon={faCube} className="text-gray-400" />
-                      <span className="text-black">
-                        {block.number}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="p-3 text-gray-500">{formatTimeAgo(block.timestamp)}</td>
-                  <td className="p-3 text-right">{block.transactions}</td>
-                  <td className="p-3 text-right">{block.transactions} DFS</td>
+          {loading ? (
+            <TableSkeleton />
+          ) : (
+            <table className="w-full">
+              <thead>
+                <tr className="text-left text-sm border-b border-gray-200 bg-gray-50">
+                  <th className="p-3 whitespace-nowrap">Block</th>
+                  <th className="p-3 whitespace-nowrap">Age</th>
+                  <th className="p-3 whitespace-nowrap text-right">Txn</th>
+                  <th className="p-3 whitespace-nowrap text-right">Gas Fee (DFS)</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {blocksData.blocks.map((block) => (
+                  <tr key={block.number} className="border-b border-gray-200 hover:bg-gray-50">
+                    <td className="p-3">
+                      <div className="flex items-center gap-2">
+                        <FontAwesomeIcon icon={faCube} className="text-gray-400" />
+                        <span className="text-black">
+                          {block.number}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="p-3 text-gray-500">{formatTimeAgo(block.timestamp)}</td>
+                    <td className="p-3 text-right">{block.transactions}</td>
+                    <td className="p-3 text-right">{block.transactions} DFS</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
 
         {/* Replace the pagination section with the new component */}
