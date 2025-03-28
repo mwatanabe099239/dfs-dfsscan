@@ -100,7 +100,7 @@ function BlocksContent() {
         <div className="p-4 border-b border-gray-200">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <h2 className="text-lg">Blocks</h2>
+              <h2 className="text-md">Blocks</h2>
               <span className="text-sm text-gray-500">
                 Total of {blocksData.total.toLocaleString()} blocks
               </span>
@@ -132,13 +132,11 @@ function BlocksContent() {
                 <tr className="text-left text-sm border-b border-gray-200 bg-gray-50">
                   <th className="p-3 whitespace-nowrap">Block</th>
                   <th className="p-3 whitespace-nowrap">Age</th>
-                  <th className="p-3 whitespace-nowrap text-right">Txn</th>
-                  <th className="p-3 whitespace-nowrap text-right">
-                    Gas Fee (DFS)
-                  </th>
+                  <th className="p-3 whitespace-nowrap">Txn</th>
+                  <th className="p-3 whitespace-nowrap">Gas Fee (DFS)</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="text-sm">
                 {blocksData.blocks.map((block) => (
                   <tr
                     key={block.number}
@@ -156,8 +154,8 @@ function BlocksContent() {
                     <td className="p-3 text-gray-500">
                       {formatTimeAgo(block.timestamp)}
                     </td>
-                    <td className="p-3 text-right">{block.transactions}</td>
-                    <td className="p-3 text-right">{block.transactions} DFS</td>
+                    <td className="p-3">{block.transactions}</td>
+                    <td className="p-3">{block.transactions} DFS</td>
                   </tr>
                 ))}
               </tbody>
@@ -173,18 +171,18 @@ function BlocksContent() {
         />
 
         {/* Info Text */}
-        <div className="p-4 bg-gray-50 text-sm text-gray-600 border-t border-gray-200">
+        {/* <div className="p-4 bg-gray-50 text-sm text-gray-600 border-t border-gray-200">
           <span className="mr-1">ℹ️</span>A block is a container of
           transactions. Block explorers track the details of all blocks in the
           network.{" "}
           <Link
             href="/knowledge-base"
-            className="text-blue-500 hover:text-blue-600"
+            className="text-[#0784c3] hover:text-blue-600"
           >
             Learn more about blocks in our Knowledge Base
           </Link>
           .
-        </div>
+        </div> */}
       </div>
     </div>
   );

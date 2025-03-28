@@ -35,6 +35,7 @@ export const formatNumber = (num: number) => {
 };
 
 export const shortenAddress = (address: string, from: number = 15, to: number = 7) => {
+  if (!address) return "";
   return `${address.slice(0, from)}...${address.slice(-to)}`;
 };
 

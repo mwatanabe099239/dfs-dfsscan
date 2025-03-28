@@ -4,8 +4,10 @@ import { formatTimeAgo, shortenAddress, shortenHash } from "@/src/lib/utils";
 
 export default function TokenTransactions({
   transactions,
+  address,
 }: {
   transactions: Transaction[];
+  address: string;
 }) {
   return (
     <div>
@@ -16,7 +18,7 @@ export default function TokenTransactions({
             Latest {transactions.length > 25 ? "25" : transactions.length}{" "}
             Transactions from a total of{" "}
           </span>
-          <span className="text-blue-500">
+          <span className="text-[#0784c3]">
             {transactions.length.toLocaleString()}
           </span>
           <span>transactions</span>
@@ -47,7 +49,7 @@ export default function TokenTransactions({
                 <td className="p-3">
                   <Link
                     href={`/tx/${tx.transactionHash}`}
-                    className="text-blue-500 hover:text-blue-600"
+                    className="text-[#0784c3] hover:text-blue-600"
                   >
                     {shortenHash(tx.transactionHash)}
                   </Link>
@@ -60,7 +62,7 @@ export default function TokenTransactions({
                 <td className="p-3">
                   <Link
                     href={`/block/${tx.blockNumber}`}
-                    className="text-blue-500 hover:text-blue-600"
+                    className="text-[#0784c3] hover:text-blue-600"
                   >
                     {tx.blockNumber}
                   </Link>
@@ -71,7 +73,7 @@ export default function TokenTransactions({
                 <td className="p-3">
                   <Link
                     href={`/address/${tx.fromAddress}`}
-                    className="text-blue-500 hover:text-blue-600"
+                    className="text-[#0784c3] hover:text-blue-600"
                   >
                     {shortenAddress(tx.fromAddress)}
                   </Link>
@@ -79,7 +81,7 @@ export default function TokenTransactions({
                 <td className="p-3">
                   <Link
                     href={`/address/${tx.toAddress}`}
-                    className="text-blue-500 hover:text-blue-600"
+                    className="text-[#0784c3] hover:text-blue-600"
                   >
                     {shortenAddress(tx.toAddress)}
                   </Link>
@@ -92,6 +94,16 @@ export default function TokenTransactions({
             ))}
           </tbody>
         </table>
+      </div>
+
+      <div className="p-4 text-center text-sm">
+        <Link
+          href={`/txs?a=${address}`}
+          className="text-[#0784c3] hover:text-blue-600 flex items-center justify-center gap-2"
+        >
+          VIEW ALL TRANSACTIONS
+          <span className="text-xs">→</span>
+        </Link>
       </div>
     </div>
   );

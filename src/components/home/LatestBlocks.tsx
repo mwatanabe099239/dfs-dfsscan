@@ -61,10 +61,10 @@ export default function LatestBlocks() {
           </div>
         </div>
       ))}
-      <div className="p-4 text-center border-t border-gray-200 bg-gray-50">
+      <div className="p-4 text-center bg-gray-50">
         <Link 
           href="/blocks" 
-          className="text-grey-100 hover:text-blue-600 uppercase text-sm"
+          className="text-grey-300 hover:text-[#0784c3] uppercase text-xs"
         >
           View All Blocks →
         </Link>

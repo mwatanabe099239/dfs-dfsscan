@@ -209,7 +209,7 @@ export default function AddressContent({ address }: { address: string }) {
               </div>
 
               {/* Token Holdings with Dropdown */}
-              <div className="mb-4 relative">
+              <div className="relative">
                 <div className="text-gray-500 text-xs mb-1">TOKEN HOLDINGS</div>
                 <div
                   className="flex items-center justify-between p-2 border border-gray-200 rounded cursor-pointer"
@@ -241,33 +241,38 @@ export default function AddressContent({ address }: { address: string }) {
                     {/* Token List */}
                     <div className="max-h-[400px] overflow-y-auto">
                       {filteredTokens.length > 0 ? (
-                        filteredTokens.map((token) => (
-                          <div
-                            key={`${token.address}_${token.symbol}`}
-                            className="p-3 border-b border-gray-200"
-                          >
-                            <div className="flex justify-between items-center hover:bg-gray-100 p-2 rounded-md cursor-pointer">
-                              <div>
-                                <Link
-                                  href={`/address/${token.tokenAddress}`}
-                                  className="text-sm"
-                                >
-                                  {`DRC-20: ${token.name} (${token.symbol})`}
-                                </Link>
-                                <div className="text-xs text-gray-500">
-                                  {token.balance} {token.symbol}
-                                </div>
-                              </div>
-                              <div className="text-right">
-                                <div className="text-sm">
-                                  ${Number(token.value || 0).toFixed(2)}
-                                </div>
-                                <div className="text-xs text-gray-500">
-                                  @{Number(token.price || 0).toFixed(4)}
+                        filteredTokens.map((token, index) => (
+                          <Link href={`/address/${token.tokenAddress}`}>
+                            <div key={token.address} className="py-1 px-2">
+                              <div
+                                className={`border-b border-gray-200 pb-2 ${
+                                  index === filteredTokens.length - 1
+                                    ? "border-b-0"
+                                    : ""
+                                }`}
+                              >
+                                <div className="flex justify-between items-center hover:bg-gray-100 p-2 rounded-md cursor-pointer text-xs">
+                                  <div>
+                                    <div className="text-gray-900">
+                                      {`DRC-20: ${token.name} (${token.symbol})`}
+                                    </div>
+
+                                    <div className="text-gray-500">
+                                      {token.balance} {token.symbol}
+                                    </div>
+                                  </div>
+                                  <div className="text-right">
+                                    <div className="">
+                                      ${Number(token.value || 0).toFixed(2)}
+                                    </div>
+                                    <div className="text-gray-500">
+                                      @{Number(token.price || 0).toFixed(4)}
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
+                          </Link>
                         ))
                       ) : (
                         <div className="p-4 text-center text-gray-500">
@@ -312,131 +317,17 @@ export default function AddressContent({ address }: { address: string }) {
           <div className="bg-white rounded-lg shadow">
             <div className="border-b border-gray-200">
               <div className="flex overflow-x-auto">
-                <button className="px-4 py-2 text-blue-500 border-b-2 border-blue-500">
+                <button className="px-4 py-2 text-[#0784c3] border-b-2 border-[#0784c3]">
                   Transactions
                 </button>
               </div>
             </div>
 
             {/* Transaction List */}
-            <div>
-              {/* Header */}
-              <div className="p-4 border-b border-gray-200">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm">
-                    Latest{" "}
-                    {transactions.length > 25 ? "25" : transactions.length}{" "}
-                    Transactions from a total of{" "}
-                  </span>
-                  <span className="text-blue-500">
-                    {walletData.transactions.total.toLocaleString()}
-                  </span>
-                  <span>transactions</span>
-                </div>
-              </div>
+            <TokenTransactions transactions={transactions} address={address} />
 
-              {/* Table */}
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="text-left text-sm border-b border-gray-200 bg-gray-50">
-                      <th className="p-3 whitespace-nowrap">
-                        Transaction Hash
-                      </th>
-                      <th className="p-3 whitespace-nowrap">Method</th>
-                      <th className="p-3 whitespace-nowrap">Block</th>
-                      <th className="p-3 whitespace-nowrap">Age</th>
-                      <th className="p-3 whitespace-nowrap">From</th>
-                      <th className="p-3 whitespace-nowrap">To</th>
-                      <th className="p-3 whitespace-nowrap">
-                        Amount
-                      </th>
-                      <th className="p-3 whitespace-nowrap">
-                        Gas Fee
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="text-sm">
-                    {transactions.map((tx) => (
-                      <tr
-                        key={tx.transactionHash}
-                        className="border-b border-gray-200 hover:bg-gray-50"
-                      >
-                        <td className="p-3">
-                          <Link
-                            href={`/tx/${tx.transactionHash}`}
-                            className="text-blue-500 hover:text-blue-600"
-                          >
-                            {shortenHash(tx.transactionHash)}
-                          </Link>
-                        </td>
-                        <td className="p-3">
-                          <span className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">
-                            {tx.method || "Transfer"}
-                          </span>
-                        </td>
-                        <td className="p-3">
-                          <Link
-                            href={`/block/${tx.blockNumber}`}
-                            className="text-blue-500 hover:text-blue-600"
-                          >
-                            {tx.blockNumber}
-                          </Link>
-                        </td>
-                        <td className="p-3">
-                          {formatTimeAgo(tx.createdAt.getTime() / 1000)}
-                        </td>
-                        <td className="p-3">
-                          <div className="flex items-center gap-1">
-                            <Link
-                              href={`/address/${tx.fromAddress}`}
-                              className="text-blue-500 hover:text-blue-600"
-                            >
-                              {shortenAddress(tx.fromAddress)}
-                            </Link>
-                            {tx.fromAddress === address && (
-                              <span className="bg-orange-100 text-orange-600 text-xs px-1.5 rounded">
-                                OUT
-                              </span>
-                            )}
-                          </div>
-                        </td>
-                        <td className="p-3">
-                          <Link
-                            href={`/address/${tx.toAddress}`}
-                            className="text-blue-500 hover:text-blue-600"
-                          >
-                            {shortenAddress(tx.toAddress)}
-                          </Link>
-                        </td>
-                        <td className="p-3">
-                          {tx.amount}{" "}
-                          {tx.method === "Token Created"
-                            ? "DFS"
-                            : tx.token?.symbol || "DFS"}
-                        </td>
-                        <td className="p-3 text-gray-500 text-xs">
-                          {tx.gasFee} DFS
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* View All Transactions Link */}
-              <div className="p-4 text-center border-t border-gray-200">
-                <Link
-                  href={`/txs?a=${address}`}
-                  className="text-blue-500 hover:text-blue-600 flex items-center justify-center gap-2"
-                >
-                  VIEW ALL TRANSACTIONS
-                  <span className="text-xs">→</span>
-                </Link>
-              </div>
-
-              {/* Info Text */}
-              <div className="p-4 bg-gray-50 text-sm text-gray-600 border-t border-gray-200">
+            {/* Info Text */}
+            {/* <div className="p-4 bg-gray-50 text-sm text-gray-600 border-t border-gray-200">
                 <span className="mr-1">ℹ️</span>A wallet address is a publicly
                 available address that allows its owner to receive funds from
                 another party. To access the funds in an address, you must have
@@ -447,8 +338,7 @@ export default function AddressContent({ address }: { address: string }) {
                 >
                   Learn more about addresses in our Knowledge Base
                 </Link>
-              </div>
-            </div>
+              </div> */}
           </div>
         </div>
       </div>
@@ -538,7 +428,7 @@ export default function AddressContent({ address }: { address: string }) {
                 <button
                   className={`px-4 py-2 cursor-pointer ${
                     activeTab === "transactions"
-                      ? "text-blue-500 border-b-2 border-blue-500"
+                      ? "text-[#0784c3] border-b-2 border-blue-600"
                       : ""
                   }`}
                   onClick={() => setActiveTab("transactions")}
@@ -548,7 +438,7 @@ export default function AddressContent({ address }: { address: string }) {
                 <button
                   className={`px-4 py-2 cursor-pointer ${
                     activeTab === "holders"
-                      ? "text-blue-500 border-b-2 border-blue-500"
+                      ? "text-[#0784c3] border-b-2 border-blue-600"
                       : ""
                   }`}
                   onClick={() => setActiveTab("holders")}
@@ -560,7 +450,10 @@ export default function AddressContent({ address }: { address: string }) {
 
             {/* Content based on active tab */}
             {activeTab === "transactions" ? (
-              <TokenTransactions transactions={transactions} />
+              <TokenTransactions
+                transactions={transactions}
+                address={address}
+              />
             ) : (
               <TokenHolders
                 holders={holders}

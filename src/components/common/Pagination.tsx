@@ -7,68 +7,81 @@ interface PaginationProps {
   queryParams?: Record<string, string>;
 }
 
+interface PaginationButtonProps {
+  href: string;
+  disabled: boolean;
+  children: React.ReactNode;
+}
+
+const baseButtonStyles =
+  "px-3 py-1 border border-gray-200 rounded transition-colors duration-200";
+const activeButtonStyles = "text-[#0784c3] hover:bg-[#0784c3] hover:text-white";
+const disabledButtonStyles = "text-gray-400 pointer-events-none";
+
+const PaginationButton = ({
+  href,
+  disabled,
+  children,
+}: PaginationButtonProps) => (
+  <Link
+    href={href}
+    className={`${baseButtonStyles} ${
+      disabled ? disabledButtonStyles : activeButtonStyles
+    }`}
+  >
+    {children}
+  </Link>
+);
+
 export default function Pagination({
   currentPage,
   totalPages,
   basePath,
   queryParams = {},
 }: PaginationProps) {
-  // Construct query string from additional params
-  const queryString = Object.entries(queryParams)
-    .map(([key, value]) => `${key}=${value}`)
-    .join("&");
-
   const getPageUrl = (page: number) => {
+    const queryString = Object.entries(queryParams)
+      .map(([key, value]) => `${key}=${value}`)
+      .join("&");
     const pageQuery = `page=${page}`;
-    const fullQuery = queryString ? `${pageQuery}&${queryString}` : pageQuery;
-    return `${basePath}?${fullQuery}`;
+    return `${basePath}?${pageQuery}${queryString ? `&${queryString}` : ""}`;
   };
 
+  const isFirstPage = currentPage === 1;
+  const isLastPage = currentPage === totalPages;
+
   return (
-    <div className="p-4 border-t border-gray-200 flex items-center justify-between">
+    <div className="flex items-center justify-between p-4 border-t border-gray-200">
       <div className="text-sm text-gray-600">
         Showing page {currentPage} of {totalPages}
       </div>
-      <div className="flex items-center gap-2">
-        <Link
-          href={getPageUrl(1)}
-          className={`px-3 py-1 border rounded hover:bg-gray-50 ${
-            currentPage === 1 ? "text-gray-400 pointer-events-none" : ""
-          }`}
-        >
+
+      <div className="flex items-center gap-1 text-xs">
+        <PaginationButton href={getPageUrl(1)} disabled={isFirstPage}>
           First
-        </Link>
-        <Link
+        </PaginationButton>
+
+        <PaginationButton
           href={getPageUrl(Math.max(1, currentPage - 1))}
-          className={`px-3 py-1 border rounded hover:bg-gray-50 ${
-            currentPage === 1 ? "text-gray-400 pointer-events-none" : ""
-          }`}
+          disabled={isFirstPage}
         >
           ‹
-        </Link>
+        </PaginationButton>
+
         <span className="px-3 py-1">
           Page {currentPage} of {totalPages}
         </span>
-        <Link
+
+        <PaginationButton
           href={getPageUrl(Math.min(totalPages, currentPage + 1))}
-          className={`px-3 py-1 border rounded hover:bg-gray-50 ${
-            currentPage === totalPages
-              ? "text-gray-400 pointer-events-none"
-              : ""
-          }`}
+          disabled={isLastPage}
         >
           ›
-        </Link>
-        <Link
-          href={getPageUrl(totalPages)}
-          className={`px-3 py-1 border rounded hover:bg-gray-50 ${
-            currentPage === totalPages
-              ? "text-gray-400 pointer-events-none"
-              : ""
-          }`}
-        >
+        </PaginationButton>
+
+        <PaginationButton href={getPageUrl(totalPages)} disabled={isLastPage}>
           Last
-        </Link>
+        </PaginationButton>
       </div>
     </div>
   );

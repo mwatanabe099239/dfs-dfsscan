@@ -26,12 +26,10 @@ export default function Home() {
   return (
     <div>
       {/* Full width black background section */}
-      <div className="absolute top-0 left-0 w-full h-[350px] bg-[#131313] bg-[url('/icons/waves-light.svg')] bg-repeat z-[-1]">
-        {/* Content container */}
-      </div>
+      <div className="absolute top-0 left-0 w-full h-[350px] bg-[#131313] bg-[url('/icons/waves-light.svg')] bg-repeat -z-1" />
 
       {/* Overview section - positioned to overlap the black background */}
-      <div className="px-4 -mt-12">
+      <div className="px-4 -mt-10 z-10">
         <div className="pt-16 mb-16 flex justify-between">
           <div className="w-2/3">
             <div className="text-left mb-2">
@@ -68,7 +66,7 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* Latest Blocks */}
           <div className="bg-white rounded-lg shadow-lg lg:col-span-1">
-            <h2 className="text-md font-semibold p-4 border-b border-gray-200">
+            <h2 className="text-sm font-medium p-4 border-b border-gray-200">
               Latest Blocks
             </h2>
             <LatestBlocks />
@@ -76,7 +74,7 @@ export default function Home() {
 
           {/* Latest Transactions */}
           <div className="bg-white rounded-lg shadow-lg lg:col-span-1">
-            <h2 className="text-md font-semibold p-4 border-b border-gray-200">
+            <h2 className="text-sm font-medium p-4 border-b border-gray-200">
               Latest Transactions
             </h2>
             <LatestTransactions />

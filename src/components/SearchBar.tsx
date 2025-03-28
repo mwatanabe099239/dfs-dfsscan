@@ -21,9 +21,9 @@ export default function SearchBar() {
           <input
             type="text"
             placeholder="Search by Address / Txn Hash / Block / Token / Domain Name"
-            className="w-full text-black bg-white px-4 py-3 border border-gray-300 focus:outline-none focus:border-blue-500 rounded-r-lg"
+            className="w-full text-black bg-white px-4 py-3 border border-gray-300 outline-none rounded-r-lg"
           />
-          <button className="absolute right-2 top-2 bottom-2 px-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white flex items-center">
+          <button className="absolute right-2 top-2 bottom-2 px-2 rounded-lg bg-[#0784c3] hover:bg-blue-600 text-white flex items-center">
             <FontAwesomeIcon icon={faSearch} />
           </button>
         </div>

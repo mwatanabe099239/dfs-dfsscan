@@ -106,7 +106,7 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
               <div className="flex-1">
                 <Link
                   href={`/address/${transaction.fromAddress}`}
-                  className="text-blue-500 hover:text-blue-600"
+                  className="text-[#0784c3] hover:text-blue-600"
                 >
                   {transaction.fromAddress}
                 </Link>
@@ -122,7 +122,7 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
               <div className="flex-1">
                 <Link
                   href={`/address/${transaction.toAddress}`}
-                  className="text-blue-500 hover:text-blue-600"
+                  className="text-[#0784c3] hover:text-blue-600"
                 >
                   {transaction.toAddress}
                 </Link>

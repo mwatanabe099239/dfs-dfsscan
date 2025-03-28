@@ -34,11 +34,11 @@ export default function RootLayout({
           href="@fortawesome/fontawesome-svg-core/styles.css"
         />
       </head>
-      <body className={roboto.className}>
+      <body className={roboto.className} style={{ backgroundColor: "#f6f7f8" }}>
         <Suspense fallback={<SkeletonLoading />}>
           <TopBar />
           <Navbar />
-          <main className="container mx-auto px-4 py-8 bg-[#fafbfd]">{children}</main>
+          <main className="container mx-auto px-4 py-8">{children}</main>
           <Toaster />
         </Suspense>
       </body>

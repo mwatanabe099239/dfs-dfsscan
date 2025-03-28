@@ -49,7 +49,7 @@ export default function TokenHolders({
                   <td className="p-3">
                     <Link
                       href={`/address/${holder.walletAddress}`}
-                      className="text-blue-500 hover:text-blue-600"
+                      className="text-[#0784c3] hover:text-blue-600"
                     >
                       {holder.walletAddress}
                     </Link>

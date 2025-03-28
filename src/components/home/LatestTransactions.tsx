@@ -48,7 +48,7 @@ export default function LatestTransactions() {
             <div className="min-w-[180px]">
               <Link
                 href={`/tx/${tx.transactionHash}`}
-                className="text-blue-500 hover:text-blue-600 block"
+                className="text-[#0784c3] hover:text-blue-600 block"
               >
                 {shortenHash(tx.transactionHash)}
               </Link>
@@ -61,7 +61,7 @@ export default function LatestTransactions() {
                 <span className="text-black">From </span>
                 <Link
                   href={`/address/${tx.fromAddress}`}
-                  className="text-blue-500 hover:text-blue-600"
+                  className="text-[#0784c3] hover:text-blue-600"
                 >
                   {formatAddress(tx.fromAddress)}
                 </Link>
@@ -70,7 +70,7 @@ export default function LatestTransactions() {
                 <span className="text-black">To </span>
                 <Link
                   href={`/address/${tx.toAddress}`}
-                  className="text-blue-500 hover:text-blue-600"
+                  className="text-[#0784c3] hover:text-blue-600"
                 >
                   {formatAddress(tx.toAddress)}
                 </Link>
@@ -84,10 +84,10 @@ export default function LatestTransactions() {
           </div>
         </div>
       ))}
-      <div className="p-4 text-center border-t border-gray-200 bg-gray-50">
+      <div className="p-4 text-center bg-gray-50">
         <Link
           href="/txs"
-          className="text-grey-100 hover:text-blue-600 uppercase text-sm"
+          className="text-grey-300 hover:text-[#0784c3] uppercase text-xs"
         >
           View All Transactions →
         </Link>

@@ -24,9 +24,9 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-white border-b border-gray-200 shadow-[0_2px_4px_0_rgba(0,0,0,0.05)]">
+    <nav className="bg-white border-b border-gray-200 shadow-[0_2px_4px_0_rgba(0,0,0,0.05)] z-10">
       <div className="container mx-auto">
-        <div className="flex justify-between h-16 px-8">
+        <div className="flex justify-between h-14 px-8">
           {/* Left section with Logo */}
           <div className="flex items-center">
             <Link href="/" className="relative h-8 w-32">
@@ -41,12 +41,23 @@ export default function Navbar() {
           </div>
 
           {/* Right section with navigation links */}
-          <div className="flex h-full -mr-4">
+          <div className="flex h-full py-3 items-center text-sm">
             {MENU_LINKS.map(({ href, label }) => (
               <Link key={href} href={href} className={getMenuStyle(href)}>
                 {label}
               </Link>
             ))}
+            <span className="text-gray-400 mx-2">|</span>
+            <div className="flex items-center pl-4 cursor-pointer gap-1">
+              <Image
+                src="/images/face-logo.png"
+                alt="MetaFace"
+                width={20}
+                height={20}
+                className="object-contain"
+              />
+              <span>MetaFace</span>
+            </div>
           </div>
         </div>
       </div>
