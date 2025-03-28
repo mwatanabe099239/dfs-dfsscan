@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 const MENU_LINKS = [
   { href: "/", label: "Home" },
@@ -25,11 +26,17 @@ export default function Navbar() {
   return (
     <nav className="bg-white border-b border-gray-200 shadow-[0_2px_4px_0_rgba(0,0,0,0.05)]">
       <div className="container mx-auto">
-        <div className="flex justify-between h-[60px] px-8">
+        <div className="flex justify-between h-16 px-8">
           {/* Left section with Logo */}
           <div className="flex items-center">
-            <Link href="/" className="text-xl font-bold text-[#3498db]">
-              DFS Scan
+            <Link href="/" className="relative h-8 w-32">
+              <Image
+                src="/logo.png"
+                alt="DFS Scan"
+                fill
+                className="object-contain"
+                priority
+              />
             </Link>
           </div>
 
