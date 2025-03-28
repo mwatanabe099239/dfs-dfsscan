@@ -38,8 +38,15 @@ export default function Home() {
               </h1>
             </div>
             <SearchBar />
+            <div className="text-base mt-3 text-gray-300">
+              <span className="font-semibold">Sponsored: </span>
+              Advertise across our explorers and boost your visibility.{" "}
+              <span className="text-[#0784c3] cursor-pointer">
+                Book your slot here!
+              </span>
+            </div>
           </div>
-          <div className="w-1/3 flex items-start justify-center">
+          <div className="w-1/3 flex items-center justify-center">
             <div className="w-fit relative md:block hidden">
               <div className="absolute -top-2 right-5 bg-white text-black px-2 py-1 text-xs rounded-md">
                 Ad
@@ -48,7 +55,7 @@ export default function Home() {
                 src="/images/ads.png"
                 alt="DFS Logo"
                 className="h-auto object-contain rounded-lg cursor-pointer"
-                width={300}
+                width={350}
                 height={100}
                 priority
                 onClick={() => {

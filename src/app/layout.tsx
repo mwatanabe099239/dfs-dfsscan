@@ -8,6 +8,7 @@ import { Suspense } from "react";
 import SkeletonLoading from "../components/SkeletonLoading";
 import "./globals.css";
 import "@fortawesome/fontawesome-svg-core/styles.css";
+import Footer from "../components/Footer";
 config.autoAddCss = false;
 
 const roboto = Roboto({
@@ -38,7 +39,8 @@ export default function RootLayout({
         <Suspense fallback={<SkeletonLoading />}>
           <TopBar />
           <Navbar />
-          <main className="container mx-auto px-4 py-8">{children}</main>
+          <main className="container mx-auto px-4 pt-8 pb-20">{children}</main>
+          <Footer />
           <Toaster />
         </Suspense>
       </body>
