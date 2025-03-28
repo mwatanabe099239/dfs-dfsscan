@@ -1,7 +1,10 @@
+"use client";
+
 import SearchBar from "@/src/components/SearchBar";
 import NetworkStatsSection from "@/src/components/home/NetworkStats";
 import LatestBlocks from "@/src/components/home/LatestBlocks";
 import LatestTransactions from "@/src/components/home/LatestTransactions";
+import Image from "next/image";
 
 // Temporary mock data - replace with Firebase data later
 const mockNetworkStats = {
@@ -29,17 +32,36 @@ export default function Home() {
 
       {/* Overview section - positioned to overlap the black background */}
       <div className="px-4 -mt-12">
-        <div className="pt-16 mb-16">
-          <div className="text-left mb-2">
-            <h1 className="text-xl text-white mb-1">DFS Web Chain Explorer</h1>
+        <div className="pt-16 mb-16 flex justify-between">
+          <div className="w-2/3">
+            <div className="text-left mb-2">
+              <h1 className="text-xl text-white mb-1">
+                DFS Web Chain Explorer
+              </h1>
+            </div>
+            <SearchBar />
           </div>
-          <SearchBar />
+          <div className="w-1/3 flex items-start justify-center">
+            <div className="w-fit relative md:block hidden">
+              <div className="absolute -top-2 right-5 bg-white text-black px-2 py-1 text-xs rounded-md">
+                Ad
+              </div>
+              <Image
+                src="/images/ads.png"
+                alt="DFS Logo"
+                className="h-auto object-contain rounded-lg cursor-pointer"
+                width={300}
+                height={100}
+                priority
+                onClick={() => {
+                  window.open("https://quickido.com", "_blank");
+                }}
+              />
+            </div>
+          </div>
         </div>
-        <div className="bg-white rounded-lg shadow-lg mb-6">
-          {/* Overview content */}
-          <div className="p-4">
-            <NetworkStatsSection stats={mockNetworkStats} />
-          </div>
+        <div className="bg-white rounded-lg shadow-lg mb-6 p-4">
+          <NetworkStatsSection stats={mockNetworkStats} />
         </div>
 
         {/* Blocks and Transactions section */}

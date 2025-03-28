@@ -8,7 +8,7 @@ export default function SearchBar() {
   const [isFiltersOpen, setIsFiltersOpen] = useState(false)
 
   return (
-    <div className="relative w-full max-w-4xl">
+    <div className="relative w-full max-w-3xl">
       <div className="flex">
         <button 
           className="flex items-center gap-2 px-4 py-3 bg-white border border-r-0 border-gray-300 rounded-l-lg text-gray-600 hover:bg-gray-50"

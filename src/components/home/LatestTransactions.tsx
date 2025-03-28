@@ -1,13 +1,13 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFileAlt } from '@fortawesome/free-solid-svg-icons'
-import { Transaction } from '../../types'
-import { getLatestTransactions } from '../../lib/firebase'
-import { formatTimeAgo } from '../../lib/utils'
-import ItemSkeleton from '../common/ItemSkeleton'
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFileAlt } from "@fortawesome/free-solid-svg-icons";
+import { Transaction } from "@/src/types";
+import { getLatestTransactions } from "@/src/lib/firebase";
+import { formatTimeAgo, shortenAddress, shortenHash } from "@/src/lib/utils";
+import ItemSkeleton from "../common/ItemSkeleton";
 
 export default function LatestTransactions() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -33,8 +33,8 @@ export default function LatestTransactions() {
   }
 
   const formatAddress = (address: string) => {
-    if (!address) return '';
-    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+    if (!address) return "";
+    return shortenAddress(address);
   };
 
   return (
@@ -46,11 +46,11 @@ export default function LatestTransactions() {
               <FontAwesomeIcon icon={faFileAlt} className="w-6 h-6!" />
             </div>
             <div className="min-w-[180px]">
-              <Link 
+              <Link
                 href={`/tx/${tx.transactionHash}`}
                 className="text-blue-500 hover:text-blue-600 block"
               >
-                {tx.transactionHash.slice(0, 12)}...
+                {shortenHash(tx.transactionHash)}
               </Link>
               <span className="text-xs text-gray-500">
                 {formatTimeAgo(tx.createdAt.getTime() / 1000)}
@@ -59,7 +59,7 @@ export default function LatestTransactions() {
             <div className="flex-1">
               <div>
                 <span className="text-black">From </span>
-                <Link 
+                <Link
                   href={`/address/${tx.fromAddress}`}
                   className="text-blue-500 hover:text-blue-600"
                 >
@@ -68,7 +68,7 @@ export default function LatestTransactions() {
               </div>
               <div>
                 <span className="text-black">To </span>
-                <Link 
+                <Link
                   href={`/address/${tx.toAddress}`}
                   className="text-blue-500 hover:text-blue-600"
                 >
@@ -85,13 +85,13 @@ export default function LatestTransactions() {
         </div>
       ))}
       <div className="p-4 text-center border-t border-gray-200 bg-gray-50">
-        <Link 
-          href="/txs" 
+        <Link
+          href="/txs"
           className="text-grey-100 hover:text-blue-600 uppercase text-sm"
         >
           View All Transactions →
         </Link>
       </div>
     </div>
-  )
-} 
+  );
+}

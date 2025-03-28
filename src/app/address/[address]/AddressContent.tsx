@@ -19,7 +19,7 @@ import {
   getTokenHolders,
   getTokenTransactions,
 } from "@/src/lib/firebase";
-import { formatTimeAgo } from "@/src/lib/utils";
+import { formatTimeAgo, shortenHash, shortenAddress } from "@/src/lib/utils";
 import TokenTransactions from "./components/TokenTransactions";
 import TokenHolders from "./components/TokenHolders";
 
@@ -32,6 +32,7 @@ type TokenHolding = {
   value: string;
   price: string;
   tokenAddress: string;
+  name: string;
 };
 
 type TokenData = {
@@ -170,7 +171,7 @@ export default function AddressContent({ address }: { address: string }) {
     return (
       <div className="space-y-4">
         {/* Header with address */}
-        <div className="flex items-center gap-2 bg-white p-4 rounded-lg">
+        <div className="flex items-center gap-2 p-4 rounded-lg">
           <div className="flex items-center gap-2">
             <img
               src={`data:image/svg+xml;utf8,${encodeURIComponent(
@@ -183,7 +184,7 @@ export default function AddressContent({ address }: { address: string }) {
             <span className="text-gray-600">{address}</span>
           </div>
           <button
-            className="text-gray-400 hover:text-gray-600"
+            className="text-gray-400 hover:text-gray-600 cursor-pointer"
             onClick={handleCopyClick}
           >
             <FontAwesomeIcon icon={faCopy} />
@@ -193,31 +194,34 @@ export default function AddressContent({ address }: { address: string }) {
         <div className="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-4">
           {/* Overview section */}
           <div className="lg:col-span-4">
-            <div className="bg-white rounded-lg shadow p-4 h-full">
-              <h2 className="text-lg mb-4">Overview</h2>
+            <div className="bg-white rounded-lg shadow-md p-4 h-full border border-gray-200">
+              <h2 className="text-md mb-4">Overview</h2>
 
               {/* DFS Balance */}
               <div className="mb-4">
-                <div className="text-gray-600 text-sm mb-1">DFS BALANCE</div>
-                <div className="font-medium">{walletData.balance} DFS</div>
+                <div className="text-gray-500 text-xs">DFS BALANCE</div>
+                <div className="text-sm">{walletData.balance} DFS</div>
+              </div>
+
+              <div className="mb-4">
+                <div className="text-gray-500 text-xs">DFS VALUE</div>
+                <div className="text-sm">$0</div>
               </div>
 
               {/* Token Holdings with Dropdown */}
               <div className="mb-4 relative">
+                <div className="text-gray-500 text-xs mb-1">TOKEN HOLDINGS</div>
                 <div
-                  className="flex items-center justify-between p-2 bg-gray-50 rounded cursor-pointer"
+                  className="flex items-center justify-between p-2 border border-gray-200 rounded cursor-pointer"
                   onClick={() => setShowTokens(!showTokens)}
                 >
-                  <div>
-                    <div className="text-gray-600 text-sm">TOKEN HOLDINGS</div>
-                    <div className="font-medium">
-                      ${walletData.totalTokenValue} (
-                      {walletData.tokenHoldings.length} Tokens)
-                    </div>
+                  <div className="text-sm">
+                    ${walletData.totalTokenValue} (
+                    {walletData.tokenHoldings.length} Tokens)
                   </div>
                   <FontAwesomeIcon
                     icon={showTokens ? faChevronUp : faChevronDown}
-                    className="text-gray-400"
+                    className="text-xs"
                   />
                 </div>
 
@@ -228,7 +232,7 @@ export default function AddressContent({ address }: { address: string }) {
                       <input
                         type="text"
                         placeholder="Search for Token Name"
-                        className="w-full p-2 border border-gray-200 rounded"
+                        className="w-full p-2 border border-gray-200 rounded text-sm outline-none"
                         value={searchToken}
                         onChange={(e) => setSearchToken(e.target.value)}
                       />
@@ -240,25 +244,25 @@ export default function AddressContent({ address }: { address: string }) {
                         filteredTokens.map((token) => (
                           <div
                             key={`${token.address}_${token.symbol}`}
-                            className="p-3 hover:bg-gray-50 border-b border-gray-200"
+                            className="p-3 border-b border-gray-200"
                           >
-                            <div className="flex justify-between items-center">
+                            <div className="flex justify-between items-center hover:bg-gray-100 p-2 rounded-md cursor-pointer">
                               <div>
                                 <Link
                                   href={`/address/${token.tokenAddress}`}
-                                  className="font-medium hover:text-blue-600"
+                                  className="text-sm"
                                 >
-                                  {token.symbol}
+                                  {`DRC-20: ${token.name} (${token.symbol})`}
                                 </Link>
-                                <div className="text-sm text-gray-500">
+                                <div className="text-xs text-gray-500">
                                   {token.balance} {token.symbol}
                                 </div>
                               </div>
                               <div className="text-right">
-                                <div>
+                                <div className="text-sm">
                                   ${Number(token.value || 0).toFixed(2)}
                                 </div>
-                                <div className="text-sm text-gray-500">
+                                <div className="text-xs text-gray-500">
                                   @{Number(token.price || 0).toFixed(4)}
                                 </div>
                               </div>
@@ -279,13 +283,13 @@ export default function AddressContent({ address }: { address: string }) {
 
           {/* More Info section */}
           <div className="lg:col-span-4">
-            <div className="bg-white rounded-lg shadow p-4 h-full">
-              <h2 className="text-lg mb-4">More Info</h2>
+            <div className="bg-white rounded-lg shadow-md p-4 h-full border border-gray-200">
+              <h2 className="text-md mb-4">More Info</h2>
 
               {/* Transactions */}
               <div className="mb-4">
-                <div className="text-gray-600 text-sm mb-1">TRANSACTIONS</div>
-                <div>
+                <div className="text-gray-500 text-xs mb-1">TRANSACTIONS</div>
+                <div className="text-sm">
                   Latest: {walletData.transactions.latest} ↗
                   <br />
                   First: {walletData.transactions.first} ↗
@@ -296,9 +300,9 @@ export default function AddressContent({ address }: { address: string }) {
 
           {/* Empty Multichain Info section */}
           <div className="lg:col-span-4">
-            <div className="bg-white rounded-lg shadow p-4 h-full">
-              <h2 className="text-lg mb-4">Multichain Info</h2>
-              <div className="text-gray-600">No addresses found</div>
+            <div className="bg-white rounded-lg shadow-md p-4 h-full border border-gray-200">
+              <h2 className="text-md mb-4">Multichain Info</h2>
+              <div className="text-sm">No addresses found</div>
             </div>
           </div>
         </div>
@@ -319,7 +323,7 @@ export default function AddressContent({ address }: { address: string }) {
               {/* Header */}
               <div className="p-4 border-b border-gray-200">
                 <div className="flex items-center gap-2">
-                  <span>
+                  <span className="text-sm">
                     Latest{" "}
                     {transactions.length > 25 ? "25" : transactions.length}{" "}
                     Transactions from a total of{" "}
@@ -344,15 +348,15 @@ export default function AddressContent({ address }: { address: string }) {
                       <th className="p-3 whitespace-nowrap">Age</th>
                       <th className="p-3 whitespace-nowrap">From</th>
                       <th className="p-3 whitespace-nowrap">To</th>
-                      <th className="p-3 whitespace-nowrap text-right">
+                      <th className="p-3 whitespace-nowrap">
                         Amount
                       </th>
-                      <th className="p-3 whitespace-nowrap text-right">
+                      <th className="p-3 whitespace-nowrap">
                         Gas Fee
                       </th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="text-sm">
                     {transactions.map((tx) => (
                       <tr
                         key={tx.transactionHash}
@@ -363,7 +367,7 @@ export default function AddressContent({ address }: { address: string }) {
                             href={`/tx/${tx.transactionHash}`}
                             className="text-blue-500 hover:text-blue-600"
                           >
-                            {tx.transactionHash.slice(0, 12)}...
+                            {shortenHash(tx.transactionHash)}
                           </Link>
                         </td>
                         <td className="p-3">
@@ -379,7 +383,7 @@ export default function AddressContent({ address }: { address: string }) {
                             {tx.blockNumber}
                           </Link>
                         </td>
-                        <td className="p-3 text-gray-500">
+                        <td className="p-3">
                           {formatTimeAgo(tx.createdAt.getTime() / 1000)}
                         </td>
                         <td className="p-3">
@@ -388,7 +392,7 @@ export default function AddressContent({ address }: { address: string }) {
                               href={`/address/${tx.fromAddress}`}
                               className="text-blue-500 hover:text-blue-600"
                             >
-                              {tx.fromAddress.slice(0, 8)}...
+                              {shortenAddress(tx.fromAddress)}
                             </Link>
                             {tx.fromAddress === address && (
                               <span className="bg-orange-100 text-orange-600 text-xs px-1.5 rounded">
@@ -402,16 +406,18 @@ export default function AddressContent({ address }: { address: string }) {
                             href={`/address/${tx.toAddress}`}
                             className="text-blue-500 hover:text-blue-600"
                           >
-                            {tx.toAddress.slice(0, 8)}...
+                            {shortenAddress(tx.toAddress)}
                           </Link>
                         </td>
-                        <td className="p-3 text-right">
+                        <td className="p-3">
                           {tx.amount}{" "}
                           {tx.method === "Token Created"
                             ? "DFS"
                             : tx.token?.symbol || "DFS"}
                         </td>
-                        <td className="p-3 text-right">{tx.gasFee} DFS</td>
+                        <td className="p-3 text-gray-500 text-xs">
+                          {tx.gasFee} DFS
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -453,7 +459,7 @@ export default function AddressContent({ address }: { address: string }) {
     return (
       <div className="space-y-4">
         {/* Header with token address */}
-        <div className="flex items-center gap-2 bg-white p-4 rounded-lg">
+        <div className="flex items-center gap-2 p-4 rounded-lg">
           <div className="flex items-center gap-2">
             <img
               src={`data:image/svg+xml;utf8,${encodeURIComponent(
@@ -477,24 +483,24 @@ export default function AddressContent({ address }: { address: string }) {
           {/* Overview section */}
           <div className="lg:col-span-4">
             <div className="bg-white rounded-lg shadow p-4 h-full">
-              <h2 className="text-lg mb-4">Overview</h2>
+              <h2 className="text-md mb-4">Overview</h2>
 
               {/* Total Supply */}
               <div className="mb-4">
-                <div className="text-gray-600 text-sm mb-1">TOTAL SUPPLY</div>
-                <div className="font-medium">{tokenData.totalSupply}</div>
+                <div className="text-gray-600 text-xs">TOTAL SUPPLY</div>
+                <div className="text-sm">{tokenData.totalSupply}</div>
               </div>
 
               {/* Holders Count */}
               <div className="mb-4">
-                <div className="text-gray-600 text-sm mb-1">HOLDERS</div>
-                <div className="font-medium">{tokenData.holdersCount}</div>
+                <div className="text-gray-600 text-xs">HOLDERS</div>
+                <div className="text-sm">{tokenData.holdersCount}</div>
               </div>
 
               {/* Transfers Count */}
               <div className="mb-4">
-                <div className="text-gray-600 text-sm mb-1">TRANSFERS</div>
-                <div className="font-medium">{tokenData.transfersCount}</div>
+                <div className="text-gray-600 text-xs">TRANSFERS</div>
+                <div className="text-sm">{tokenData.transfersCount}</div>
               </div>
             </div>
           </div>
@@ -502,24 +508,23 @@ export default function AddressContent({ address }: { address: string }) {
           {/* Market Info section */}
           <div className="lg:col-span-4">
             <div className="bg-white rounded-lg shadow p-4 h-full">
-              <h2 className="text-lg mb-4">Market Info</h2>
-              <div className="text-gray-600">Coming soon...</div>
+              <h2 className="text-md mb-4">Market Info</h2>
+              <div className="text-gray-500 text-sm">Coming soon...</div>
             </div>
           </div>
 
           {/* Contract Info section */}
           <div className="lg:col-span-4">
             <div className="bg-white rounded-lg shadow p-4 h-full">
-              <h2 className="text-lg mb-4">Contract Info</h2>
-              <div className="flex items-center gap-2">
-                <span className="text-gray-600">Contract:</span>
+              <h2 className="text-md mb-4">Contract Info</h2>
+              <div className="flex items-center gap-2 text-sm">
+                <span className="text-gray-500">Contract:</span>
                 <span className="text-blue-500 truncate">{address}</span>
-                <button
-                  className="text-gray-400 hover:text-gray-600 flex-shrink-0"
+                <FontAwesomeIcon
+                  icon={faCopy}
+                  className="cursor-pointer text-gray-500"
                   onClick={handleCopyClick}
-                >
-                  <FontAwesomeIcon icon={faCopy} />
-                </button>
+                />
               </div>
             </div>
           </div>
@@ -529,22 +534,22 @@ export default function AddressContent({ address }: { address: string }) {
         <div className="container mx-auto px-4">
           <div className="bg-white rounded-lg shadow">
             <div className="border-b border-gray-200">
-              <div className="flex overflow-x-auto">
+              <div className="flex overflow-x-auto text-sm font-medium">
                 <button
-                  className={`px-4 py-2 ${
+                  className={`px-4 py-2 cursor-pointer ${
                     activeTab === "transactions"
                       ? "text-blue-500 border-b-2 border-blue-500"
-                      : "text-gray-600"
+                      : ""
                   }`}
                   onClick={() => setActiveTab("transactions")}
                 >
                   Transactions
                 </button>
                 <button
-                  className={`px-4 py-2 ${
+                  className={`px-4 py-2 cursor-pointer ${
                     activeTab === "holders"
                       ? "text-blue-500 border-b-2 border-blue-500"
-                      : "text-gray-600"
+                      : ""
                   }`}
                   onClick={() => setActiveTab("holders")}
                 >

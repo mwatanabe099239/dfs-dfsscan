@@ -155,11 +155,7 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
             </div>
 
             {/* Transaction Fee */}
-            <div
-              className={`flex py-3 ${!transaction.message && "border-none"} ${
-                transaction.message && "border-b border-gray-200"
-              }`}
-            >
+            <div className="flex py-3">
               <InfoLabel
                 label="Transaction Fee:"
                 tooltip="Amount paid for processing the transaction."
@@ -167,8 +163,7 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
               <div className="flex-1">{transaction.gasFee} DFS</div>
             </div>
 
-            {/* Message (if exists) */}
-            {transaction.message && (
+            {/* {transaction.message && (
               <div className="flex py-3">
                 <InfoLabel
                   label="Message:"
@@ -176,7 +171,7 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
                 />
                 <div className="flex-1">{transaction.message}</div>
               </div>
-            )}
+            )} */}
           </div>
         </div>
       </div>

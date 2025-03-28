@@ -33,3 +33,11 @@ export function formatTimeAgo(timestamp: number): string {
 export const formatNumber = (num: number) => {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
+
+export const shortenAddress = (address: string, from: number = 15, to: number = 7) => {
+  return `${address.slice(0, from)}...${address.slice(-to)}`;
+};
+
+export const shortenHash = (hash: string, to: number = 12) => {
+  return `${hash.slice(0, to)}...`;
+};

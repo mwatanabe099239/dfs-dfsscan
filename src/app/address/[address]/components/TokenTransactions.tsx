@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Transaction } from "@/src/types";
-import { formatTimeAgo } from "@/src/lib/utils";
+import { formatTimeAgo, shortenAddress, shortenHash } from "@/src/lib/utils";
 
 export default function TokenTransactions({
   transactions,
@@ -12,7 +12,7 @@ export default function TokenTransactions({
       {/* Header */}
       <div className="p-4 border-b border-gray-200">
         <div className="flex items-center gap-2">
-          <span>
+          <span className="text-sm">
             Latest {transactions.length > 25 ? "25" : transactions.length}{" "}
             Transactions from a total of{" "}
           </span>
@@ -34,26 +34,26 @@ export default function TokenTransactions({
               <th className="p-3 whitespace-nowrap">Age</th>
               <th className="p-3 whitespace-nowrap">From</th>
               <th className="p-3 whitespace-nowrap">To</th>
-              <th className="p-3 whitespace-nowrap text-right">Amount</th>
-              <th className="p-3 whitespace-nowrap text-right">Gas Fee</th>
+              <th className="p-3 whitespace-nowrap">Amount</th>
+              <th className="p-3 whitespace-nowrap">Gas Fee</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="text-sm">
             {transactions.map((tx) => (
               <tr
                 key={tx.transactionHash}
-                className="border-b border-gray-200 hover:bg-gray-50"
+                className="border-b border-gray-200 hover:bg-gray-50 text-left"
               >
                 <td className="p-3">
                   <Link
                     href={`/tx/${tx.transactionHash}`}
                     className="text-blue-500 hover:text-blue-600"
                   >
-                    {tx.transactionHash.slice(0, 12)}...
+                    {shortenHash(tx.transactionHash)}
                   </Link>
                 </td>
                 <td className="p-3">
-                  <span className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">
+                  <span className="bg-gray-50 border-gray-200 border text-xs px-2 py-1 rounded">
                     {tx.method || "Transfer"}
                   </span>
                 </td>
@@ -65,7 +65,7 @@ export default function TokenTransactions({
                     {tx.blockNumber}
                   </Link>
                 </td>
-                <td className="p-3 text-gray-500">
+                <td className="p-3">
                   {formatTimeAgo(tx.createdAt.getTime() / 1000)}
                 </td>
                 <td className="p-3">
@@ -73,7 +73,7 @@ export default function TokenTransactions({
                     href={`/address/${tx.fromAddress}`}
                     className="text-blue-500 hover:text-blue-600"
                   >
-                    {tx.fromAddress.slice(0, 8)}...
+                    {shortenAddress(tx.fromAddress)}
                   </Link>
                 </td>
                 <td className="p-3">
@@ -81,13 +81,13 @@ export default function TokenTransactions({
                     href={`/address/${tx.toAddress}`}
                     className="text-blue-500 hover:text-blue-600"
                   >
-                    {tx.toAddress.slice(0, 8)}...
+                    {shortenAddress(tx.toAddress)}
                   </Link>
                 </td>
-                <td className="p-3 text-right">
+                <td className="p-3">
                   {tx.amount} {tx.token?.symbol || "DFS"}
                 </td>
-                <td className="p-3 text-right">{tx.gasFee} DFS</td>
+                <td className="p-3 text-gray-600 text-xs">{tx.gasFee} DFS</td>
               </tr>
             ))}
           </tbody>

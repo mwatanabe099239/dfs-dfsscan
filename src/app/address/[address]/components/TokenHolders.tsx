@@ -27,11 +27,11 @@ export default function TokenHolders({
             <tr className="text-left text-sm border-b border-gray-200 bg-gray-50">
               <th className="p-3">Rank</th>
               <th className="p-3">Address</th>
-              <th className="p-3 text-right">Quantity</th>
-              <th className="p-3 text-right">Percentage</th>
+              <th className="p-3">Quantity</th>
+              <th className="p-3">Percentage</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="text-sm">
             {holders.map((holder, index) => {
               const tokenHolding = holder.tokens.find(
                 (t) => t.tokenAddress === tokenAddress
@@ -54,10 +54,8 @@ export default function TokenHolders({
                       {holder.walletAddress}
                     </Link>
                   </td>
-                  <td className="p-3 text-right">
-                    {tokenHolding?.balance || "0"}
-                  </td>
-                  <td className="p-3 text-right">{percentage.toFixed(2)}%</td>
+                  <td className="p-3">{tokenHolding?.balance || "0"}</td>
+                  <td className="p-3">{percentage.toFixed(2)}%</td>
                 </tr>
               );
             })}

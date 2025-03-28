@@ -9,21 +9,19 @@ export default function TopBar() {
         <div className="flex justify-between px-8 py-2">
           {/* Left section */}
           <div className="flex items-center">
-            <button className="text-xs text-black hover:text-blue-500 border border-gray-300 rounded-md p-1.5" >
+            <button className="text-xs text-black hover:text-blue-500 border border-gray-300 rounded-md p-1" >
               DFS WEBNET
             </button>
           </div>
 
           {/* Right section */}
           <div className="flex items-center">
-            <button className="flex items-center justify-center bg-white border border-gray-200 rounded-md p-1.5 hover:border-gray-300">
               <Image 
-                src="/icons/bnb.svg" 
-                alt="BNB" 
-                width={16} 
-                height={16} 
+                src="/dfs-logo-black.png" 
+                alt="DFS Logo" 
+                width={20} 
+                height={20} 
               />
-            </button>
           </div>
         </div>
       </div>
