@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from "next/link";
 
 type Holder = {
   walletAddress: string;
@@ -7,12 +7,16 @@ type Holder = {
     balance: string;
     tokenAddress: string;
   }>;
-}
+};
 
-export default function TokenHolders({ holders, totalSupply, tokenAddress }: { 
-  holders: Holder[], 
-  totalSupply: string,
-  tokenAddress: string 
+export default function TokenHolders({
+  holders,
+  totalSupply,
+  tokenAddress,
+}: {
+  holders: Holder[];
+  totalSupply: string;
+  tokenAddress: string;
 }) {
   return (
     <div>
@@ -29,25 +33,37 @@ export default function TokenHolders({ holders, totalSupply, tokenAddress }: {
           </thead>
           <tbody>
             {holders.map((holder, index) => {
-              const tokenHolding = holder.tokens.find(t => t.tokenAddress === tokenAddress);
-              const percentage = ((Number(tokenHolding?.balance) || 0) / Number(totalSupply)) * 100;
-              
+              const tokenHolding = holder.tokens.find(
+                (t) => t.tokenAddress === tokenAddress
+              );
+              const percentage =
+                ((Number(tokenHolding?.balance) || 0) / Number(totalSupply)) *
+                100;
+
               return (
-                <tr key={holder.walletAddress} className="border-b border-gray-200 hover:bg-gray-50">
+                <tr
+                  key={holder.walletAddress}
+                  className="border-b border-gray-200 hover:bg-gray-50"
+                >
                   <td className="p-3">{index + 1}</td>
                   <td className="p-3">
-                    <Link href={`/address/${holder.walletAddress}`} className="text-blue-500 hover:text-blue-600">
+                    <Link
+                      href={`/address/${holder.walletAddress}`}
+                      className="text-blue-500 hover:text-blue-600"
+                    >
                       {holder.walletAddress}
                     </Link>
                   </td>
-                  <td className="p-3 text-right">{tokenHolding?.balance || '0'}</td>
+                  <td className="p-3 text-right">
+                    {tokenHolding?.balance || "0"}
+                  </td>
                   <td className="p-3 text-right">{percentage.toFixed(2)}%</td>
                 </tr>
-              )
+              );
             })}
           </tbody>
         </table>
       </div>
     </div>
-  )
-} 
+  );
+}

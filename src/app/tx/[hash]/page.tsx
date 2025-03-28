@@ -1,6 +1,6 @@
-import { notFound } from 'next/navigation'
-import { getTransactionByHash } from '../../lib/firebase'
-import TransactionDetailView from './TransactionDetailView'
+import { notFound } from "next/navigation";
+import { getTransactionByHash } from "@/src/lib/firebase";
+import TransactionDetailView from "./TransactionDetailView";
 
 type PageProps = {
   params: Promise<{ hash: string }>

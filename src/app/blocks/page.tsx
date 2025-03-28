@@ -1,21 +1,20 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCube } from '@fortawesome/free-solid-svg-icons'
-import { Block } from '../types'
-import { getNetworkStats, getLatestBlocks, getBlocks } from '../lib/firebase'
-import { formatTimeAgo } from '../lib/utils'
-import { Suspense } from 'react'
-import Pagination from '../components/common/Pagination'
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCube } from "@fortawesome/free-solid-svg-icons";
+import { Block } from "@/src/types";
+import { getNetworkStats, getBlocks } from "@/src/lib/firebase";
+import { formatTimeAgo } from "@/src/lib/utils";
+import Pagination from "@/src/components/common/Pagination";
 
 interface BlocksData {
-  total: number
-  perPage: number
-  currentPage: number
-  blocks: Block[]
+  total: number;
+  perPage: number;
+  currentPage: number;
+  blocks: Block[];
 }
 
 function TableSkeleton() {
@@ -55,36 +54,36 @@ function TableSkeleton() {
         </tbody>
       </table>
     </div>
-  )
+  );
 }
 
 function BlocksContent() {
-  const searchParams = useSearchParams()
-  const page = parseInt(searchParams.get('page') || '1')
-  const [perPage, setPerPage] = useState(10)
-  const [loading, setLoading] = useState(true)
+  const searchParams = useSearchParams();
+  const page = parseInt(searchParams.get("page") || "1");
+  const [perPage, setPerPage] = useState(10);
+  const [loading, setLoading] = useState(true);
   const [blocksData, setBlocksData] = useState<BlocksData>({
     total: 0,
     perPage: 10,
     currentPage: page,
-    blocks: []
-  })
+    blocks: [],
+  });
 
   useEffect(() => {
     const fetchBlocks = async () => {
-      setLoading(true)
+      setLoading(true);
       const { latestBlock } = await getNetworkStats();
       const total = latestBlock + 1; // Including genesis block
-      
+
       const blocks = await getBlocks(page, perPage);
-      
+
       setBlocksData({
         total,
         perPage,
         currentPage: page,
-        blocks
+        blocks,
       });
-      setLoading(false)
+      setLoading(false);
     };
 
     fetchBlocks();
@@ -109,7 +108,7 @@ function BlocksContent() {
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">
                 Show rows:
-                <select 
+                <select
                   className="ml-2 border rounded p-1"
                   value={perPage}
                   onChange={handlePerPageChange}
@@ -134,21 +133,29 @@ function BlocksContent() {
                   <th className="p-3 whitespace-nowrap">Block</th>
                   <th className="p-3 whitespace-nowrap">Age</th>
                   <th className="p-3 whitespace-nowrap text-right">Txn</th>
-                  <th className="p-3 whitespace-nowrap text-right">Gas Fee (DFS)</th>
+                  <th className="p-3 whitespace-nowrap text-right">
+                    Gas Fee (DFS)
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {blocksData.blocks.map((block) => (
-                  <tr key={block.number} className="border-b border-gray-200 hover:bg-gray-50">
+                  <tr
+                    key={block.number}
+                    className="border-b border-gray-200 hover:bg-gray-50"
+                  >
                     <td className="p-3">
                       <div className="flex items-center gap-2">
-                        <FontAwesomeIcon icon={faCube} className="text-gray-400" />
-                        <span className="text-black">
-                          {block.number}
-                        </span>
+                        <FontAwesomeIcon
+                          icon={faCube}
+                          className="text-gray-400"
+                        />
+                        <span className="text-black">{block.number}</span>
                       </div>
                     </td>
-                    <td className="p-3 text-gray-500">{formatTimeAgo(block.timestamp)}</td>
+                    <td className="p-3 text-gray-500">
+                      {formatTimeAgo(block.timestamp)}
+                    </td>
                     <td className="p-3 text-right">{block.transactions}</td>
                     <td className="p-3 text-right">{block.transactions} DFS</td>
                   </tr>
@@ -159,7 +166,7 @@ function BlocksContent() {
         </div>
 
         {/* Replace the pagination section with the new component */}
-        <Pagination 
+        <Pagination
           currentPage={blocksData.currentPage}
           totalPages={Math.ceil(blocksData.total / blocksData.perPage)}
           basePath="/blocks"
@@ -167,30 +174,22 @@ function BlocksContent() {
 
         {/* Info Text */}
         <div className="p-4 bg-gray-50 text-sm text-gray-600 border-t border-gray-200">
-          <span className="mr-1">ℹ️</span>
-          A block is a container of transactions. Block explorers track the details of all blocks in the network.{' '}
-          <Link href="/knowledge-base" className="text-blue-500 hover:text-blue-600">
+          <span className="mr-1">ℹ️</span>A block is a container of
+          transactions. Block explorers track the details of all blocks in the
+          network.{" "}
+          <Link
+            href="/knowledge-base"
+            className="text-blue-500 hover:text-blue-600"
+          >
             Learn more about blocks in our Knowledge Base
           </Link>
           .
         </div>
       </div>
     </div>
-  )
-}
-
-function BlocksLoading() {
-  return (
-    <div className="flex justify-center items-center min-h-screen">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-    </div>
-  )
+  );
 }
 
 export default function Blocks() {
-  return (
-    <Suspense fallback={<BlocksLoading />}>
-      <BlocksContent />
-    </Suspense>
-  )
-} 
+  return <BlocksContent />;
+}

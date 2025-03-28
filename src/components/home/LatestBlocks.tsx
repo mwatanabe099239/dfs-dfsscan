@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCube } from '@fortawesome/free-solid-svg-icons'
-import { Block } from '../../types'
-import { getLatestBlocks } from '../../lib/firebase'
-import { formatTimeAgo } from '../../lib/utils'
-import ItemSkeleton from '../common/ItemSkeleton'
+import { Block } from '@/src/types'
+import { getLatestBlocks } from '@/src/lib/firebase'
+import { formatTimeAgo } from '@/src/lib/utils'
+import ItemSkeleton from '@/src/components/common/ItemSkeleton'
 
 export default function LatestBlocks() {
   const [blocks, setBlocks] = useState<Block[]>([]);

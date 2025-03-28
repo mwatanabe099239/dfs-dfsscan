@@ -10,7 +10,7 @@ export default function TopBar() {
           {/* Left section */}
           <div className="flex items-center">
             <button className="text-xs text-black hover:text-blue-500 border border-gray-300 rounded-md p-1.5" >
-              DWC Web
+              DFS WEBNET
             </button>
           </div>
 
