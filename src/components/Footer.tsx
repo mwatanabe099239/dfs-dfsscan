@@ -85,8 +85,8 @@ const FooterSection = ({
   <div className="space-y-4 col-span-2">
     <h3 className="font-medium text-gray-900 text-sm">{title}</h3>
     <div className="flex flex-col space-y-2">
-      {links.map((link) => (
-        <FooterLinkComponent key={link.label} link={link} />
+      {links.map((link, index) => (
+        <FooterLinkComponent key={index} link={link} />
       ))}
     </div>
   </div>

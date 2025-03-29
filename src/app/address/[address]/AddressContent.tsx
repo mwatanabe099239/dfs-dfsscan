@@ -19,7 +19,7 @@ import {
   getTokenHolders,
   getTokenTransactions,
 } from "@/src/lib/firebase";
-import { formatTimeAgo, shortenHash, shortenAddress } from "@/src/lib/utils";
+import { formatTimeAgo } from "@/src/lib/utils";
 import TokenTransactions from "./components/TokenTransactions";
 import TokenHolders from "./components/TokenHolders";
 
@@ -127,7 +127,6 @@ export default function AddressContent({ address }: { address: string }) {
           getTokenHolders(address),
           getTokenTransactions(address),
         ]);
-        console.log(tokenTransactions);
 
         setTokenData({
           totalSupply: data?.totalSupply || "0",
@@ -160,7 +159,7 @@ export default function AddressContent({ address }: { address: string }) {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <AddressContentSkeleton />;
   }
 
   if (addressType === "invalid") {
@@ -242,8 +241,11 @@ export default function AddressContent({ address }: { address: string }) {
                     <div className="max-h-[400px] overflow-y-auto">
                       {filteredTokens.length > 0 ? (
                         filteredTokens.map((token, index) => (
-                          <Link href={`/address/${token.tokenAddress}`}>
-                            <div key={token.address} className="py-1 px-2">
+                          <Link
+                            href={`/address/${token.tokenAddress}`}
+                            key={index}
+                          >
+                            <div className="py-1 px-2">
                               <div
                                 className={`border-b border-gray-200 pb-2 ${
                                   index === filteredTokens.length - 1
@@ -469,4 +471,91 @@ export default function AddressContent({ address }: { address: string }) {
 
   // Token address case will be implemented next
   return null;
+}
+
+function AddressContentSkeleton() {
+  return (
+    <div className="container mx-auto px-4 space-y-4">
+      {/* Address Overview Card */}
+      <div className="flex items-center gap-2">
+        <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />
+        <div className="flex-1">
+          <div className="h-4 w-48 bg-gray-200 rounded animate-pulse" />
+          <div className="mt-2 h-3 w-96 bg-gray-200 rounded animate-pulse" />
+        </div>
+      </div>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 rounded-lg gap-4">
+        {[...Array(3)].map((_, i) => (
+          <div
+            key={i}
+            className="border border-gray-200 rounded-lg bg-white shadow p-4 h-32"
+          >
+            <div className="h-3 w-24 bg-gray-200 rounded animate-pulse mb-2" />
+            <div className="h-4 w-32 bg-gray-200 rounded animate-pulse" />
+          </div>
+        ))}
+      </div>
+
+      {/* Tabs Section */}
+      <div className="bg-white rounded-lg shadow">
+        <div className="border-b border-gray-200">
+          <div className="flex gap-4 p-4">
+            {[...Array(4)].map((_, i) => (
+              <div
+                key={i}
+                className="h-4 w-24 bg-gray-200 rounded animate-pulse"
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Table Skeleton */}
+        <div className="p-4">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-gray-200">
+                {[...Array(6)].map((_, i) => (
+                  <th key={i} className="p-2">
+                    <div className="h-4 bg-gray-200 rounded animate-pulse" />
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {[...Array(5)].map((_, rowIndex) => (
+                <tr key={rowIndex} className="border-b border-gray-200">
+                  {[...Array(6)].map((_, colIndex) => (
+                    <td key={colIndex} className="p-2">
+                      <div
+                        className={`h-4 bg-gray-200 rounded animate-pulse ${
+                          colIndex === 5
+                            ? "w-16 ml-auto"
+                            : "w-full max-w-[120px]"
+                        }`}
+                      />
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {/* Pagination Skeleton */}
+          <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-200">
+            <div className="h-4 w-48 bg-gray-200 rounded animate-pulse" />
+            <div className="flex gap-2">
+              {[...Array(4)].map((_, i) => (
+                <div
+                  key={i}
+                  className="h-8 w-8 bg-gray-200 rounded animate-pulse"
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

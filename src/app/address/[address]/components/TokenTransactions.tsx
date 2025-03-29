@@ -41,9 +41,9 @@ export default function TokenTransactions({
             </tr>
           </thead>
           <tbody className="text-sm">
-            {transactions.map((tx) => (
+            {transactions.map((tx, index) => (
               <tr
-                key={tx.transactionHash}
+                key={index}
                 className="border-b border-gray-200 hover:bg-gray-50 text-left"
               >
                 <td className="p-3">
@@ -59,14 +59,7 @@ export default function TokenTransactions({
                     {tx.method || "Transfer"}
                   </span>
                 </td>
-                <td className="p-3">
-                  <Link
-                    href={`/block/${tx.blockNumber}`}
-                    className="text-[#0784c3] hover:text-blue-600"
-                  >
-                    {tx.blockNumber}
-                  </Link>
-                </td>
+                <td className="p-3 text-[#0784c3]">{tx.blockNumber}</td>
                 <td className="p-3">
                   {formatTimeAgo(tx.createdAt.getTime() / 1000)}
                 </td>
