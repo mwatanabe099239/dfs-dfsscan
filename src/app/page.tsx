@@ -6,22 +6,6 @@ import LatestBlocks from "@/src/components/home/LatestBlocks";
 import LatestTransactions from "@/src/components/home/LatestTransactions";
 import Image from "next/image";
 
-// Temporary mock data - replace with Firebase data later
-const mockNetworkStats = {
-  bnbPrice: 610.63,
-  transactions24h: 6952.75,
-  tps: 82.1,
-  medianGasPrice: "1 Gwei",
-  medianGasPriceUSD: "$0.01",
-  bnbMarketCap: 91809388782.0,
-  bnbSupply: 150352322,
-  latestBlock: 47605447,
-  blockTime: 3,
-  votingPower: 30307620.04,
-  btcPrice: 0.007243,
-  priceChange: -2.71,
-};
-
 export default function Home() {
   return (
     <div>
@@ -46,7 +30,7 @@ export default function Home() {
               </span>
             </div>
           </div>
-          <div className="w-1/3 flex items-center justify-center">
+          <div className="w-1/3 flex items-center justify-start">
             <div className="w-fit relative md:block hidden">
               <div className="absolute -top-2 right-5 bg-white text-black px-2 py-1 text-xs rounded-md">
                 Ad
@@ -66,7 +50,7 @@ export default function Home() {
           </div>
         </div>
         <div className="bg-white rounded-lg shadow-lg mb-6 p-4">
-          <NetworkStatsSection stats={mockNetworkStats} />
+          <NetworkStatsSection />
         </div>
 
         {/* Blocks and Transactions section */}

@@ -7,7 +7,7 @@ import { Roboto } from "next/font/google";
 import { Suspense } from "react";
 import SkeletonLoading from "../components/SkeletonLoading";
 import "./globals.css";
-// import "@fortawesome/fontawesome-svg-core/styles.css";
+import "@fortawesome/fontawesome-svg-core/styles.css";
 import Footer from "../components/Footer";
 config.autoAddCss = false;
 
@@ -29,12 +29,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <link
-          rel="stylesheet"
-          href="@fortawesome/fontawesome-svg-core/styles.css"
-        />
-      </head>
+      <head></head>
       <body
         className={roboto.className}
         style={{ backgroundColor: "#f6f7f8", color: "#000" }}

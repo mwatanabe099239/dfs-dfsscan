@@ -14,7 +14,7 @@ const FOOTER_SECTIONS = {
     title: "Company",
     links: [
       {
-        label: "Delegate to BscScan Staking",
+        label: "Delegate to DfsScan Staking",
         href: "/#",
         isExternal: false,
       },
@@ -101,7 +101,7 @@ export default function Footer() {
           <div className="space-y-4 md:col-span-3 col-span-1">
             <div className="flex items-center gap-2">
               <Image
-                src="/dfs-logo-black.png"
+                src="/dfs-logo.png"
                 alt="DFS Logo"
                 width={32}
                 height={32}
@@ -122,7 +122,7 @@ export default function Footer() {
                 height={24}
                 className="w-6 h-auto"
               />
-              Meta Face
+              Add DFS Network
             </button>
           </div>
 
@@ -166,16 +166,8 @@ export default function Footer() {
               </Link>
             </div>
           </div>
-          <div className="flex items-center gap-1">
-            <span>Donations:</span>
-            <Link
-              href="https://etherscan.io/address/0x71c765...d8976f"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[#0784c3] hover:text-blue-700"
-            >
-              0x71c765...d8976f
-            </Link>
+          <div className="flex items-center gap-1 cursor-pointer">
+            <span>Donations</span>
             <span className="text-red-500">❤</span>
           </div>
         </div>

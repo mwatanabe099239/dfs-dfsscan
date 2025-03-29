@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { NetworkStats } from "@/src/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faList, faClock, faCube } from "@fortawesome/free-solid-svg-icons";
 import { getNetworkStats } from "@/src/lib/firebase";
@@ -30,11 +29,7 @@ const StatsItem = ({ icon, label, mainValue, subValue }: StatsItemProps) => (
   </div>
 );
 
-export default function NetworkStatsSection({
-  stats,
-}: {
-  stats: NetworkStats;
-}) {
+export default function NetworkStatsSection() {
   const [networkStats, setNetworkStats] = useState({
     latestBlock: 0,
     totalTransactions: 0,
