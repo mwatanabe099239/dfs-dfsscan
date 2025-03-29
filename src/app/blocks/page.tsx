@@ -25,8 +25,8 @@ function TableSkeleton() {
           <tr className="text-left text-sm border-b border-gray-200 bg-gray-50">
             <th className="p-3 whitespace-nowrap">Block</th>
             <th className="p-3 whitespace-nowrap">Age</th>
-            <th className="p-3 whitespace-nowrap text-right">Txn</th>
-            <th className="p-3 whitespace-nowrap text-right">Gas Fee (DFS)</th>
+            <th className="p-3 whitespace-nowrap">Txn</th>
+            <th className="p-3 whitespace-nowrap">Gas Fee (DFS)</th>
           </tr>
         </thead>
         <tbody>
@@ -37,17 +37,17 @@ function TableSkeleton() {
                   <div className="text-gray-200">
                     <FontAwesomeIcon icon={faCube} className="w-4 h-4" />
                   </div>
-                  <div className="w-16 h-4 bg-gray-200 rounded" />
+                  <div className="w-16 h-3 bg-gray-200 rounded" />
                 </div>
               </td>
               <td className="p-3">
-                <div className="w-24 h-4 bg-gray-200 rounded" />
+                <div className="w-24 h-3 bg-gray-200 rounded" />
               </td>
               <td className="p-3">
-                <div className="w-8 h-4 bg-gray-200 rounded ml-auto" />
+                <div className="w-8 h-3 bg-gray-200 rounded" />
               </td>
               <td className="p-3">
-                <div className="w-20 h-4 bg-gray-200 rounded ml-auto" />
+                <div className="w-20 h-3 bg-gray-200 rounded" />
               </td>
             </tr>
           ))}
