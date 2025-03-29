@@ -48,7 +48,10 @@ export default function Navbar() {
               </Link>
             ))}
             <span className="text-gray-400 mx-2">|</span>
-            <div className="flex items-center pl-4 cursor-pointer gap-1">
+            <div
+              className="flex items-center pl-4 cursor-pointer gap-1"
+              onClick={() => window.open("https://dfs-wallet.netlify.app", "_blank")}
+            >
               <Image
                 src="/images/face-logo.png"
                 alt="MetaFace"

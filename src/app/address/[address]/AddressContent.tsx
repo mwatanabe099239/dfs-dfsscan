@@ -411,7 +411,7 @@ export default function AddressContent({ address }: { address: string }) {
               <h2 className="text-md mb-4">Contract Info</h2>
               <div className="flex items-center gap-2 text-sm">
                 <span className="text-gray-500">Contract:</span>
-                <span className="text-blue-500 truncate">{address}</span>
+                <span className="text-[#0784c3] truncate">{address}</span>
                 <FontAwesomeIcon
                   icon={faCopy}
                   className="cursor-pointer text-gray-500"
