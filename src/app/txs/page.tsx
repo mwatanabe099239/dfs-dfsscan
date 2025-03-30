@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileAlt } from "@fortawesome/free-solid-svg-icons";
 import { Transaction } from "@/src/types";
@@ -134,6 +134,7 @@ const TableSkeleton = () => (
 
 function TransactionsContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const page = parseInt(searchParams.get("page") || "1");
   const addressFilter = searchParams.get("a");
 
@@ -152,6 +153,11 @@ function TransactionsContent() {
   });
   const isTokenAddress = addressFilter?.startsWith("drc20");
 
+  const queryParams = useMemo(
+    () => (addressFilter ? { a: addressFilter } : undefined),
+    [addressFilter]
+  );
+
   const changePerPage = (newPerPage: number) => {
     setPerPage(newPerPage);
     setTxData({
@@ -159,6 +165,8 @@ function TransactionsContent() {
       perPage: newPerPage,
       currentPage: 1,
     });
+    const href = getPageUrl(1, queryParams || {});
+    router.push(`${href}`);
   };
 
   useEffect(() => {
@@ -208,10 +216,13 @@ function TransactionsContent() {
     fetchData();
   }, [page, perPage]);
 
-  const queryParams = useMemo(
-    () => (addressFilter ? { a: addressFilter } : undefined),
-    [addressFilter]
-  );
+  const getPageUrl = (page: number, queryParams: Record<string, string>) => {
+    const queryString = Object.entries(queryParams)
+      .map(([key, value]) => `${key}=${value}`)
+      .join("&");
+    const pageQuery = `page=${page}`;
+    return `/txs?${pageQuery}${queryString ? `&${queryString}` : ""}`;
+  };
 
   return (
     <div className="container mx-auto px-4 space-y-4">
