@@ -2,11 +2,12 @@ import Link from "next/link";
 
 type Holder = {
   walletAddress: string;
-  tokens: Array<{
-    address: string;
-    balance: string;
-    tokenAddress: string;
-  }>;
+  tokens: HolderToken[];
+};
+type HolderToken = {
+  address: string;
+  balance: string;
+  tokenAddress: string;
 };
 
 export default function TokenHolders({
@@ -18,50 +19,62 @@ export default function TokenHolders({
   totalSupply: string;
   tokenAddress: string;
 }) {
-  return (
-    <div>
-      {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="text-left text-sm border-b border-gray-200 bg-gray-50">
-              <th className="p-3">Rank</th>
-              <th className="p-3">Address</th>
-              <th className="p-3">Quantity</th>
-              <th className="p-3">Percentage</th>
-            </tr>
-          </thead>
-          <tbody className="text-sm">
-            {holders.map((holder, index) => {
-              const tokenHolding = holder.tokens.find(
-                (t) => t.tokenAddress === tokenAddress
-              );
-              const percentage =
-                ((Number(tokenHolding?.balance) || 0) / Number(totalSupply)) *
-                100;
+  // Sort holders by token balance
+  const sortedHolders = holders
+    .map((holder) => {
+      const tokenHolding = holder.tokens.find(
+        (t: HolderToken) => t.tokenAddress === tokenAddress
+      );
+      return {
+        address: holder.walletAddress,
+        balance: tokenHolding ? Number(tokenHolding.balance) : 0,
+      };
+    })
+    .sort((a, b) => b.balance - a.balance) // Sort in descending order
+    .filter((holder) => holder.balance > 0); // Optional: remove zero balance holders
 
-              return (
-                <tr
-                  key={holder.walletAddress}
-                  className="border-b border-gray-200 hover:bg-gray-50"
+  const totalSupplyNum = Number(totalSupply);
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full">
+        <thead>
+          <tr className="text-left text-sm border-b border-gray-200">
+            <th className="p-3">Rank</th>
+            <th className="p-3">Address</th>
+            <th className="p-3 text-right">Quantity</th>
+            <th className="p-3 text-right">Percentage</th>
+          </tr>
+        </thead>
+        <tbody className="text-sm">
+          {sortedHolders.map((holder, index) => (
+            <tr
+              key={holder.address}
+              className={`${
+                index !== sortedHolders.length - 1
+                  ? "border-b border-gray-200"
+                  : ""
+              } hover:bg-gray-50`}
+            >
+              <td className="p-3 text-gray-500">{index + 1}</td>
+              <td className="p-3">
+                <Link
+                  href={`/address/${holder.address}`}
+                  className="text-[#0784c3] hover:text-blue-600"
                 >
-                  <td className="p-3">{index + 1}</td>
-                  <td className="p-3">
-                    <Link
-                      href={`/address/${holder.walletAddress}`}
-                      className="text-[#0784c3] hover:text-blue-600"
-                    >
-                      {holder.walletAddress}
-                    </Link>
-                  </td>
-                  <td className="p-3">{tokenHolding?.balance || "0"}</td>
-                  <td className="p-3">{percentage.toFixed(2)}%</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+                  {holder.address}
+                </Link>
+              </td>
+              <td className="p-3 text-right">
+                {holder.balance.toLocaleString()}
+              </td>
+              <td className="p-3 text-right">
+                {((holder.balance / totalSupplyNum) * 100).toFixed(2)}%
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

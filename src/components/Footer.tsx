@@ -52,7 +52,7 @@ const FOOTER_SECTIONS = {
 const FooterLinkComponent = ({ link }: { link: FooterLink }) => (
   <Link
     href={link.href}
-    className="hover:text-[#0784c3] text-[#081d35] text-sm flex items-center gap-1 font-thin"
+    className="hover:text-[#0784c3] text-[#081d35] text-xs flex items-center gap-1 font-thin"
     target={link.isExternal ? "_blank" : "_self"}
     rel={link.isExternal ? "noopener noreferrer" : ""}
   >
@@ -82,7 +82,7 @@ const FooterSection = ({
   title: string;
   links: FooterLink[];
 }) => (
-  <div className="space-y-4 col-span-2">
+  <div className="space-y-2 col-span-2">
     <h3 className="font-medium text-gray-900 text-sm">{title}</h3>
     <div className="flex flex-col space-y-2">
       {links.map((link, index) => (
@@ -96,9 +96,26 @@ export default function Footer() {
   return (
     <footer className="bg-[#f8f9fa]">
       <div className="container mx-auto px-8">
+        {/* Top Section */}
+        <div className="flex items-center justify-between border-b border-gray-200 py-5">
+          <Link
+            href="https://twitter.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm flex items-center gap-1 cursor-pointer text-gray-700 hover:text-[#0784c3]"
+          >
+            <span className="">X</span>
+            <span className="">(Twitter)</span>
+          </Link>
+
+          <Link href="#top" className="text-sm hover:text-[#0784c3]">
+            ↑ Back to Top
+          </Link>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-9 gap-8 py-8">
           {/* Logo and Description Section */}
-          <div className="space-y-4 md:col-span-3 col-span-1">
+          <div className="space-y-2 md:col-span-3 col-span-1">
             <div className="flex items-center gap-2">
               <Image
                 src="/dfs-logo.png"
@@ -107,20 +124,20 @@ export default function Footer() {
                 height={32}
                 className="w-8 h-auto"
               />
-              <span className="font-medium">Powered by DIFINES</span>
+              <span className="font-normal">Powered by DIFINES</span>
             </div>
-            <p className="text-sm text-black font-thin">
+            <p className="text-xs text-black font-thin">
               Dfs Scan is a block explorer and analytics platform for
               DfsWebChain (centralized) and the upcoming DfsChain
               (decentralized).
             </p>
-            <button className="flex items-center gap-2 text-sm text-black hover:text-[#0784c3] bg-gray-200 px-2 py-1 rounded-md cursor-pointer">
+            <button className="flex items-center gap-2 text-xs text-black hover:text-[#0784c3] bg-gray-200 px-2 py-1 rounded-md cursor-pointer">
               <Image
                 src="/images/face-logo.png"
                 alt="Meta Logo"
-                width={24}
-                height={24}
-                className="w-6 h-auto"
+                width={20}
+                height={20}
+                className="w-5 h-auto"
               />
               Add DFS Network
             </button>

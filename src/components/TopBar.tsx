@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import Image from 'next/image'
+import Image from "next/image";
 
 export default function TopBar() {
   return (
@@ -9,22 +9,22 @@ export default function TopBar() {
         <div className="flex justify-between px-8 py-2">
           {/* Left section */}
           <div className="flex items-center">
-            <button className="text-xs text-black hover:text-[#0784c3] border border-gray-300 rounded-md p-1" >
+            <button className="text-xs text-black hover:text-[#0784c3] border border-gray-300 rounded-md p-1">
               DFS WEBNET
             </button>
           </div>
 
           {/* Right section */}
-          <div className="flex items-center">
-              <Image 
-                src="/dfs-logo-black.png" 
-                alt="DFS Logo" 
-                width={20} 
-                height={20} 
-              />
+          <div className="flex items-center mt-1">
+            <Image
+              src="/dfs-logo-black.png"
+              alt="DFS Logo"
+              width={20}
+              height={20}
+            />
           </div>
         </div>
       </div>
     </div>
-  )
-} 
+  );
+}

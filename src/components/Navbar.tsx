@@ -47,7 +47,7 @@ export default function Navbar() {
                 {label}
               </Link>
             ))}
-            <span className="text-gray-400 mx-2">|</span>
+            <span className="text-gray-400">|</span>
             <div
               className="pl-4 cursor-pointer"
               onClick={() =>

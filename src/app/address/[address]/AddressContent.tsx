@@ -18,6 +18,8 @@ import {
   getTokenData,
   getTokenHolders,
   getTokenTransactions,
+  getTransactionsByAddressWithLimitWithTotalCount,
+  getTokenTransactionsWithLimitWithTotalCount,
 } from "@/src/lib/firebase";
 import { formatTimeAgo } from "@/src/lib/utils";
 import TokenTransactions from "./components/TokenTransactions";
@@ -68,6 +70,7 @@ export default function AddressContent({ address }: { address: string }) {
     },
   });
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
   const [showTokens, setShowTokens] = useState(false);
   const [searchToken, setSearchToken] = useState("");
   const [tokenData, setTokenData] = useState<TokenData>({
@@ -86,15 +89,12 @@ export default function AddressContent({ address }: { address: string }) {
       setAddressType(type);
 
       if (type === "wallet") {
-        const [txs, balance, tokens] = await Promise.all([
-          getTransactionsByAddress(address),
-          getNativeBalance(address),
-          getUserTokens(address),
-        ]);
-
-        const sortedTxs = txs.sort(
-          (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
-        );
+        const [{ transactions, totalCount }, balance, tokens] =
+          await Promise.all([
+            getTransactionsByAddressWithLimitWithTotalCount(address, 10),
+            getNativeBalance(address),
+            getUserTokens(address),
+          ]);
 
         // Calculate total token value
         const totalValue = tokens.reduce(
@@ -107,35 +107,45 @@ export default function AddressContent({ address }: { address: string }) {
           totalTokenValue: totalValue.toFixed(2),
           tokenHoldings: tokens,
           transactions: {
-            latest: sortedTxs[0]?.createdAt
-              ? formatTimeAgo(sortedTxs[0].createdAt.getTime() / 1000)
+            latest: transactions[0]?.createdAt
+              ? formatTimeAgo(transactions[0].createdAt.getTime() / 1000)
               : "",
-            first: sortedTxs[sortedTxs.length - 1]?.createdAt
+            first: transactions[transactions.length - 1]?.createdAt
               ? formatTimeAgo(
-                  sortedTxs[sortedTxs.length - 1].createdAt.getTime() / 1000
+                  transactions[transactions.length - 1].createdAt.getTime() /
+                    1000
                 )
               : "",
-            total: sortedTxs.length,
+            total: transactions.length,
           },
         });
-        setTransactions(sortedTxs.slice(0, 25));
+        setTotalCount(totalCount);
+        setTransactions(transactions);
       }
 
       if (type === "token") {
-        const [data, tokenHolders, tokenTransactions] = await Promise.all([
+        const [
+          data,
+          tokenHolders,
+          {
+            transactions: tokenTransactions,
+            totalCount: tokenTransactionsCount,
+          },
+        ] = await Promise.all([
           getTokenData(address),
           getTokenHolders(address),
-          getTokenTransactions(address),
+          getTokenTransactionsWithLimitWithTotalCount(address, 10),
         ]);
 
         setTokenData({
           totalSupply: data?.totalSupply || "0",
           holdersCount: tokenHolders.length || 0,
-          transfersCount: tokenTransactions.length || 0,
+          transfersCount: tokenTransactionsCount || 0,
           symbol: data?.symbol || "",
         });
         setHolders(tokenHolders);
         setTransactions(tokenTransactions as Transaction[]);
+        setTotalCount(tokenTransactionsCount);
       }
 
       setLoading(false);
@@ -296,10 +306,13 @@ export default function AddressContent({ address }: { address: string }) {
               {/* Transactions */}
               <div className="mb-4">
                 <div className="text-gray-500 text-xs mb-1">TRANSACTIONS</div>
-                <div className="text-sm">
-                  Latest: {walletData.transactions.latest} ↗
-                  <br />
-                  First: {walletData.transactions.first} ↗
+                <div className="text-sm flex items-center gap-3">
+                  <span className="">
+                    Latest: {walletData.transactions.latest} ↗
+                  </span>{" "}
+                  <span className="">
+                    First: {walletData.transactions.first} ↗
+                  </span>
                 </div>
               </div>
             </div>
@@ -326,7 +339,11 @@ export default function AddressContent({ address }: { address: string }) {
             </div>
 
             {/* Transaction List */}
-            <TokenTransactions transactions={transactions} address={address} />
+            <TokenTransactions
+              transactions={transactions}
+              address={address}
+              totalCount={totalCount}
+            />
 
             {/* Info Text */}
             {/* <div className="p-4 bg-gray-50 text-sm text-gray-600 border-t border-gray-200">
@@ -455,6 +472,7 @@ export default function AddressContent({ address }: { address: string }) {
               <TokenTransactions
                 transactions={transactions}
                 address={address}
+                totalCount={totalCount}
               />
             ) : (
               <TokenHolders

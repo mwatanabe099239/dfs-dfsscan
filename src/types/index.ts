@@ -1,7 +1,7 @@
 export interface Transaction {
   amount: string;
   blockNumber: number;
-  createdAt: Date;
+  createdAt: Date | any;
   fromAddress: string;
   fromEmail: string;
   gasFee: string;

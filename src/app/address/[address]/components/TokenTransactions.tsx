@@ -5,9 +5,11 @@ import { formatTimeAgo, shortenAddress, shortenHash } from "@/src/lib/utils";
 export default function TokenTransactions({
   transactions,
   address,
+  totalCount,
 }: {
   transactions: Transaction[];
   address: string;
+  totalCount: number;
 }) {
   return (
     <div>
@@ -19,7 +21,7 @@ export default function TokenTransactions({
             Transactions from a total of{" "}
           </span>
           <span className="text-[#0784c3]">
-            {transactions.length.toLocaleString()}
+            {totalCount.toLocaleString()}
           </span>
           <span>transactions</span>
         </div>

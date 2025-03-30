@@ -6,7 +6,11 @@ import { useSearchParams } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileAlt } from "@fortawesome/free-solid-svg-icons";
 import { Transaction } from "@/src/types";
-import { getNetworkStats, getTransactions } from "@/src/lib/firebase";
+import {
+  getAddressTotalTransactionWithPagination,
+  getTokenTotalTransactionWithPagination,
+  getTransactionsWithPagination,
+} from "@/src/lib/firebase";
 import { formatTimeAgo, shortenAddress, shortenHash } from "@/src/lib/utils";
 import Pagination from "@/src/components/common/Pagination";
 
@@ -146,14 +150,35 @@ function TransactionsContent() {
     currentPage: page,
     transactions: [],
   });
+  const isTokenAddress = addressFilter?.startsWith("drc20");
+
+  const changePerPage = (newPerPage: number) => {
+    setPerPage(newPerPage);
+    setTxData({
+      ...txData,
+      perPage: newPerPage,
+      currentPage: 1,
+    });
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [{ totalTransactions }, transactions] = await Promise.all([
-          getNetworkStats(),
-          getTransactions(page, perPage),
+        const [{ transactions, total: totalTransactions }] = await Promise.all([
+          !addressFilter
+            ? getTransactionsWithPagination(page, perPage)
+            : isTokenAddress
+            ? getTokenTotalTransactionWithPagination(
+                addressFilter || "",
+                page,
+                perPage
+              )
+            : getAddressTotalTransactionWithPagination(
+                addressFilter || "",
+                page,
+                perPage
+              ),
         ]);
 
         const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
@@ -226,7 +251,7 @@ function TransactionsContent() {
             <select
               className="border rounded p-1 text-sm"
               value={perPage}
-              onChange={(e) => setPerPage(Number(e.target.value))}
+              onChange={(e) => changePerPage(Number(e.target.value))}
             >
               {[10, 25, 50, 100].map((value) => (
                 <option key={value} value={value}>
@@ -248,7 +273,7 @@ function TransactionsContent() {
               <tbody className="text-sm">
                 {txData.transactions.map((tx, index) => (
                   <TransactionRow
-                    key={tx.transactionHash}
+                    key={index}
                     tx={tx}
                     isLast={index === txData.transactions.length - 1}
                   />
