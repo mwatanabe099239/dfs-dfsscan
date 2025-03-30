@@ -381,7 +381,7 @@ export default function AddressContent({ address }: { address: string }) {
             <span className="text-gray-600">{address}</span>
           </div>
           <button
-            className="text-gray-400 hover:text-gray-600"
+            className="text-gray-400 hover:text-gray-600 cursor-pointer"
             onClick={handleCopyClick}
           >
             <FontAwesomeIcon icon={faCopy} />
