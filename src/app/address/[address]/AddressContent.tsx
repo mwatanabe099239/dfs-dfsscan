@@ -50,6 +50,7 @@ type TokenData = {
   symbol: string;
   name: string;
   logoUrl: string;
+  website: string;
 };
 
 type TabType = "transactions" | "holders";
@@ -88,6 +89,7 @@ export default function AddressContent({ address }: { address: string }) {
     symbol: "",
     name: "",
     logoUrl: "",
+    website: "",
   });
   const [activeTab, setActiveTab] = useState<TabType>("transactions");
   const [holders, setHolders] = useState<any[]>([]);
@@ -155,6 +157,7 @@ export default function AddressContent({ address }: { address: string }) {
           symbol: data?.symbol || "",
           name: data?.name || "",
           logoUrl: data?.logoUrl || "",
+          website: data?.website || "",
         });
         setHolders(tokenHolders);
         setTransactions(tokenTransactions as Transaction[]);
@@ -303,9 +306,9 @@ export default function AddressContent({ address }: { address: string }) {
                                           <Image
                                             src={token.logoUrl}
                                             alt={token.name}
-                                            width={18}
-                                            height={18}
-                                            className="rounded-full object-cover min-w-4 min-h-4"
+                                            width={14}
+                                            height={14}
+                                            className="rounded-full object-cover min-w-3 min-h-3"
                                           />
                                         ) : (
                                           <img
@@ -505,7 +508,7 @@ export default function AddressContent({ address }: { address: string }) {
                 </div>
 
                 {/* Transfers Count */}
-                <div className="mb-4">
+                <div className="">
                   <div className="text-gray-600 text-xs">TRANSFERS</div>
                   <div className="text-sm">{tokenData.transfersCount}</div>
                 </div>
@@ -767,7 +770,7 @@ function AdsSection() {
         src="/images/ads.png"
         alt="DFS Logo"
         className="h-full w-auto object-contain rounded-lg cursor-pointer"
-        width={350}
+        width={300}
         height={100}
         priority
         onClick={() => {
