@@ -32,7 +32,11 @@ export default function RootLayout({
       <head></head>
       <body
         className={roboto.className}
-        style={{ backgroundColor: "#f6f7f8", color: "#000" }}
+        style={{
+          color: "#000",
+          backgroundImage:
+            "linear-gradient(#f6f7f8 30%, rgba(255, 255, 255, 0) 80%)",
+        }}
       >
         <Suspense fallback={<SkeletonLoading />}>
           <TopBar />

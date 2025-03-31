@@ -257,7 +257,7 @@ export default function AddressContent({ address }: { address: string }) {
                     TOKEN HOLDINGS
                   </div>
                   <div
-                    className="flex items-center justify-between p-2 border border-gray-200 rounded cursor-pointer"
+                    className="flex items-center justify-between p-2 border border-gray-200 rounded-md cursor-pointer"
                     onClick={() => setShowTokens(!showTokens)}
                   >
                     <div className="text-sm">
