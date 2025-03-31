@@ -199,9 +199,9 @@ export default function AddressContent({ address }: { address: string }) {
   if (addressType === "wallet") {
     return (
       <>
-        <div className="space-y-4 container mx-auto px-4">
+        <div className="container mx-auto px-4">
           {/* Header with address */}
-          <div className="flex items-center justify-between border-b border-gray-200 pb-4">
+          <div className="flex items-center justify-between border-b border-gray-200 pb-4 mb-4">
             <div className="flex items-center gap-4 rounded-lg">
               <div className="flex items-center gap-2">
                 <img
@@ -234,7 +234,7 @@ export default function AddressContent({ address }: { address: string }) {
 
           <FavoriteButton />
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-8 mt-2">
             {/* Overview section */}
             <div className="lg:col-span-4">
               <div className="bg-white rounded-lg shadow-md p-4 h-full border border-gray-200">
@@ -444,9 +444,9 @@ export default function AddressContent({ address }: { address: string }) {
   if (addressType === "token") {
     return (
       <>
-        <div className="space-y-4 container mx-auto px-4">
+        <div className="container mx-auto px-4">
           {/* Header with token address */}
-          <div className="flex items-center justify-between border-b border-gray-200 pb-4">
+          <div className="flex items-center justify-between border-b border-gray-200 pb-4 mb-4">
             <div className="flex items-center gap-4 rounded-lg">
               <div className="flex items-center gap-2">
                 {tokenData.logoUrl ? (
@@ -487,7 +487,7 @@ export default function AddressContent({ address }: { address: string }) {
 
           <SponsorTitle />
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-end mb-2">
             {tokenData.website ? (
               <button
                 className="text-gray-500 hover:text-gray-600 cursor-pointer bg-white border border-gray-200 rounded-md px-2 py-1.5 flex items-center justify-center text-sm"
@@ -501,7 +501,7 @@ export default function AddressContent({ address }: { address: string }) {
             <FavoriteButton />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-8">
             {/* Overview section */}
             <div className="lg:col-span-4">
               <div className="bg-white rounded-lg shadow p-4 h-full">
