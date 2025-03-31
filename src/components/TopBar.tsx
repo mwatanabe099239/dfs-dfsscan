@@ -18,21 +18,17 @@ export default function TopBar() {
         <div className="flex md:justify-between justify-center items-center px-4 py-2">
           {/* Left section */}
           <div className="md:block hidden">
-            {isHome ? (
+            <div className="flex items-center gap-3 text-xs">
               <button className="text-xs text-black hover:text-[#0784c3] border border-gray-300 rounded-md p-1">
                 DFS WEBNET
               </button>
-            ) : (
-              <div className="flex items-center gap-3 text-xs">
-                <span className="text-gray-600">
-                  DFS Price:{" "}
-                  <span className="text-[#0784c3]">$77.7</span>
-                </span>
-                <span className="text-gray-600">
-                  Gas: <span className="text-[#0784c3]">1 DFS</span>
-                </span>
-              </div>
-            )}
+              <span className="text-gray-600">
+                DFS Price: <span className="text-[#0784c3]">$77.7</span>
+              </span>
+              <span className="text-gray-600">
+                Gas: <span className="text-[#0784c3]">1 DFS</span>
+              </span>
+            </div>
           </div>
 
           {/* Right section */}

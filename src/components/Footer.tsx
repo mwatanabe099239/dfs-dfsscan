@@ -14,7 +14,7 @@ const FOOTER_SECTIONS = {
     title: "Company",
     links: [
       {
-        label: "Delegate to DfsScan Staking",
+        label: "Delegate to DFSScan Staking",
         href: "/#",
         isExternal: false,
       },
@@ -127,8 +127,8 @@ export default function Footer() {
               <span className="font-normal">Powered by DIFINES</span>
             </div>
             <p className="text-xs text-black font-thin">
-              Dfs Scan is a block explorer and analytics platform for
-              DfsWebChain (centralized) and the upcoming DfsChain
+              DFS Scan is a block explorer and analytics platform for
+              DFSWebChain (centralized) and the upcoming DFSChain
               (decentralized).
             </p>
             <button className="flex items-center gap-2 text-xs text-black hover:text-[#0784c3] bg-gray-200 px-2 py-1 rounded-md cursor-pointer">
@@ -156,7 +156,7 @@ export default function Footer() {
         {/* Bottom Section */}
         <div className="flex flex-col md:flex-row justify-between items-center py-4 border-t border-gray-200 text-sm text-black font-thin">
           <div className="flex items-center gap-2">
-            <span>Dfs Scan © 2025 (DFS-D) </span>
+            <span>DFS Scan © 2025 (DFS-D) </span>
             <span>|</span>
             <div className="flex items-center gap-1">
               <span>👨‍👦‍👦Built by team</span>

@@ -487,7 +487,19 @@ export default function AddressContent({ address }: { address: string }) {
 
           <SponsorTitle />
 
-          <FavoriteButton />
+          <div className="flex items-center justify-between">
+            {tokenData.website ? (
+              <button
+                className="text-gray-500 hover:text-gray-600 cursor-pointer bg-white border border-gray-200 rounded-md px-2 py-1.5 flex items-center justify-center text-sm"
+                onClick={() => window.open(tokenData.website, "_blank")}
+              >
+                {tokenData.website}
+              </button>
+            ) : (
+              <></>
+            )}
+            <FavoriteButton />
+          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-10">
             {/* Overview section */}

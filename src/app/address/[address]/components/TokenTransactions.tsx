@@ -125,7 +125,8 @@ export default function TokenTransactions({
                   )}
                 </td>
                 <td className="p-3">
-                  {tx.amount} {tx.token?.symbol || "DFS"}
+                  {tx.amount}{" "}
+                  {tx.method === "Transfer" ? tx.token?.symbol || "DFS" : "DFS"}
                 </td>
                 <td className="p-3 text-gray-600 text-xs">{tx.gasFee} DFS</td>
               </tr>
