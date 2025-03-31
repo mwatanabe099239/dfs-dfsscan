@@ -31,6 +31,8 @@ export default function SearchBar() {
       const href = `/tx/${searchQuery}`;
       router.push(href);
     }
+
+    setSearchQuery("");
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

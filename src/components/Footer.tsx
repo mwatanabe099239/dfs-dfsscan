@@ -95,7 +95,7 @@ const FooterSection = ({
 export default function Footer() {
   return (
     <footer className="bg-[#f8f9fa]">
-      <div className="container mx-auto px-8">
+      <div className="container mx-auto px-4">
         {/* Top Section */}
         <div className="flex items-center justify-between border-b border-gray-200 py-5">
           <Link

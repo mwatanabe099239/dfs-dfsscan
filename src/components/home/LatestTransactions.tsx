@@ -41,11 +41,12 @@ export default function LatestTransactions() {
     <div className="divide-y divide-gray-200 text-sm">
       {transactions.map((tx) => (
         <div key={tx.transactionHash} className="p-4 hover:bg-gray-50">
-          <div className="flex items-center gap-3">
-            <div className="text-gray-400">
+          <div className="flex md:flex-row flex-col md:items-center items-start gap-3">
+            <div className="text-gray-400 md:block hidden">
               <FontAwesomeIcon icon={faFileAlt} className="w-6 h-6!" />
             </div>
-            <div className="min-w-[180px]">
+            <div className="min-w-[180px] flex md:flex-col flex-row md:items-start items-center md:gap-0 gap-1">
+              <span className="md:hidden block">TX# </span>
               <Link
                 href={`/tx/${tx.transactionHash}`}
                 className="text-[#0784c3] hover:text-blue-600 block"

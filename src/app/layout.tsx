@@ -37,7 +37,7 @@ export default function RootLayout({
         <Suspense fallback={<SkeletonLoading />}>
           <TopBar />
           <Navbar />
-          <main className="container mx-auto px-4 pt-8 pb-20">{children}</main>
+          <main className="mx-auto pt-8 pb-20">{children}</main>
           <Footer />
           <Toaster />
         </Suspense>

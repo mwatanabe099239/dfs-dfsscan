@@ -3,8 +3,6 @@
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFileAlt } from "@fortawesome/free-solid-svg-icons";
 import { Transaction } from "@/src/types";
 import {
   getAddressTotalTransactionWithPagination,
@@ -13,6 +11,8 @@ import {
 } from "@/src/lib/firebase";
 import { formatTimeAgo, shortenAddress, shortenHash } from "@/src/lib/utils";
 import Pagination from "@/src/components/common/Pagination";
+import { Copy, MoveRight } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 // Types
 interface StatsCardProps {
@@ -51,6 +51,7 @@ const TableHeader = () => (
     <th className="p-3 whitespace-nowrap">Method</th>
     <th className="p-3 whitespace-nowrap">Age</th>
     <th className="p-3 whitespace-nowrap">From</th>
+    <th className="p-3 whitespace-nowrap"></th>
     <th className="p-3 whitespace-nowrap">To</th>
     <th className="p-3 whitespace-nowrap">Amount</th>
     <th className="p-3 whitespace-nowrap">Gas Fee</th>
@@ -60,52 +61,104 @@ const TableHeader = () => (
 const TransactionRow = ({
   tx,
   isLast,
+  address,
 }: {
   tx: Transaction;
   isLast: boolean;
-}) => (
-  <tr
-    className={`${!isLast ? "border-b border-gray-200" : ""} hover:bg-gray-50`}
-  >
-    <td className="p-3">
-      <div className="flex items-center gap-2">
-        <FontAwesomeIcon icon={faFileAlt} className="text-gray-400" />
-        <Link
-          href={`/tx/${tx.transactionHash}`}
-          className="text-[#0784c3] hover:text-blue-600"
-        >
-          {shortenHash(tx.transactionHash)}
-        </Link>
-      </div>
-    </td>
-    <td className="p-3">
-      <span className="bg-gray-50 border-gray-200 border text-xs px-2 py-1 rounded">
-        {tx.method || "Transfer"}
-      </span>
-    </td>
-    <td className="p-3">{formatTimeAgo(tx.createdAt.getTime() / 1000)}</td>
-    <td className="p-3">
-      <Link
-        href={`/address/${tx.fromAddress}`}
-        className="text-[#0784c3] hover:text-blue-600"
-      >
-        {shortenAddress(tx.fromAddress)}
-      </Link>
-    </td>
-    <td className="p-3">
-      <Link
-        href={`/address/${tx.toAddress}`}
-        className="text-[#0784c3] hover:text-blue-600"
-      >
-        {shortenAddress(tx.toAddress)}
-      </Link>
-    </td>
-    <td className="p-3">
-      {tx.amount} {tx.method === "Token Created" ? "DFS" : tx.token.symbol}
-    </td>
-    <td className="p-3 text-gray-600 text-xs">{tx.gasFee} DFS</td>
-  </tr>
-);
+  address: string | null | undefined;
+}) => {
+  const handleCopyTx = (txHash: string) => {
+    navigator.clipboard.writeText(txHash);
+    toast.success("Copied!");
+  };
+
+  const isTotalTx = !address;
+  const isTokenTx = address?.startsWith("drc20_0x");
+
+  return (
+    <tr
+      className={`${
+        !isLast ? "border-b border-gray-200" : ""
+      } hover:bg-gray-50`}
+    >
+      <td className="p-3">
+        <div className="flex items-center gap-2">
+          <Link
+            href={`/tx/${tx.transactionHash}`}
+            className="text-[#0784c3] hover:text-blue-600"
+          >
+            {shortenHash(tx.transactionHash)}
+          </Link>
+          <Copy
+            className="w-4 h-4 text-gray-500 cursor-pointer"
+            onClick={() => handleCopyTx(tx.transactionHash)}
+          />
+        </div>
+      </td>
+      <td className="p-3">
+        <span className="bg-gray-50 border-gray-200 border text-xs px-2 py-1 rounded">
+          {tx.method || "Transfer"}
+        </span>
+      </td>
+      <td className="p-3">{formatTimeAgo(tx.createdAt.getTime() / 1000)}</td>
+      <td className="p-3">
+        <div className="flex items-center gap-2">
+          <Link
+            href={`/address/${tx.fromAddress}`}
+            className="text-[#0784c3] hover:text-blue-600"
+          >
+            {shortenAddress(tx.fromAddress)}
+          </Link>
+          {tx.fromAddress && (
+            <Copy
+              className="w-4 h-4 text-gray-500 cursor-pointer"
+              onClick={() => handleCopyTx(tx.fromAddress)}
+            />
+          )}
+        </div>
+      </td>
+      <td className="p-3">
+        {isTotalTx || isTokenTx ? (
+          <div className="bg-[#00a18610] border border-[#00a18630] rounded-full text-center h-6 w-6 flex items-center justify-center">
+            <MoveRight className="w-4 h-auto text-[#00a186]" />
+          </div>
+        ) : (
+          <>
+            {address === tx.fromAddress ? (
+              <div className="bg-[#cc9a0610] border border-[#cc9a0630] text-[#cc9a06] flex items-center justify-center h-6 w-10 text-center rounded-md text-[10px] font-medium">
+                OUT
+              </div>
+            ) : (
+              <div className="bg-[#00a18610] border border-[#00a18630] text-[#00a186] flex items-center justify-center h-6 w-10 text-center rounded-md text-[10px] font-medium">
+                IN
+              </div>
+            )}
+          </>
+        )}
+      </td>
+      <td className="p-3">
+        <div className="flex items-center gap-2">
+          <Link
+            href={`/address/${tx.toAddress}`}
+            className="text-[#0784c3] hover:text-blue-600"
+          >
+            {shortenAddress(tx.toAddress)}
+          </Link>
+          {tx.toAddress && (
+            <Copy
+              className="w-4 h-4 text-gray-500 cursor-pointer"
+              onClick={() => handleCopyTx(tx.toAddress)}
+            />
+          )}
+        </div>
+      </td>
+      <td className="p-3">
+        {tx.amount} {tx.method === "Token Created" ? "DFS" : tx.token.symbol}
+      </td>
+      <td className="p-3 text-gray-600 text-xs">{tx.gasFee} DFS</td>
+    </tr>
+  );
+};
 
 const TableSkeleton = () => (
   <div className="animate-pulse">
@@ -118,11 +171,7 @@ const TableSkeleton = () => (
           <tr key={i} className="border-b border-gray-200">
             {[...Array(7)].map((_, j) => (
               <td key={j} className="p-3">
-                <div
-                  className={`h-4 bg-gray-200 rounded ${
-                    j >= 5 ? "ml-auto w-20" : "w-32"
-                  }`}
-                />
+                <div className={`h-4 bg-gray-200 rounded w-32`} />
               </td>
             ))}
           </tr>
@@ -287,6 +336,7 @@ function TransactionsContent() {
                     key={index}
                     tx={tx}
                     isLast={index === txData.transactions.length - 1}
+                    address={addressFilter}
                   />
                 ))}
               </tbody>

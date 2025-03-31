@@ -42,8 +42,8 @@ export default function TokenHolders({
           <tr className="text-left text-sm border-b border-gray-200">
             <th className="p-3">Rank</th>
             <th className="p-3">Address</th>
-            <th className="p-3 text-right">Quantity</th>
-            <th className="p-3 text-right">Percentage</th>
+            <th className="p-3">Quantity</th>
+            <th className="p-3">Percentage</th>
           </tr>
         </thead>
         <tbody className="text-sm">
@@ -65,10 +65,8 @@ export default function TokenHolders({
                   {holder.address}
                 </Link>
               </td>
-              <td className="p-3 text-right">
-                {holder.balance.toLocaleString()}
-              </td>
-              <td className="p-3 text-right">
+              <td className="p-3">{holder.balance.toLocaleString()}</td>
+              <td className="p-3">
                 {((holder.balance / totalSupplyNum) * 100).toFixed(2)}%
               </td>
             </tr>

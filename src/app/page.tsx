@@ -8,14 +8,10 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <div>
-      {/* Full width black background section */}
-      <div className="absolute top-0 left-0 w-full h-[350px] bg-[#131313] bg-[url('/icons/waves-light.svg')] bg-repeat -z-1" />
-
-      {/* Overview section - positioned to overlap the black background */}
-      <div className="px-4 -mt-10 z-10">
-        <div className="pt-16 mb-16 flex justify-between">
-          <div className="w-2/3">
+    <>
+      <div className="py-16 -mt-8 bg-[url('/icons/waves-light.svg')] w-full h-[280px] bg-[#131313] bg-repeat">
+        <div className="container mx-auto px-4 flex justify-between ">
+          <div className="w-full md:w-2/3">
             <div className="text-left mb-2">
               <h1 className="text-xl text-white mb-1">
                 DFS Web Chain Explorer
@@ -30,26 +26,31 @@ export default function Home() {
               </span>
             </div>
           </div>
-          <div className="w-1/3 flex items-center justify-start">
-            <div className="w-fit relative md:block hidden">
-              <div className="absolute -top-2 right-5 bg-white text-black px-2 py-1 text-xs rounded-md">
-                Ad
+          <div className="w-1/3 md:block hidden ">
+            <div className="flex items-center justify-start">
+              <div className="w-fit relative md:block hidden">
+                <div className="absolute -top-2 right-5 bg-white text-black px-2 py-1 text-xs rounded-md">
+                  Ad
+                </div>
+                <Image
+                  src="/images/ads.png"
+                  alt="DFS Logo"
+                  className="h-auto object-contain rounded-lg cursor-pointer"
+                  width={350}
+                  height={100}
+                  priority
+                  onClick={() => {
+                    window.open("https://quickido.com", "_blank");
+                  }}
+                />
               </div>
-              <Image
-                src="/images/ads.png"
-                alt="DFS Logo"
-                className="h-auto object-contain rounded-lg cursor-pointer"
-                width={350}
-                height={100}
-                priority
-                onClick={() => {
-                  window.open("https://quickido.com", "_blank");
-                }}
-              />
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-lg mb-6 p-4">
+      </div>
+
+      <div className="px-4 container mx-auto">
+        <div className="bg-white rounded-lg shadow-lg mb-6 p-4 mt-[-30px]">
           <NetworkStatsSection />
         </div>
 
@@ -72,6 +73,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
