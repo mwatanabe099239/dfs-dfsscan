@@ -21,13 +21,13 @@ import toast from "react-hot-toast";
 import Image from "next/image";
 
 const InfoLabel = ({ label, tooltip }: { label: string; tooltip: string }) => (
-  <div className="w-80 text-gray-600 font-light flex items-center gap-2">
+  <div className="w-full md:w-80 md:text-gray-600 text-gray-900 flex items-center gap-2 md:font-thin font-normal">
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger>
           <FontAwesomeIcon
             icon={faQuestionCircle}
-            className="text-gray-400 hover:text-gray-600 text-sm"
+            className="md:text-gray-600 text-gray-900 hover:text-gray-700 text-sm"
           />
         </TooltipTrigger>
         <TooltipContent>
@@ -56,9 +56,11 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
   return (
     <div className="space-y-4 pb-4">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-gray-200 pb-4">
+      <div className="flex md:flex-row flex-col md:items-center md:justify-between border-b border-gray-200 pb-4">
         <h1 className="text-xl">Transaction Details</h1>
-        <ButtonGroup />
+        <div className="flex-1 flex items-center justify-end">
+          <ButtonGroup />
+        </div>
       </div>
 
       <SponsorTitle />
@@ -67,12 +69,12 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
         <div className="p-6">
           <div className="space-y-4">
             {/* Transaction Hash */}
-            <div className="flex">
+            <div className="flex md:flex-row flex-col">
               <InfoLabel
                 label="Transaction Hash:"
                 tooltip="A TxHash or transaction hash is a uniquie 66-character identifer that is generated whenever a transaction is executed."
               />
-              <div className="flex-1 flex items-center gap-2">
+              <div className="flex-1 flex items-center gap-2 break-all">
                 <span className="text-gray-900">
                   {transaction.transactionHash}
                 </span>
@@ -84,7 +86,7 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
             </div>
 
             {/* Status */}
-            <div className="flex">
+            <div className="flex md:flex-row flex-col">
               <InfoLabel
                 label="Status:"
                 tooltip="The status of the transaction"
@@ -98,7 +100,7 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
             </div>
 
             {/* Block */}
-            <div className="flex">
+            <div className="flex md:flex-row flex-col">
               <InfoLabel
                 label="Block:"
                 tooltip="Number of the block in which the transaction is recorded."
@@ -109,7 +111,7 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
             </div>
 
             {/* Timestamp */}
-            <div className="flex pb-3 border-b border-gray-100">
+            <div className="flex md:flex-row flex-col pb-3 border-b border-gray-100">
               <InfoLabel
                 label="Timestamp:"
                 tooltip="The date and time at which a transaction is validated."
@@ -122,21 +124,25 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
             </div>
 
             {/* Transaction Action */}
-            <div className="flex pb-3 border-b border-gray-100">
-              <div className="w-80 text-gray-600 font-light flex items-center gap-2">
+            <div className="flex md:flex-row flex-col pb-3 border-b border-gray-100">
+              <div className="w-full md:w-80 md:text-gray-600 text-gray-900 flex items-center gap-2 md:font-thin font-normal">
                 <ArrowRightLeft className="w-4 h-4 text-[#0784c3]" />
-                <span>Transaction Action:</span>
+                <span className="">Transaction Action:</span>
               </div>
               <div className="flex-1 flex gap-2 text-gray-600">
-                <span className="">Transfer</span>
-                <span className="text-gray-900 font-normal">{`${transaction.amount} ${transaction.token.symbol}`}</span>
-                <span>To</span>
-                <span className="text-[#0784c3]">{transaction.toAddress}</span>
+                <span className="break-all">
+                  Transfer{" "}
+                  <span className="text-gray-900 font-normal whitespace-nowrap">{`${transaction.amount} ${transaction.token.symbol}`}</span>{" "}
+                  To{" "}
+                  <span className="text-[#0784c3]">
+                    {transaction.toAddress}
+                  </span>
+                </span>
               </div>
             </div>
 
             {/* Sporsored */}
-            <div className="flex items-start pb-3 border-b border-gray-100">
+            <div className="flex items-start md:flex-row flex-col pb-3 border-b border-gray-100">
               <InfoLabel
                 label="Sponsored:"
                 tooltip="Sponsored banner advertisement"
@@ -147,13 +153,13 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
                   alt="sponsor"
                   width={500}
                   height={120}
-                  className="rounded-md h-[120px] w-auto"
+                  className="rounded-md md:h-[120px] h-[70px] w-auto"
                 />
               </div>
             </div>
 
             {/* From */}
-            <div className="flex">
+            <div className="flex md:flex-row flex-col">
               <InfoLabel
                 label="From:"
                 tooltip="The sending party of the transaction"
@@ -161,7 +167,7 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
               <div className="flex-1">
                 <Link
                   href={`/address/${transaction.fromAddress}`}
-                  className="text-[#0784c3] hover:text-blue-600"
+                  className="text-[#0784c3] hover:text-blue-600 break-all"
                 >
                   {transaction.fromAddress}
                 </Link>
@@ -169,7 +175,7 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
             </div>
 
             {/* To */}
-            <div className="flex pb-3 border-b border-gray-200">
+            <div className="flex md:flex-row flex-col pb-3 border-b border-gray-200">
               <InfoLabel
                 label="To:"
                 tooltip="The receiving party of the transaction (could be a contract address)"
@@ -177,7 +183,7 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
               <div className="flex-1">
                 <Link
                   href={`/address/${transaction.toAddress}`}
-                  className="text-[#0784c3] hover:text-blue-600"
+                  className="text-[#0784c3] hover:text-blue-600 break-all"
                 >
                   {transaction.toAddress}
                 </Link>
@@ -185,7 +191,7 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
             </div>
 
             {/* Method */}
-            <div className="flex pb-3 border-b border-gray-200">
+            <div className="flex md:flex-row flex-col pb-3 border-b border-gray-200">
               <InfoLabel
                 label="Method:"
                 tooltip="The type of transaction that was executed"
@@ -194,7 +200,7 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
             </div>
 
             {/* Value */}
-            <div className="flex py-3 border-b border-gray-200">
+            <div className="flex md:flex-row flex-col py-3 border-b border-gray-200">
               <InfoLabel
                 label="Value:"
                 tooltip="The value being transacted in DFS and fiat value."
@@ -210,7 +216,7 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
             </div>
 
             {/* Transaction Fee */}
-            <div className="flex py-3">
+            <div className="flex md:flex-row flex-col py-3">
               <InfoLabel
                 label="Transaction Fee:"
                 tooltip="Amount paid for processing the transaction."
@@ -232,8 +238,8 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
       </div>
 
       <div className="bg-white rounded-lg shadow-[0_2px_4px_0_rgba(0,0,0,0.05)] border border-gray-200 text-sm font-light">
-        <div className="p-6 flex items-center justify-between">
-          <h2 className="w-80 text-gray-600 font-light flex items-center gap-2">
+        <div className="p-6 flex md:flex-row flex-col items-center justify-between">
+          <h2 className="w-full md:w-80 md:text-gray-600 text-gray-900 flex items-center gap-2 md:font-thin font-normal">
             More Details:
           </h2>
           <div className="flex-1 flex items-center gap-1 cursor-pointer">
@@ -244,16 +250,17 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
       </div>
 
       <div className="bg-white rounded-lg shadow-[0_2px_4px_0_rgba(0,0,0,0.05)] border border-gray-200 text-sm font-light">
-        <div className="p-6 flex items-center justify-between">
+        <div className="p-6 flex md:flex-row flex-col items-center justify-between">
           <InfoLabel
             label="Private Note:"
             tooltip="Private note to keep track of the transaction. Only viewable to DFSScan's user who assign them."
           />
           <div className="flex-1 flex items-center gap-1">
-            <span>To access the</span>
-            <span className="font-normal">Private Note</span>
-            <span>feature, you must be</span>
-            <span className="text-[#0784c3]">Logged In</span>
+            <span className="break-all">
+              To access the <span className="font-normal">Private Note</span>{" "}
+              feature, you must be{" "}
+              <span className="text-[#0784c3]">Logged In</span>
+            </span>
           </div>
         </div>
       </div>
