@@ -178,7 +178,7 @@ export default function AddressContent({ address }: { address: string }) {
   const handleCopyClick = async () => {
     try {
       await navigator.clipboard.writeText(address);
-      toast.success("Address Copied");
+      toast.success("Copied!");
     } catch (err) {
       toast.error("Failed to copy address");
     }
@@ -732,23 +732,23 @@ function QRCodeModal({
   );
 }
 
-function ButtonGroup() {
+export function ButtonGroup() {
   return (
     <div className="flex items-center gap-2 text-xs">
-      <button className="hover:bg-[#0670a6] cursor-pointer bg-[#0784c3] text-white p-2 rounded-md">
+      <button className="hover:bg-[#0670a6] cursor-pointer bg-[#0784c3] text-white px-2 py-1.5 rounded-md">
         Buy
       </button>
-      <button className="hover:bg-[#0670a6] cursor-pointer bg-[#0784c3] text-white p-2 rounded-md">
+      <button className="hover:bg-[#0670a6] cursor-pointer bg-[#0784c3] text-white px-2 py-1.5 rounded-md">
         Create Earn
       </button>
-      <button className="hover:bg-[#0670a6] cursor-pointer bg-[#0784c3] text-white p-2 rounded-md">
+      <button className="hover:bg-[#0670a6] cursor-pointer bg-[#0784c3] text-white px-2 py-1.5 rounded-md">
         Gaming
       </button>
     </div>
   );
 }
 
-function SponsorTitle() {
+export function SponsorTitle() {
   return (
     <div className="flex items-center gap-2 text-sm">
       <span className="text-gray-500 font-semibold">
