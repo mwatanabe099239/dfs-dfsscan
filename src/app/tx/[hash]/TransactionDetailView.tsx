@@ -16,7 +16,7 @@ import {
   ButtonGroup,
   SponsorTitle,
 } from "../../address/[address]/AddressContent";
-import { ArrowRightLeft, Copy } from "lucide-react";
+import { ArrowRightLeft, Copy, PlusIcon } from "lucide-react";
 import toast from "react-hot-toast";
 import Image from "next/image";
 
@@ -31,7 +31,7 @@ const InfoLabel = ({ label, tooltip }: { label: string; tooltip: string }) => (
           />
         </TooltipTrigger>
         <TooltipContent>
-          <p className="text-sm">{tooltip}</p>
+          <p className="text-xs">{tooltip}</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
@@ -143,11 +143,11 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
               />
               <div className="flex-1 flex gap-2 text-gray-600">
                 <Image
-                  src="/images/ads.png"
+                  src="/images/ads-long.png"
                   alt="sponsor"
-                  width={200}
-                  height={90}
-                  className="rounded-md h-[90px] w-auto"
+                  width={500}
+                  height={120}
+                  className="rounded-md h-[120px] w-auto"
                 />
               </div>
             </div>
@@ -227,6 +227,33 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
                 <div className="flex-1">{transaction.message}</div>
               </div>
             )} */}
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-lg shadow-[0_2px_4px_0_rgba(0,0,0,0.05)] border border-gray-200 text-sm font-light">
+        <div className="p-6 flex items-center justify-between">
+          <h2 className="w-80 text-gray-600 font-light flex items-center gap-2">
+            More Details:
+          </h2>
+          <div className="flex-1 flex items-center gap-1 cursor-pointer">
+            <PlusIcon className="w-4 h-4 text-[#0784c3]" />
+            <span className="text-[#0784c3]">Click to show more</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-lg shadow-[0_2px_4px_0_rgba(0,0,0,0.05)] border border-gray-200 text-sm font-light">
+        <div className="p-6 flex items-center justify-between">
+          <InfoLabel
+            label="Private Note:"
+            tooltip="Private note to keep track of the transaction. Only viewable to DFSScan's user who assign them."
+          />
+          <div className="flex-1 flex items-center gap-1">
+            <span>To access the</span>
+            <span className="font-normal">Private Note</span>
+            <span>feature, you must be</span>
+            <span className="text-[#0784c3]">Logged In</span>
           </div>
         </div>
       </div>
