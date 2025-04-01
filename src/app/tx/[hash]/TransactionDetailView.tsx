@@ -53,6 +53,8 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
     }
   };
 
+  const ZERO_ADDRESS = "dfs_0x0000000000000000000000000000000000000000";
+
   return (
     <div className="space-y-4 pb-4">
       {/* Header */}
@@ -132,10 +134,18 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
               <div className="flex-1 flex gap-2 text-gray-600">
                 <span className="break-all">
                   Transfer{" "}
-                  <span className="text-gray-900 font-normal whitespace-nowrap">{`${transaction.amount} ${transaction.token.symbol}`}</span>{" "}
+                  <span className="text-gray-900 font-normal whitespace-nowrap">{`${
+                    transaction.amount
+                  } ${
+                    transaction.method === "Token Created"
+                      ? "DFS"
+                      : transaction.token.symbol
+                  }`}</span>{" "}
                   To{" "}
                   <span className="text-[#0784c3]">
-                    {transaction.toAddress}
+                    {transaction.method === "Token Created"
+                      ? transaction.fromAddress
+                      : transaction.toAddress}
                   </span>
                 </span>
               </div>
@@ -166,10 +176,16 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
               />
               <div className="flex-1">
                 <Link
-                  href={`/address/${transaction.fromAddress}`}
+                  href={`/address/${
+                    transaction.method === "Token Created"
+                      ? ZERO_ADDRESS
+                      : transaction.fromAddress
+                  }`}
                   className="text-[#0784c3] hover:text-blue-600 break-all"
                 >
-                  {transaction.fromAddress}
+                  {transaction.method === "Token Created"
+                    ? ZERO_ADDRESS
+                    : transaction.fromAddress}
                 </Link>
               </div>
             </div>
@@ -182,10 +198,16 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
               />
               <div className="flex-1">
                 <Link
-                  href={`/address/${transaction.toAddress}`}
+                  href={`/address/${
+                    transaction.method === "Token Created"
+                      ? transaction.fromAddress
+                      : transaction.toAddress
+                  }`}
                   className="text-[#0784c3] hover:text-blue-600 break-all"
                 >
-                  {transaction.toAddress}
+                  {transaction.method === "Token Created"
+                    ? transaction.fromAddress
+                    : transaction.toAddress}
                 </Link>
               </div>
             </div>

@@ -13,6 +13,8 @@ export default function LatestTransactions() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const ZERO_ADDRESS = "dfs_0x0000000000000000000000000000000000000000";
+
   useEffect(() => {
     const fetchTransactions = async () => {
       const txs = await getLatestTransactions();
@@ -61,19 +63,35 @@ export default function LatestTransactions() {
               <div>
                 <span className="text-black">From </span>
                 <Link
-                  href={`/address/${tx.fromAddress}`}
+                  href={`/address/${
+                    tx.method === "Token Created"
+                      ? ZERO_ADDRESS
+                      : tx.fromAddress
+                  }`}
                   className="text-[#0784c3] hover:text-blue-600"
                 >
-                  {formatAddress(tx.fromAddress)}
+                  {formatAddress(
+                    tx.method === "Token Created"
+                      ? ZERO_ADDRESS
+                      : tx.fromAddress
+                  )}
                 </Link>
               </div>
               <div>
                 <span className="text-black">To </span>
                 <Link
-                  href={`/address/${tx.toAddress}`}
+                  href={`/address/${
+                    tx.method === "Token Created"
+                      ? tx.fromAddress
+                      : tx.toAddress
+                  }`}
                   className="text-[#0784c3] hover:text-blue-600"
                 >
-                  {formatAddress(tx.toAddress)}
+                  {formatAddress(
+                    tx.method === "Token Created"
+                      ? tx.fromAddress
+                      : tx.toAddress
+                  )}
                 </Link>
               </div>
             </div>

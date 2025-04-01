@@ -15,6 +15,7 @@ export interface Transaction {
     name: string;
     symbol: string;
     tokenAddress: string;
+    totalSupply: string;
   };
   transactionHash: string;
 }
