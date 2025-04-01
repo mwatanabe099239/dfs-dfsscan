@@ -21,7 +21,6 @@ const FOOTER_SECTIONS = {
       { label: "Brand Assets", href: "/#", isExternal: false },
       { label: "Contact Us", href: "/#", isExternal: false },
       { label: "Terms & Privacy", href: "/#", isExternal: false },
-      { label: "Bug Bounty", href: "/#", isExternal: true },
     ],
   },
   community: {
@@ -52,11 +51,12 @@ const FOOTER_SECTIONS = {
 const FooterLinkComponent = ({ link }: { link: FooterLink }) => (
   <Link
     href={link.href}
-    className="hover:text-[#0784c3] text-[#081d35] text-xs flex items-center gap-1 font-thin"
+    className="hover:text-[#0784c3] text-[#081d35] text-xs flex items-center gap-1 font-thin relative w-fit"
     target={link.isExternal ? "_blank" : "_self"}
     rel={link.isExternal ? "noopener noreferrer" : ""}
   >
     {link.label}
+    <div className="absolute right-[-2] top-[-2] w-1 h-1 rounded-full bg-red-500" />
     {link.isExternal && (
       <svg
         className="w-3 h-3"
@@ -89,6 +89,12 @@ const FooterSection = ({
         <FooterLinkComponent key={index} link={link} />
       ))}
     </div>
+    {title === "Company" && (
+      <div className="flex items-center text-xs gap-2">
+        <div className="w-1 h-1 rounded-full bg-red-500" />
+        <span>Coming Soon</span>
+      </div>
+    )}
   </div>
 );
 

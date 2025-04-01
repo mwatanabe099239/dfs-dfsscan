@@ -8,10 +8,10 @@ import { useState } from "react";
 const MENU_LINKS = [
   { href: "/", label: "Home" },
   { href: "/txs", label: "Transactions" },
-  { href: "/tokens", label: "Tokens" },
-  { href: "/nfts", label: "NFTs" },
-  { href: "/more", label: "More" },
-  { href: "/apps", label: "Apps" },
+  { href: "/coming-soon", label: "Tokens" },
+  { href: "/coming-soon", label: "NFTs" },
+  { href: "/coming-soon", label: "More" },
+  { href: "/coming-soon", label: "Apps" },
 ] as const;
 
 export default function Navbar() {
@@ -54,8 +54,8 @@ export default function Navbar() {
 
           {/* Right section with navigation links */}
           <div className="hidden md:flex h-full py-3 items-center text-sm">
-            {MENU_LINKS.map(({ href, label }) => (
-              <Link key={href} href={href} className={getMenuStyle(href)}>
+            {MENU_LINKS.map(({ href, label }, index) => (
+              <Link key={index} href={href} className={getMenuStyle(href)}>
                 {label}
               </Link>
             ))}
@@ -77,8 +77,8 @@ export default function Navbar() {
             isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
           }`}
         >
-          {MENU_LINKS.map(({ href, label }) => (
-            <Link key={href} href={href} className={getMenuStyle(href)}>
+          {MENU_LINKS.map(({ href, label }, index) => (
+            <Link key={index} href={href} className={getMenuStyle(href)}>
               {label}
             </Link>
           ))}
