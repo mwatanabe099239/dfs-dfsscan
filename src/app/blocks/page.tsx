@@ -102,7 +102,7 @@ function BlocksContent() {
             <div className="flex items-center gap-2">
               <h2 className="text-md">Blocks</h2>
               <span className="text-sm text-gray-500">
-                Total of {blocksData.total.toLocaleString()} blocks
+                Total {perPage} of {blocksData.total.toLocaleString()} blocks
               </span>
             </div>
             <div className="flex items-center gap-4">
