@@ -20,6 +20,8 @@ export default function TokenTransactions({
 
   const isTokenTransfer = address.startsWith("drc20_0x");
 
+  const ZERO_ADDRESS = "dfs_0x0000000000000000000000000000000000000000";
+
   return (
     <>
       {/* Header */}
@@ -78,17 +80,32 @@ export default function TokenTransactions({
                   {formatTimeAgo(tx.createdAt.getTime() / 1000)}
                 </td>
                 <td className="p-3 flex items-center gap-2">
-                  <Link
-                    href={`/address/${tx.fromAddress}`}
-                    className="text-[#0784c3] hover:text-blue-600"
-                  >
-                    {shortenAddress(tx.fromAddress)}
-                  </Link>
-                  {tx.fromAddress && (
-                    <Copy
-                      className="w-4 h-4 text-gray-500 cursor-pointer"
-                      onClick={() => handleCopyTx(tx.fromAddress)}
-                    />
+                  {tx.method === "Token Created" ? (
+                    <>
+                      <Link
+                        href={`/address/${ZERO_ADDRESS}`}
+                        className="text-[#0784c3] hover:text-blue-600"
+                      >
+                        {shortenAddress(ZERO_ADDRESS)}
+                      </Link>
+                      <Copy
+                        className="w-4 h-4 text-gray-500 cursor-pointer"
+                        onClick={() => handleCopyTx(ZERO_ADDRESS)}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <Link
+                        href={`/address/${tx.fromAddress}`}
+                        className="text-[#0784c3] hover:text-blue-600"
+                      >
+                        {shortenAddress(tx.fromAddress)}
+                      </Link>
+                      <Copy
+                        className="w-4 h-4 text-gray-500 cursor-pointer"
+                        onClick={() => handleCopyTx(tx.fromAddress)}
+                      />
+                    </>
                   )}
                 </td>
                 <td className="p-3">
@@ -111,17 +128,32 @@ export default function TokenTransactions({
                   )}
                 </td>
                 <td className="p-3 flex items-center gap-2">
-                  <Link
-                    href={`/address/${tx.toAddress}`}
-                    className="text-[#0784c3] hover:text-blue-600"
-                  >
-                    {shortenAddress(tx.toAddress)}
-                  </Link>
-                  {tx.toAddress && (
-                    <Copy
-                      className="w-4 h-4 text-gray-500 cursor-pointer"
-                      onClick={() => handleCopyTx(tx.toAddress)}
-                    />
+                  {tx.method === "Token Created" ? (
+                    <>
+                      <Link
+                        href={`/address/${tx.fromAddress}`}
+                        className="text-[#0784c3] hover:text-blue-600"
+                      >
+                        {shortenAddress(tx.fromAddress)}
+                      </Link>
+                      <Copy
+                        className="w-4 h-4 text-gray-500 cursor-pointer"
+                        onClick={() => handleCopyTx(tx.fromAddress)}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <Link
+                        href={`/address/${tx.toAddress}`}
+                        className="text-[#0784c3] hover:text-blue-600"
+                      >
+                        {shortenAddress(tx.toAddress)}
+                      </Link>
+                      <Copy
+                        className="w-4 h-4 text-gray-500 cursor-pointer"
+                        onClick={() => handleCopyTx(tx.toAddress)}
+                      />
+                    </>
                   )}
                 </td>
                 <td className="p-3">

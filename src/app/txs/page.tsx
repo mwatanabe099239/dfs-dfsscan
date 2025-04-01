@@ -75,6 +75,8 @@ const TransactionRow = ({
   const isTotalTx = !address;
   const isTokenTx = address?.startsWith("drc20_0x");
 
+  const ZERO_ADDRESS = "dfs_0x0000000000000000000000000000000000000000";
+
   return (
     <tr
       className={`${
@@ -103,17 +105,34 @@ const TransactionRow = ({
       <td className="p-3">{formatTimeAgo(tx.createdAt.getTime() / 1000)}</td>
       <td className="p-3">
         <div className="flex items-center gap-2">
-          <Link
-            href={`/address/${tx.fromAddress}`}
-            className="text-[#0784c3] hover:text-blue-600"
-          >
-            {shortenAddress(tx.fromAddress)}
-          </Link>
-          {tx.fromAddress && (
-            <Copy
-              className="w-4 h-4 text-gray-500 cursor-pointer"
-              onClick={() => handleCopyTx(tx.fromAddress)}
-            />
+          {tx.method === "Token Created" ? (
+            <>
+              <Link
+                href={`/address/${ZERO_ADDRESS}`}
+                className="text-[#0784c3] hover:text-blue-600"
+              >
+                {shortenAddress(ZERO_ADDRESS)}
+              </Link>
+              <Copy
+                className="w-4 h-4 text-gray-500 cursor-pointer"
+                onClick={() => handleCopyTx(ZERO_ADDRESS)}
+              />
+            </>
+          ) : (
+            <>
+              <Link
+                href={`/address/${tx.fromAddress}`}
+                className="text-[#0784c3] hover:text-blue-600"
+              >
+                {shortenAddress(tx.fromAddress)}
+              </Link>
+              {tx.fromAddress && (
+                <Copy
+                  className="w-4 h-4 text-gray-500 cursor-pointer"
+                  onClick={() => handleCopyTx(tx.fromAddress)}
+                />
+              )}
+            </>
           )}
         </div>
       </td>
@@ -139,17 +158,23 @@ const TransactionRow = ({
       <td className="p-3">
         <div className="flex items-center gap-2">
           <Link
-            href={`/address/${tx.toAddress}`}
+            href={`/address/${
+              tx.method === "Token Created" ? tx.fromAddress : tx.toAddress
+            }`}
             className="text-[#0784c3] hover:text-blue-600"
           >
-            {shortenAddress(tx.toAddress)}
+            {shortenAddress(
+              tx.method === "Token Created" ? tx.fromAddress : tx.toAddress
+            )}
           </Link>
-          {tx.toAddress && (
-            <Copy
-              className="w-4 h-4 text-gray-500 cursor-pointer"
-              onClick={() => handleCopyTx(tx.toAddress)}
-            />
-          )}
+          <Copy
+            className="w-4 h-4 text-gray-500 cursor-pointer"
+            onClick={() =>
+              handleCopyTx(
+                tx.method === "Token Created" ? tx.fromAddress : tx.toAddress
+              )
+            }
+          />
         </div>
       </td>
       <td className="p-3">
