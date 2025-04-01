@@ -14,7 +14,7 @@ interface PaginationButtonProps {
 }
 
 const baseButtonStyles =
-  "px-3 py-1 border border-gray-200 rounded transition-colors duration-200";
+  "px-3 py-1 h-7 flex items-center justify-center border border-gray-200 rounded transition-colors duration-200";
 const activeButtonStyles = "text-[#0784c3] hover:bg-[#0784c3] hover:text-white";
 const disabledButtonStyles = "text-gray-400 pointer-events-none bg-gray-100";
 
@@ -51,7 +51,7 @@ export default function Pagination({
   const isLastPage = currentPage === totalPages;
 
   return (
-    <div className="flex items-center justify-end gap-1 text-xs p-4">
+    <div className="flex items-center justify-end gap-1 text-xs">
       <PaginationButton href={getPageUrl(1)} disabled={isFirstPage}>
         First
       </PaginationButton>
@@ -63,7 +63,7 @@ export default function Pagination({
         ‹
       </PaginationButton>
 
-      <div className="px-3 py-1 text-gray-500 bg-gray-100 border border-gray-200 rounded transition-colors duration-200">
+      <div className="px-3 py-1 h-7 flex items-center justify-center text-gray-500 bg-gray-100 border border-gray-200 rounded transition-colors duration-200">
         Page {currentPage} of {totalPages}
       </div>
 

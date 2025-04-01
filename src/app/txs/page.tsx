@@ -11,7 +11,7 @@ import {
 } from "@/src/lib/firebase";
 import { formatTimeAgo, shortenAddress, shortenHash } from "@/src/lib/utils";
 import Pagination from "@/src/components/common/Pagination";
-import { Copy, MoveRight } from "lucide-react";
+import { Copy, Download, MoveRight } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { ZERO_ADDRESS } from "@/src/lib/constant";
 import { SponsorTitle } from "../address/[address]/AddressContent";
@@ -341,16 +341,22 @@ function TransactionsContent() {
       <div className="bg-white rounded-lg shadow">
         <div className="border-b border-gray-200">
           <div className="flex items-center justify-between">
-            <div className="flex items-center justify-between gap-2 w-full">
-              <h2 className="text-sm p-4">
+            <div className="flex items-center justify-between gap-2 w-full p-4">
+              <h2 className="text-sm">
                 A total of {txData.total} transactions found
               </h2>
-              <Pagination
-                currentPage={txData.currentPage}
-                totalPages={Math.ceil(txData.total / txData.perPage)}
-                basePath="/txs"
-                queryParams={queryParams}
-              />
+              <div className="flex items-center gap-2">
+                <button className="flex items-center gap-2 text-xs text-gray-600 border border-gray-200 rounded-md px-2 py-1 cursor-pointer h-7">
+                  <Download className="w-4 h-4" />
+                  <span>Download Page Data</span>
+                </button>
+                <Pagination
+                  currentPage={txData.currentPage}
+                  totalPages={Math.ceil(txData.total / txData.perPage)}
+                  basePath="/txs"
+                  queryParams={queryParams}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -376,8 +382,8 @@ function TransactionsContent() {
             </table>
           )}
         </div>
-        <div className="flex items-center justify-between gap-2">
-          <div className="p-4 flex items-center gap-2">
+        <div className="flex items-center justify-between gap-2 p-4">
+          <div className="flex items-center gap-2">
             <span className="text-sm text-gray-600">Show rows:</span>
             <select
               className="border border-gray-300 rounded-md p-1 text-sm outline-none"
