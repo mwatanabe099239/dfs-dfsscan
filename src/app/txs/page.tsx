@@ -13,6 +13,8 @@ import { formatTimeAgo, shortenAddress, shortenHash } from "@/src/lib/utils";
 import Pagination from "@/src/components/common/Pagination";
 import { Copy, MoveRight } from "lucide-react";
 import { toast } from "react-hot-toast";
+import { ZERO_ADDRESS } from "@/src/lib/constant";
+import { SponsorTitle } from "../address/[address]/AddressContent";
 
 // Types
 interface StatsCardProps {
@@ -36,7 +38,7 @@ interface TransactionData {
 
 // Components
 const StatsCard = ({ title, value, suffix = "" }: StatsCardProps) => (
-  <div className="bg-white rounded-lg shadow-md p-4 border border-gray-200">
+  <div className="bg-white rounded-xl shadow p-4">
     <div className="text-sm text-gray-700 mb-1 font-thin">{title}</div>
     <div className="text-md font-medium">
       {typeof value === "number" ? value.toLocaleString() : value}
@@ -74,8 +76,6 @@ const TransactionRow = ({
 
   const isTotalTx = !address;
   const isTokenTx = address?.startsWith("drc20_0x");
-
-  const ZERO_ADDRESS = "dfs_0x0000000000000000000000000000000000000000";
 
   return (
     <tr
@@ -300,9 +300,31 @@ function TransactionsContent() {
 
   return (
     <div className="container mx-auto px-4 space-y-4">
+      {/* Header with address */}
+      <div className="flex flex-col border-b border-gray-200 pb-4 mb-4">
+        <h1 className="text-lg">Transactions</h1>
+        {addressFilter && (
+          <div className="flex items-center gap-1">
+            <span className="text-sm text-gray-700">For</span>
+            <Link href={`/address/${addressFilter}`} className="text-[#0784c3]">
+              {addressFilter}
+            </Link>
+          </div>
+        )}
+      </div>
+
+      <div className="mb-10">
+        <SponsorTitle />
+      </div>
+
       {!addressFilter && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <StatsCard title="TRANSACTIONS (24H)" value={stats.total24h} />
+          <StatsCard
+            title="DFS HOLDERS"
+            value={stats.networkFee24h}
+            suffix="DFS"
+          />
           <StatsCard
             title="NETWORK TRANSACTIONS FEE (24H)"
             value={stats.networkFee24h}
@@ -317,33 +339,19 @@ function TransactionsContent() {
       )}
 
       <div className="bg-white rounded-lg shadow">
-        <div className="p-4 border-b border-gray-200">
+        <div className="border-b border-gray-200">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <h2 className="text-md">Transactions</h2>
-              {addressFilter && (
-                <div className="flex items-center gap-1">
-                  <span className="text-sm text-gray-500">For</span>
-                  <Link
-                    href={`/address/${addressFilter}`}
-                    className="text-[#0784c3]"
-                  >
-                    {addressFilter}
-                  </Link>
-                </div>
-              )}
+            <div className="flex items-center justify-between gap-2 w-full">
+              <h2 className="text-sm p-4">
+                A total of {txData.total} transactions found
+              </h2>
+              <Pagination
+                currentPage={txData.currentPage}
+                totalPages={Math.ceil(txData.total / txData.perPage)}
+                basePath="/txs"
+                queryParams={queryParams}
+              />
             </div>
-            <select
-              className="border rounded p-1 text-sm"
-              value={perPage}
-              onChange={(e) => changePerPage(Number(e.target.value))}
-            >
-              {[10, 25, 50, 100].map((value) => (
-                <option key={value} value={value}>
-                  {value} rows
-                </option>
-              ))}
-            </select>
           </div>
         </div>
 
@@ -368,13 +376,28 @@ function TransactionsContent() {
             </table>
           )}
         </div>
-
-        <Pagination
-          currentPage={txData.currentPage}
-          totalPages={Math.ceil(txData.total / txData.perPage)}
-          basePath="/txs"
-          queryParams={queryParams}
-        />
+        <div className="flex items-center justify-between gap-2">
+          <div className="p-4 flex items-center gap-2">
+            <span className="text-sm text-gray-600">Show rows:</span>
+            <select
+              className="border border-gray-300 rounded-md p-1 text-sm outline-none"
+              value={perPage}
+              onChange={(e) => changePerPage(Number(e.target.value))}
+            >
+              {[10, 25, 50, 100].map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
+          </div>
+          <Pagination
+            currentPage={txData.currentPage}
+            totalPages={Math.ceil(txData.total / txData.perPage)}
+            basePath="/txs"
+            queryParams={queryParams}
+          />
+        </div>
       </div>
     </div>
   );

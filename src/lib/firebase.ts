@@ -283,7 +283,7 @@ export async function getAddressTotalTransactionWithPagination(
 ): Promise<{ transactions: Transaction[]; total: number }> {
   const countQuery = query(
     collection(db, "transactions"),
-    where("toAddress", "==", address)
+    or(where("toAddress", "==", address), where("fromAddress", "==", address))
   );
 
   const countSnapshot = await getCountFromServer(countQuery);
