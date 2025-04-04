@@ -56,7 +56,9 @@ const FooterLinkComponent = ({ link }: { link: FooterLink }) => (
     rel={link.isExternal ? "noopener noreferrer" : ""}
   >
     {link.label}
-    <div className="absolute right-[-2] top-[-2] w-1 h-1 rounded-full bg-red-500" />
+    <div className="absolute right-[-5] top-[-7] rounded-full text-red-500 text-sm">
+      *
+    </div>
     {link.isExternal && (
       <svg
         className="w-3 h-3"
@@ -91,7 +93,7 @@ const FooterSection = ({
     </div>
     {title === "Company" && (
       <div className="flex items-center text-xs gap-2">
-        <div className="w-1 h-1 rounded-full bg-red-500" />
+        <div className="rounded-full text-red-500">*</div>
         <span>Coming Soon</span>
       </div>
     )}
