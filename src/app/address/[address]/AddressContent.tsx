@@ -487,10 +487,10 @@ export default function AddressContent({ address }: { address: string }) {
 
           <SponsorTitle />
 
-          <div className="flex items-center justify-end mb-2">
+          <div className="flex items-center justify-end mb-2 gap-2">
             {tokenData.website ? (
               <button
-                className="text-gray-500 hover:text-gray-600 cursor-pointer bg-white border border-gray-200 rounded-md px-2 py-1.5 flex items-center justify-center text-sm"
+                className="text-gray-500 hover:text-gray-600 cursor-pointer bg-white border border-gray-200 rounded-md px-2 py-1.5 flex items-center justify-center text-sm h-[30px]"
                 onClick={() => window.open(tokenData.website, "_blank")}
               >
                 {tokenData.website}
@@ -762,10 +762,10 @@ export function SponsorTitle() {
 function FavoriteButton() {
   return (
     <div className="flex items-center justify-end gap-2">
-      <button className="text-gray-500 hover:text-gray-600 cursor-pointer bg-white border border-gray-200 rounded-md px-2 py-1.5 flex items-center justify-center text-sm">
+      <button className="text-gray-500 hover:text-gray-600 cursor-pointer bg-white border border-gray-200 rounded-md px-2 py-1.5 flex items-center justify-center text-sm h-[30px]">
         <Star className="w-4 h-4" />
       </button>
-      <button className="text-gray-500 hover:text-gray-600 cursor-pointer bg-white border border-gray-200 rounded-md px-2 py-1.5 flex items-center justify-center text-sm">
+      <button className="text-gray-500 hover:text-gray-600 cursor-pointer bg-white border border-gray-200 rounded-md px-2 py-1.5 flex items-center justify-center text-sm h-[30px]">
         <List className="w-4 h-4" />
       </button>
     </div>
