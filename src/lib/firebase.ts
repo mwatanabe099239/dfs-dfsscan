@@ -13,6 +13,7 @@ import {
 import { Transaction } from "../types";
 import { Block } from "../types";
 import { getCountFromServer } from "firebase/firestore";
+import { NON_USER_ADDRESS } from "./constant";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -381,13 +382,27 @@ export async function getTransactionsByAddressWithLimitWithTotalCount(
 }
 
 export async function getNativeBalance(address: string): Promise<string> {
-  const userQuery = query(
-    collection(db, "users"),
-    where("walletAddress", "==", address),
-    limit(1)
-  );
+  let userQuery;
+  let snapshot;
+  if (NON_USER_ADDRESS.includes(address)) {
+    userQuery = query(
+      collection(db, "non_users"),
+      where("walletAddress", "==", address),
+      limit(1)
+    );
 
-  const snapshot = await getDocs(userQuery);
+    snapshot = await getDocs(userQuery);
+  }else {
+    userQuery = query(
+      collection(db, "users"),
+      where("walletAddress", "==", address),
+      limit(1)
+    );
+  
+    snapshot = await getDocs(userQuery);
+  }
+
+  
   if (snapshot.empty) {
     return "0";
   }
@@ -396,13 +411,26 @@ export async function getNativeBalance(address: string): Promise<string> {
 }
 
 export async function getUserTokens(address: string): Promise<any[]> {
-  const userQuery = query(
-    collection(db, "users"),
-    where("walletAddress", "==", address),
-    limit(1)
-  );
+  let userQuery;
+  let snapshot;
+  if (NON_USER_ADDRESS.includes(address)) {
+    userQuery = query(
+      collection(db, "non_users"),
+      where("walletAddress", "==", address),
+      limit(1)
+    );
 
-  const snapshot = await getDocs(userQuery);
+    snapshot = await getDocs(userQuery);
+  }else {
+    userQuery = query(
+      collection(db, "users"),
+      where("walletAddress", "==", address),
+      limit(1)
+    );
+
+    snapshot = await getDocs(userQuery);
+  }
+
   if (snapshot.empty) {
     return [];
   }

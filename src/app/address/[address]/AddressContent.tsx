@@ -29,6 +29,7 @@ import QRCode from "react-qr-code";
 import Image from "next/image";
 import { shortenAddress } from "@/src/lib/utils";
 import { List, Star } from "lucide-react";
+import { NON_USER_ADDRESS } from "@/src/lib/constant";
 
 type AddressType = "wallet" | "token" | "invalid";
 
@@ -56,7 +57,7 @@ type TokenData = {
 type TabType = "transactions" | "holders";
 
 function getAddressType(address: string): AddressType {
-  if (address.startsWith("dfs") && address.length === 46) {
+  if (address.startsWith("dfs") && (address.length === 46 || NON_USER_ADDRESS.includes(address))) { 
     return "wallet";
   }
   if (address.startsWith("drc20") && address.length === 48) {
