@@ -8,15 +8,23 @@ import { Separator } from "../ui/separator";
 import { TransactionHistoryChart } from "./twoWeekTransactionChart";
 import Image from "next/image";
 import { Globe, List, CreditCard, Landmark, ClockFading } from "lucide-react";
+import { spawn } from "child_process";
 
 interface StatsItemProps {
   icon: React.ReactNode;
   label: string;
   mainValue: string;
   subValue?: string;
+  subValueColor?: string;
 }
 
-const StatsItem = ({ icon, label, mainValue, subValue }: StatsItemProps) => (
+const StatsItem = ({
+  icon,
+  label,
+  mainValue,
+  subValue,
+  subValueColor,
+}: StatsItemProps) => (
   <div className="flex gap-2 items-start">
     <div className="flex items-center gap-1.5 mb-0.5">
       <div className="text-gray-600 text-2xl w-6">{icon}</div>
@@ -26,7 +34,13 @@ const StatsItem = ({ icon, label, mainValue, subValue }: StatsItemProps) => (
       <div className="flex items-baseline gap-0.5">
         <span className="text-base">{mainValue}</span>
         {subValue && (
-          <span className="text-sm text-gray-600">({subValue})</span>
+          <>
+            <span className="text-sm text-gray-600">(</span>
+            <span className={`text-sm ${subValueColor || "text-gray-600"}`}>
+              {subValue}
+            </span>
+            <span className="text-sm text-gray-600">)</span>
+          </>
         )}
       </div>
     </div>
@@ -134,6 +148,11 @@ export default function NetworkStatsSection() {
                ${
                  networkStats.onChainTokenPrice.priceChange.h24 >= 0 ? "+" : "-"
                }${networkStats.onChainTokenPrice.priceChange.h24.toFixed(2)}%`}
+            subValueColor={
+              networkStats.onChainTokenPrice.priceChange.h24 >= 0
+                ? "text-[#0784c3]"
+                : "text-red-500"
+            }
           />
           <Separator className="bg-gray-200 my-4" />
           <StatsItem
