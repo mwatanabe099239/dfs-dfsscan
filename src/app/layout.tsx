@@ -6,7 +6,7 @@ import TopBar from "@/src/components/TopBar";
 import { Roboto } from "next/font/google";
 import { Suspense } from "react";
 import SkeletonLoading from "../components/SkeletonLoading";
-import "./globals.css";
+import "./globals.scss";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import Footer from "../components/Footer";
 config.autoAddCss = false;

@@ -7,13 +7,13 @@ import {
   limit,
   getDocs,
   where,
-  startAt,
   startAfter,
 } from "firebase/firestore";
 import { Transaction } from "../types";
 import { Block } from "../types";
 import { getCountFromServer } from "firebase/firestore";
 import { NON_USER_ADDRESS } from "./constant";
+import { calculateBlockNumber } from "@/src/services/dfschain-information";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -86,14 +86,6 @@ export async function getLatestBlocks(): Promise<Block[]> {
 export const BLOCK_GENERATION_TIME = 5 * 60 * 1000; // 5 minutes
 export const FIRST_BLOCK_TIME = "2025-03-26T00:00:00Z";
 
-export function calculateBlockNumber() {
-  const currentTimestamp = new Date();
-  const blockNumber = Math.floor(
-    (currentTimestamp.getTime() - new Date(FIRST_BLOCK_TIME).getTime()) /
-      BLOCK_GENERATION_TIME
-  );
-  return blockNumber;
-}
 
 export async function getBlocks(
   page: number,

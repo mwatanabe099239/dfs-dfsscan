@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faList, faClock, faCube } from "@fortawesome/free-solid-svg-icons";
-import { getNetworkStats } from "@/src/lib/firebase";
+import { NetworkStats } from "@/src/types";
+import { formatNumber } from "@/src/lib/utils";
+import { Separator } from "../ui/separator";
 
 interface StatsItemProps {
   icon: React.ReactNode;
@@ -30,42 +32,139 @@ const StatsItem = ({ icon, label, mainValue, subValue }: StatsItemProps) => (
 );
 
 export default function NetworkStatsSection() {
-  const [networkStats, setNetworkStats] = useState({
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [networkStats, setNetworkStats] = useState<NetworkStats>({
+    onChainTokenPrice: {
+      priceUsd: 0,
+      priceChange: {
+        m5: 0,
+        h1: 0,
+        h6: 0,
+        h24: 0,
+      },
+    },
+    dfsCirculationSupply: 0,
     latestBlock: 0,
-    totalTransactions: 0,
-    baseFee: "1",
+    dfsTransactionCount: 0,
+    twoWeekTransactionHistory: [],
+    holdersCount: 0,
+    dfsBaseFee: 0,
   });
 
   useEffect(() => {
-    const fetchStats = async () => {
-      const stats = await getNetworkStats();
-      setNetworkStats(stats);
+    const init = async () => {
+      setIsLoading(true);
+      const [
+        priceData,
+        dfsCirculationSupplyData,
+        latestBlockData,
+        dfsTransactionCountData,
+        twoWeekTransactionHistoryData,
+        holdersCountData,
+        baseFeeData,
+      ] = await Promise.all([
+        fetch("/api/dfs-onchain-token-price").then((res) => res.json()),
+        fetch("/api/dfschain-information/dfs-circulation-supply").then((res) =>
+          res.json()
+        ),
+        fetch("/api/dfschain-information/latest-block").then((res) =>
+          res.json()
+        ),
+        fetch(
+          "/api/dfschain-information/dfs-transaction-count?duration=all"
+        ).then((res) => res.json()),
+        fetch("/api/dfschain-information/two-week-transaction-history").then(
+          (res) => res.json()
+        ),
+        fetch(
+          "/api/dfschain-information/holders-count?tokenAddress=drc20_dfs"
+        ).then((res) => res.json()),
+        fetch("/api/dfschain-information/dfs-base-fee").then((res) =>
+          res.json()
+        ),
+      ]);
+
+      setIsLoading(false);
+
+      console.log(
+        priceData,
+        dfsCirculationSupplyData,
+        latestBlockData,
+        dfsTransactionCountData,
+        twoWeekTransactionHistoryData,
+        holdersCountData,
+        baseFeeData
+      );
+      setNetworkStats({
+        onChainTokenPrice: priceData.data,
+        dfsCirculationSupply: dfsCirculationSupplyData.data,
+        latestBlock: latestBlockData.data,
+        dfsTransactionCount: dfsTransactionCountData.data,
+        twoWeekTransactionHistory: twoWeekTransactionHistoryData.data,
+        holdersCount: holdersCountData.data,
+        dfsBaseFee: baseFeeData.data,
+      });
     };
-    fetchStats();
+
+    init();
   }, []);
 
   return (
     <div className="flex flex-col gap-4 md:flex-row md:gap-0 py-0 ">
       <div className="w-full md:w-1/3 flex items-center border-b md:border-b-0 md:border-r border-gray-200">
-        <StatsItem
-          icon={<FontAwesomeIcon icon={faList} />}
-          label="Transactions"
-          mainValue={networkStats.totalTransactions.toLocaleString()}
-        />
+        <div className="flex flex-col justify-items-start">
+          <StatsItem
+            icon={<FontAwesomeIcon icon={faList} />}
+            label="DFS Price"
+            mainValue={`$${formatNumber(
+              Number(networkStats.onChainTokenPrice.priceUsd.toFixed(6))
+            )} (+${networkStats.onChainTokenPrice.priceChange.h24.toFixed(
+              2
+            )}%)`}
+          />
+          <Separator />
+          <StatsItem
+            icon={<FontAwesomeIcon icon={faList} />}
+            label="Transactions"
+            mainValue={networkStats.dfsTransactionCount.toLocaleString()}
+          />
+        </div>
       </div>
       <div className="w-full md:w-1/3 flex items-center border-b md:border-b-0 md:border-r border-gray-200">
-        <StatsItem
-          icon={<FontAwesomeIcon icon={faClock} />}
-          label="Base Fee"
-          mainValue={`${networkStats.baseFee} DFS`}
-        />
+        <div className="flex flex-col justify-items-start">
+          <StatsItem
+            icon={<FontAwesomeIcon icon={faList} />}
+            label="Transactions"
+            mainValue={networkStats.dfsTransactionCount.toLocaleString()}
+          />
+          <Separator />
+          <StatsItem
+            icon={<FontAwesomeIcon icon={faList} />}
+            label="Transactions"
+            mainValue={networkStats.dfsTransactionCount.toLocaleString()}
+          />
+        </div>
       </div>
       <div className="w-full md:w-1/3 flex items-center">
-        <StatsItem
-          icon={<FontAwesomeIcon icon={faCube} />}
-          label="Latest Block"
-          mainValue={networkStats.latestBlock.toString()}
-        />
+        <div className="flex flex-col justify-items-start">
+          <StatsItem
+            icon={<FontAwesomeIcon icon={faList} />}
+            label="Transactions"
+            mainValue={networkStats.dfsTransactionCount.toLocaleString()}
+          />
+          <Separator />
+          <StatsItem
+            icon={<FontAwesomeIcon icon={faList} />}
+            label="Transactions"
+            mainValue={networkStats.dfsTransactionCount.toLocaleString()}
+          />
+        </div>
+      </div>
+      <div className="w-full md:w-1/3 flex items-center">
+        <div className="flex flex-col justify-items-start">
+         
+        </div>
       </div>
     </div>
   );

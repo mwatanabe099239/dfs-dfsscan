@@ -13,7 +13,7 @@ export default function Home() {
         <div className="container mx-auto px-4 flex justify-between ">
           <div className="w-full md:w-2/3">
             <div className="text-left mb-2">
-              <h1 className="text-xl text-white mb-1">
+              <h1 className="text-xl text-white mb-1 font-bold">
                 DFS Web Chain Explorer
               </h1>
             </div>
@@ -50,14 +50,14 @@ export default function Home() {
       </div>
 
       <div className="px-4 container mx-auto">
-        <div className="bg-white rounded-lg shadow-lg mb-6 p-4 mt-[-30px]">
+        <div className="bg-white rounded-lg shadow-md mb-6 p-4 mt-[-30px]">
           <NetworkStatsSection />
         </div>
 
         {/* Blocks and Transactions section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* Latest Blocks */}
-          <div className="bg-white rounded-lg shadow-lg lg:col-span-1">
+          <div className="bg-white rounded-lg shadow-md lg:col-span-1">
             <h2 className="text-sm font-medium p-4 border-b border-gray-200">
               Latest Blocks
             </h2>
@@ -65,7 +65,7 @@ export default function Home() {
           </div>
 
           {/* Latest Transactions */}
-          <div className="bg-white rounded-lg shadow-lg lg:col-span-1">
+          <div className="bg-white rounded-lg shadow-md lg:col-span-1">
             <h2 className="text-sm font-medium p-4 border-b border-gray-200">
               Latest Transactions
             </h2>

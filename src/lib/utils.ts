@@ -1,3 +1,6 @@
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
 export function formatTimeAgo(timestamp: number): string {
   const seconds = Math.floor(Date.now() / 1000 - timestamp);
 
@@ -30,9 +33,16 @@ export function formatTimeAgo(timestamp: number): string {
 }
 
 // Helper function for consistent number formatting
-export const formatNumber = (num: number) => {
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-};
+export function formatNumber(num: number): string {
+  // Split the number into whole and decimal parts
+  const [whole, decimal] = num.toString().split('.');
+  
+  // Add commas only to the whole number part
+  const formattedWhole = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  
+  // If there's a decimal part, add it back
+  return decimal ? `${formattedWhole}.${decimal}` : formattedWhole;
+}
 
 export const shortenAddress = (address: string, from: number = 15, to: number = 7) => {
   if (!address) return "";
@@ -42,3 +52,7 @@ export const shortenAddress = (address: string, from: number = 15, to: number = 
 export const shortenHash = (hash: string, to: number = 12) => {
   return `${hash.slice(0, to)}...`;
 };
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}

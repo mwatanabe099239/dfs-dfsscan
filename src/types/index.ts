@@ -47,13 +47,19 @@ export interface WalletInfo {
 }
 
 export interface NetworkStats {
-  bnbPrice: number;
-  transactions24h: number;
-  tps: number;
-  medianGasPrice: string;
-  bnbMarketCap: number;
-  bnbSupply: number;
+  onChainTokenPrice: {
+    priceUsd: number;
+    priceChange: {
+      m5: number;
+      h1: number;
+      h6: number;
+      h24: number;
+    };
+  };
+  dfsCirculationSupply: number;
   latestBlock: number;
-  blockTime: number;
-  votingPower: number;
-} 
+  dfsTransactionCount: number;
+  twoWeekTransactionHistory: any[];
+  holdersCount: number;
+  dfsBaseFee: number;
+}

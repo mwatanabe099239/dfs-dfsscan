@@ -57,7 +57,10 @@ type TokenData = {
 type TabType = "transactions" | "holders";
 
 function getAddressType(address: string): AddressType {
-  if (address.startsWith("dfs") && (address.length === 46 || NON_USER_ADDRESS.includes(address))) { 
+  if (
+    address.startsWith("dfs") &&
+    (address.length === 46 || NON_USER_ADDRESS.includes(address))
+  ) {
     return "wallet";
   }
   if (address.startsWith("drc20") && address.length === 48) {
@@ -391,7 +394,9 @@ export default function AddressContent({ address }: { address: string }) {
                     />
                     <span>at txn</span>
                     <span className="text-[#0784c3] cursor-pointer">
-                      {shortenHash(transactions[0]?.transactionHash)}
+                      {transactions[0]?.transactionHash
+                        ? shortenHash(transactions[0]?.transactionHash)
+                        : ""}
                     </span>
                   </div>
                 </div>

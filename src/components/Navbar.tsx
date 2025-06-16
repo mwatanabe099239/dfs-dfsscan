@@ -62,9 +62,7 @@ export default function Navbar() {
             <span className="text-gray-400 hidden md:inline">|</span>
             <div
               className="pl-4 cursor-pointer"
-              onClick={() =>
-                window.open("https://dfs-wallet.netlify.app", "_blank")
-              }
+              onClick={() => window.open("https://metaface.dfsscan.com", "_blank")}
             >
               <span>MetaFace</span>
             </div>
@@ -85,7 +83,7 @@ export default function Navbar() {
           <div
             className="block px-4 py-2 cursor-pointer"
             onClick={() =>
-              window.open("https://dfs-wallet.netlify.app", "_blank")
+              window.open("https://metaface.dfsscan.com", "_blank")
             }
           >
             <span>MetaFace</span>
