@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faList, faClock, faCube } from "@fortawesome/free-solid-svg-icons";
 import { NetworkStats } from "@/src/types";
 import { formatCompactNumber, formatNumber } from "@/src/lib/utils";
 import { Separator } from "../ui/separator";
 import { TransactionHistoryChart } from "./twoWeekTransactionChart";
+import Image from "next/image";
+import { Globe, List, CreditCard, Landmark, ClockFading } from "lucide-react";
 
 interface StatsItemProps {
   icon: React.ReactNode;
@@ -116,7 +117,15 @@ export default function NetworkStatsSection() {
       <div className="flex items-center md:border-r border-gray-200 md:px-4">
         <div className="flex flex-col justify-items-start w-full">
           <StatsItem
-            icon={<FontAwesomeIcon icon={faList} />}
+            icon={
+              <Image
+                src="/images/dfs-token.png"
+                alt="DFS Token"
+                className="object-cover"
+                width={24}
+                height={24}
+              />
+            }
             label="DFS Price"
             mainValue={`$${formatNumber(
               Number(networkStats.onChainTokenPrice.priceUsd.toFixed(6))
@@ -128,7 +137,7 @@ export default function NetworkStatsSection() {
           />
           <Separator className="bg-gray-200 my-4" />
           <StatsItem
-            icon={<FontAwesomeIcon icon={faList} />}
+            icon={<Globe className="w-6 h-6" />}
             label="Circulation Supply (MCap)"
             mainValue={`${formatNumber(
               Number(networkStats.dfsCirculationSupply.toFixed(6))
@@ -144,13 +153,13 @@ export default function NetworkStatsSection() {
       <div className="flex items-center md:border-r border-gray-200 md:px-4">
         <div className="flex flex-col justify-items-start w-full">
           <StatsItem
-            icon={<FontAwesomeIcon icon={faList} />}
+            icon={<List className="w-6 h-6" />}
             label="DFS Holders"
             mainValue={networkStats.holdersCount.toLocaleString()}
           />
           <Separator className="bg-gray-200 my-4" />
           <StatsItem
-            icon={<FontAwesomeIcon icon={faList} />}
+            icon={<CreditCard className="w-6 h-6" />}
             label="Total Transactions"
             mainValue={networkStats.dfsTransactionCount.toLocaleString()}
           />
@@ -160,13 +169,13 @@ export default function NetworkStatsSection() {
       <div className="flex items-center md:border-r border-gray-200 md:px-4">
         <div className="flex flex-col justify-items-start w-full">
           <StatsItem
-            icon={<FontAwesomeIcon icon={faList} />}
+            icon={<Landmark className="w-6 h-6" />}
             label="Base Fee"
             mainValue={`${networkStats.dfsBaseFee.toLocaleString()} DFS`}
           />
           <Separator className="bg-gray-200 my-4" />
           <StatsItem
-            icon={<FontAwesomeIcon icon={faList} />}
+            icon={<ClockFading className="w-6 h-6" />}
             label="Latest Block"
             mainValue={networkStats.latestBlock.toString()}
           />
