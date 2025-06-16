@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faList, faClock, faCube } from "@fortawesome/free-solid-svg-icons";
 import { NetworkStats } from "@/src/types";
-import { formatNumber } from "@/src/lib/utils";
+import { formatCompactNumber, formatNumber } from "@/src/lib/utils";
 import { Separator } from "../ui/separator";
+import { TransactionHistoryChart } from "./twoWeekTransactionChart";
 
 interface StatsItemProps {
   icon: React.ReactNode;
@@ -15,12 +16,12 @@ interface StatsItemProps {
 }
 
 const StatsItem = ({ icon, label, mainValue, subValue }: StatsItemProps) => (
-  <div className="flex gap-2 items-start pl-2">
+  <div className="flex gap-2 items-start">
     <div className="flex items-center gap-1.5 mb-0.5">
       <div className="text-gray-600 text-2xl w-6">{icon}</div>
     </div>
     <div className="flex flex-col gap-0.5">
-      <div className="uppercase text-sm text-gray-600">{label}</div>
+      <div className="uppercase text-sm text-gray-500">{label}</div>
       <div className="flex items-baseline gap-0.5">
         <span className="text-base">{mainValue}</span>
         {subValue && (
@@ -111,59 +112,75 @@ export default function NetworkStatsSection() {
   }, []);
 
   return (
-    <div className="flex flex-col gap-4 md:flex-row md:gap-0 py-0 ">
-      <div className="w-full md:w-1/3 flex items-center border-b md:border-b-0 md:border-r border-gray-200">
-        <div className="flex flex-col justify-items-start">
+    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 py-0">
+      <div className="flex items-center md:border-r border-gray-200 md:px-4">
+        <div className="flex flex-col justify-items-start w-full">
           <StatsItem
             icon={<FontAwesomeIcon icon={faList} />}
             label="DFS Price"
             mainValue={`$${formatNumber(
               Number(networkStats.onChainTokenPrice.priceUsd.toFixed(6))
-            )} (+${networkStats.onChainTokenPrice.priceChange.h24.toFixed(
-              2
-            )}%)`}
+            )}`}
+            subValue={`
+               ${
+                 networkStats.onChainTokenPrice.priceChange.h24 >= 0 ? "+" : "-"
+               }${networkStats.onChainTokenPrice.priceChange.h24.toFixed(2)}%`}
           />
-          <Separator />
+          <Separator className="bg-gray-200 my-4" />
           <StatsItem
             icon={<FontAwesomeIcon icon={faList} />}
-            label="Transactions"
-            mainValue={networkStats.dfsTransactionCount.toLocaleString()}
+            label="Circulation Supply (MCap)"
+            mainValue={`${formatNumber(
+              Number(networkStats.dfsCirculationSupply.toFixed(6))
+            )}`}
+            subValue={`$${formatCompactNumber(
+              Number(networkStats.dfsCirculationSupply) *
+                networkStats.onChainTokenPrice.priceUsd
+            )}`}
           />
+          <Separator className="bg-gray-200 my-4 xl:hidden block" />
         </div>
       </div>
-      <div className="w-full md:w-1/3 flex items-center border-b md:border-b-0 md:border-r border-gray-200">
-        <div className="flex flex-col justify-items-start">
+      <div className="flex items-center md:border-r border-gray-200 md:px-4">
+        <div className="flex flex-col justify-items-start w-full">
           <StatsItem
             icon={<FontAwesomeIcon icon={faList} />}
-            label="Transactions"
-            mainValue={networkStats.dfsTransactionCount.toLocaleString()}
+            label="DFS Holders"
+            mainValue={networkStats.holdersCount.toLocaleString()}
           />
-          <Separator />
+          <Separator className="bg-gray-200 my-4" />
           <StatsItem
             icon={<FontAwesomeIcon icon={faList} />}
-            label="Transactions"
+            label="Total Transactions"
             mainValue={networkStats.dfsTransactionCount.toLocaleString()}
           />
+          <Separator className="bg-gray-200 my-4 xl:hidden block" />
         </div>
       </div>
-      <div className="w-full md:w-1/3 flex items-center">
-        <div className="flex flex-col justify-items-start">
+      <div className="flex items-center md:border-r border-gray-200 md:px-4">
+        <div className="flex flex-col justify-items-start w-full">
           <StatsItem
             icon={<FontAwesomeIcon icon={faList} />}
-            label="Transactions"
-            mainValue={networkStats.dfsTransactionCount.toLocaleString()}
+            label="Base Fee"
+            mainValue={`${networkStats.dfsBaseFee.toLocaleString()} DFS`}
           />
-          <Separator />
+          <Separator className="bg-gray-200 my-4" />
           <StatsItem
             icon={<FontAwesomeIcon icon={faList} />}
-            label="Transactions"
-            mainValue={networkStats.dfsTransactionCount.toLocaleString()}
+            label="Latest Block"
+            mainValue={networkStats.latestBlock.toString()}
           />
+          <Separator className="bg-gray-200 my-4 xl:hidden block" />
         </div>
       </div>
-      <div className="w-full md:w-1/3 flex items-center">
-        <div className="flex flex-col justify-items-start">
-         
+      <div className="flex items-center md:px-4">
+        <div className="flex flex-col justify-items-start w-full">
+          <div className="uppercase text-sm text-gray-500">
+            DFS Chain Transaction History In 14 Days
+          </div>
+          <TransactionHistoryChart
+            data={networkStats.twoWeekTransactionHistory}
+          />
         </div>
       </div>
     </div>

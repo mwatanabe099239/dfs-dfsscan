@@ -35,16 +35,20 @@ export function formatTimeAgo(timestamp: number): string {
 // Helper function for consistent number formatting
 export function formatNumber(num: number): string {
   // Split the number into whole and decimal parts
-  const [whole, decimal] = num.toString().split('.');
-  
+  const [whole, decimal] = num.toString().split(".");
+
   // Add commas only to the whole number part
   const formattedWhole = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  
+
   // If there's a decimal part, add it back
   return decimal ? `${formattedWhole}.${decimal}` : formattedWhole;
 }
 
-export const shortenAddress = (address: string, from: number = 15, to: number = 7) => {
+export const shortenAddress = (
+  address: string,
+  from: number = 15,
+  to: number = 7
+) => {
   if (!address) return "";
   return `${address.slice(0, from)}...${address.slice(-to)}`;
 };
@@ -55,4 +59,22 @@ export const shortenHash = (hash: string, to: number = 12) => {
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+export function formatCompactNumber(value: number): string {
+  const absValue = Math.abs(value);
+
+  if (absValue >= 1000000000) {
+    return (value / 1000000000).toFixed(1) + " B";
+  }
+
+  if (absValue >= 1000000) {
+    return (value / 1000000).toFixed(1) + " M";
+  }
+
+  if (absValue >= 1000) {
+    return (value / 1000).toFixed(1) + " K";
+  }
+
+  return value.toString();
 }

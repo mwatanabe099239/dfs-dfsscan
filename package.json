@@ -19,6 +19,8 @@
     "autoprefixer": "^10.4.21",
     "clsx": "^2.1.1",
     "firebase": "^11.5.0",
+    "highcharts": "^12.2.0",
+    "highcharts-react-official": "^3.2.2",
     "lucide-react": "^0.485.0",
     "minidenticons": "^4.2.1",
     "next": "15.2.3",

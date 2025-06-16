@@ -50,7 +50,7 @@ export default function Home() {
       </div>
 
       <div className="px-4 container mx-auto">
-        <div className="bg-white rounded-lg shadow-md mb-6 p-4 mt-[-30px]">
+        <div className="bg-white rounded-lg shadow-md mb-6 py-4 md:px-1 px-4 mt-[-30px]">
           <NetworkStatsSection />
         </div>
 
