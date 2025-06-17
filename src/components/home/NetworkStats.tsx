@@ -1,14 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NetworkStats } from "@/src/types";
 import { formatCompactNumber, formatNumber } from "@/src/lib/utils";
 import { Separator } from "../ui/separator";
 import { TransactionHistoryChart } from "./twoWeekTransactionChart";
 import Image from "next/image";
 import { Globe, List, CreditCard, Landmark, ClockFading } from "lucide-react";
-import { spawn } from "child_process";
+import { DFS_BASE_FEE_IN_USD } from "@/src/lib/constant";
 
 interface StatsItemProps {
   icon: React.ReactNode;
@@ -103,15 +102,8 @@ export default function NetworkStatsSection() {
 
       setIsLoading(false);
 
-      console.log(
-        priceData,
-        dfsCirculationSupplyData,
-        latestBlockData,
-        dfsTransactionCountData,
-        twoWeekTransactionHistoryData,
-        holdersCountData,
-        baseFeeData
-      );
+      const baseFeeInDFS = DFS_BASE_FEE_IN_USD / priceData.data.priceUsd;
+
       setNetworkStats({
         onChainTokenPrice: priceData.data,
         dfsCirculationSupply: dfsCirculationSupplyData.data,
@@ -119,7 +111,7 @@ export default function NetworkStatsSection() {
         dfsTransactionCount: dfsTransactionCountData.data,
         twoWeekTransactionHistory: twoWeekTransactionHistoryData.data,
         holdersCount: holdersCountData.data,
-        dfsBaseFee: baseFeeData.data,
+        dfsBaseFee: baseFeeInDFS,
       });
     };
 
@@ -190,7 +182,11 @@ export default function NetworkStatsSection() {
           <StatsItem
             icon={<Landmark className="w-6 h-6" />}
             label="Base Fee"
-            mainValue={`${networkStats.dfsBaseFee.toLocaleString()} DFS`}
+            mainValue={`${formatNumber(
+              Number(networkStats.dfsBaseFee.toFixed(6))
+            )} DFS`}
+            subValue={`$${DFS_BASE_FEE_IN_USD}`}
+            subValueColor="text-[#0784c3]"
           />
           <Separator className="bg-gray-200 my-4" />
           <StatsItem
