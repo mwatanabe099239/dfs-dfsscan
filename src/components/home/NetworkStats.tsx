@@ -142,8 +142,8 @@ export default function NetworkStatsSection() {
                }${networkStats.onChainTokenPrice.priceChange.h24.toFixed(2)}%`}
             subValueColor={
               networkStats.onChainTokenPrice.priceChange.h24 >= 0
-                ? "text-[#0784c3]"
-                : "text-red-500"
+                ? "text-[#17c671]"
+                : "text-[#ea3943]"
             }
           />
           <Separator className="bg-gray-200 my-4" />
