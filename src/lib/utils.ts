@@ -33,7 +33,7 @@ export function formatTimeAgo(timestamp: number): string {
 }
 
 // Helper function for consistent number formatting
-export function formatNumber(num: number, decimalPlaces: number = 2): string {
+export function formatNumber(num: number, decimalPlaces: number = 4): string {
   // Split the number into whole and decimal parts
   const [whole, decimal] = num.toString().split(".");
 
