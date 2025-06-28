@@ -3,10 +3,15 @@
 import Image from "next/image";
 import TopSearchBar from "./TopSearchBar";
 import { usePathname } from "next/navigation";
+import { useDfsTokenPrice } from "../hooks/useDfsTokenPrice";
+import { RowSkeleton } from "./common/ItemSkeleton";
+import { formatNumber } from "../lib/utils";
 
 export default function TopBar() {
   const currentPath = usePathname();
   const isHome = currentPath === "/";
+
+  const { data, loading } = useDfsTokenPrice();
 
   return (
     <div
@@ -22,11 +27,25 @@ export default function TopBar() {
               <button className="text-xs text-black hover:text-[#0784c3] border border-gray-300 rounded-md p-1">
                 DFS WEBNET
               </button>
-              <span className="text-gray-600">
-                DFS Price: <span className="text-[#0784c3]">$77.7</span>
+              <span className="text-gray-600 flex items-center gap-1">
+                DFS Price:{" "}
+                <span className="text-[#0784c3]">
+                  {loading ? (
+                    <RowSkeleton className="h-3" />
+                  ) : (
+                    `$${formatNumber(data.priceData?.priceUsd || 0, 4)}`
+                  )}
+                </span>
               </span>
-              <span className="text-gray-600">
-                Gas: <span className="text-[#0784c3]">1 DFS</span>
+              <span className="text-gray-600 flex items-center gap-1">
+                Gas:{" "}
+                <span className="text-[#0784c3]">
+                  {loading ? (
+                    <RowSkeleton className="h-3" />
+                  ) : (
+                    `${formatNumber(data.baseFee || 0, 4)} DFS`
+                  )}
+                </span>
               </span>
             </div>
           </div>

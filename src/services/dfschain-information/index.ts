@@ -6,12 +6,14 @@ import {
   where,
   orderBy,
   getCountFromServer,
+  getDoc,
+  doc,
 } from "firebase/firestore";
 import { db } from "@/src/lib/firebase";
 
 export async function getDfsBaseFee() {
-  // TODO: need to calculate to be 1 yen based on the web3 token price by sync in the future
-  return 1;
+  // TODO: need to calculate to be $0.01 based on the web3 token price by sync in the future
+  return 0.01; // $0.01
 }
 
 export async function getDfsCirculationSupply() {
@@ -20,18 +22,22 @@ export async function getDfsCirculationSupply() {
 }
 
 export async function getHoldersCount(tokenAddress: string) {
-  // TODO: create the token_holders collection in the future for mapping each token's holders
-  const holdersByTokenAddress = {
-    drc20_dfs: 10,
-    "drc20_0x1234567890...": 20,
-  };
+  try {
+    const tokenHolderDoc = doc(
+      collection(db, "token_holder_count"),
+      tokenAddress
+    );
+    const docSnapshot = await getDoc(tokenHolderDoc);
 
-  const count =
-    holdersByTokenAddress[
-      tokenAddress.toLowerCase() as keyof typeof holdersByTokenAddress
-    ];
+    if (docSnapshot.exists()) {
+      return docSnapshot.data().count || 0;
+    }
 
-  return count || 0;
+    return 0;
+  } catch (error) {
+    console.error("Error getting holders count:", error);
+    return 0;
+  }
 }
 
 export function calculateBlockNumber() {

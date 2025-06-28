@@ -84,7 +84,7 @@ export async function getLatestBlocks(): Promise<Block[]> {
 }
 
 export const BLOCK_GENERATION_TIME = 5 * 60 * 1000; // 5 minutes
-export const FIRST_BLOCK_TIME = "2025-03-26T00:00:00Z";
+export const FIRST_BLOCK_TIME = "2025-06-28T00:00:00Z";
 
 
 export async function getBlocks(

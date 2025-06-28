@@ -8,6 +8,7 @@ import { TransactionHistoryChart } from "./twoWeekTransactionChart";
 import Image from "next/image";
 import { Globe, List, CreditCard, Landmark, ClockFading } from "lucide-react";
 import { DFS_BASE_FEE_IN_USD } from "@/src/lib/constant";
+import { RowSkeleton } from "../common/ItemSkeleton";
 
 interface StatsItemProps {
   icon: React.ReactNode;
@@ -15,6 +16,7 @@ interface StatsItemProps {
   mainValue: string;
   subValue?: string;
   subValueColor?: string;
+  isLoading: boolean;
 }
 
 const StatsItem = ({
@@ -23,6 +25,7 @@ const StatsItem = ({
   mainValue,
   subValue,
   subValueColor,
+  isLoading,
 }: StatsItemProps) => (
   <div className="flex gap-2 items-start">
     <div className="flex items-center gap-1.5 mb-0.5">
@@ -30,18 +33,22 @@ const StatsItem = ({
     </div>
     <div className="flex flex-col gap-0.5">
       <div className="uppercase text-sm text-gray-500">{label}</div>
-      <div className="flex items-baseline gap-0.5">
-        <span className="text-base">{mainValue}</span>
-        {subValue && (
-          <>
-            <span className="text-sm text-gray-600">(</span>
-            <span className={`text-sm ${subValueColor || "text-gray-600"}`}>
-              {subValue}
-            </span>
-            <span className="text-sm text-gray-600">)</span>
-          </>
-        )}
-      </div>
+      {isLoading ? (
+        <RowSkeleton className="!w-16" />
+      ) : (
+        <div className="flex items-baseline gap-0.5">
+          <span className="text-base">{mainValue}</span>
+          {subValue && (
+            <>
+              <span className="text-sm text-gray-600">(</span>
+              <span className={`text-sm ${subValueColor || "text-gray-600"}`}>
+                {subValue}
+              </span>
+              <span className="text-sm text-gray-600">)</span>
+            </>
+          )}
+        </div>
+      )}
     </div>
   </div>
 );
@@ -77,7 +84,7 @@ export default function NetworkStatsSection() {
         dfsTransactionCountData,
         twoWeekTransactionHistoryData,
         holdersCountData,
-        baseFeeData,
+        baseFeeInUsd,
       ] = await Promise.all([
         fetch("/api/dfs-onchain-token-price").then((res) => res.json()),
         fetch("/api/dfschain-information/dfs-circulation-supply").then((res) =>
@@ -100,9 +107,7 @@ export default function NetworkStatsSection() {
         ),
       ]);
 
-      setIsLoading(false);
-
-      const baseFeeInDFS = DFS_BASE_FEE_IN_USD / priceData.data.priceUsd;
+      const baseFeeInDFS = baseFeeInUsd.data / priceData.data.priceUsd;
 
       setNetworkStats({
         onChainTokenPrice: priceData.data,
@@ -113,6 +118,8 @@ export default function NetworkStatsSection() {
         holdersCount: holdersCountData.data,
         dfsBaseFee: baseFeeInDFS,
       });
+
+      setIsLoading(false);
     };
 
     init();
@@ -145,6 +152,7 @@ export default function NetworkStatsSection() {
                 ? "text-[#17c671]"
                 : "text-[#ea3943]"
             }
+            isLoading={isLoading}
           />
           <Separator className="bg-gray-200 my-4" />
           <StatsItem
@@ -157,6 +165,7 @@ export default function NetworkStatsSection() {
               Number(networkStats.dfsCirculationSupply) *
                 networkStats.onChainTokenPrice.priceUsd
             )}`}
+            isLoading={isLoading}
           />
           <Separator className="bg-gray-200 my-4 xl:hidden block" />
         </div>
@@ -167,12 +176,14 @@ export default function NetworkStatsSection() {
             icon={<List className="w-6 h-6" />}
             label="DFS Holders"
             mainValue={networkStats.holdersCount.toLocaleString()}
+            isLoading={isLoading}
           />
           <Separator className="bg-gray-200 my-4" />
           <StatsItem
             icon={<CreditCard className="w-6 h-6" />}
             label="Total Transactions"
             mainValue={networkStats.dfsTransactionCount.toLocaleString()}
+            isLoading={isLoading}
           />
           <Separator className="bg-gray-200 my-4 xl:hidden block" />
         </div>
@@ -187,12 +198,14 @@ export default function NetworkStatsSection() {
             )} DFS`}
             subValue={`$${DFS_BASE_FEE_IN_USD}`}
             subValueColor="text-[#0784c3]"
+            isLoading={isLoading}
           />
           <Separator className="bg-gray-200 my-4" />
           <StatsItem
             icon={<ClockFading className="w-6 h-6" />}
             label="Latest Block"
             mainValue={networkStats.latestBlock.toString()}
+            isLoading={isLoading}
           />
           <Separator className="bg-gray-200 my-4 xl:hidden block" />
         </div>

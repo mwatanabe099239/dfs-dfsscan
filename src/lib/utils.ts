@@ -33,7 +33,7 @@ export function formatTimeAgo(timestamp: number): string {
 }
 
 // Helper function for consistent number formatting
-export function formatNumber(num: number): string {
+export function formatNumber(num: number, decimalPlaces: number = 2): string {
   // Split the number into whole and decimal parts
   const [whole, decimal] = num.toString().split(".");
 
@@ -41,7 +41,9 @@ export function formatNumber(num: number): string {
   const formattedWhole = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
   // If there's a decimal part, add it back
-  return decimal ? `${formattedWhole}.${decimal}` : formattedWhole;
+  return decimal
+    ? `${formattedWhole}.${decimal.slice(0, decimalPlaces)}`
+    : formattedWhole;
 }
 
 export const shortenAddress = (

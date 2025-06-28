@@ -13,5 +13,13 @@ export default function ItemSkeleton() {
         <div className="w-20 h-6 bg-gray-200 rounded animate-pulse" />
       </div>
     </div>
-  )
-} 
+  );
+}
+
+export function RowSkeleton({ className }: { className?: string }) {
+  return (
+    <div
+      className={`${className} w-6 h-4 bg-gray-200 rounded animate-pulse`}
+    />
+  );
+}
