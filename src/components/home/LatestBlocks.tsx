@@ -1,13 +1,13 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCube } from '@fortawesome/free-solid-svg-icons'
-import { Block } from '@/src/types'
-import { getLatestBlocks } from '@/src/lib/firebase'
-import { formatTimeAgo } from '@/src/lib/utils'
-import ItemSkeleton from '@/src/components/common/ItemSkeleton'
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCube } from "@fortawesome/free-solid-svg-icons";
+import { Block } from "@/src/types";
+import { getLatestBlocks } from "@/src/lib/firebase";
+import { formatTimeAgo } from "@/src/lib/utils";
+import ItemSkeleton from "@/src/components/common/ItemSkeleton";
 
 export default function LatestBlocks() {
   const [blocks, setBlocks] = useState<Block[]>([]);
@@ -24,51 +24,62 @@ export default function LatestBlocks() {
 
   if (loading) {
     return (
-      <div className="divide-y divide-gray-200">
-        {[...Array(6)].map((_, i) => (
-          <ItemSkeleton key={i} />
-        ))}
+      <div className="flex flex-col">
+        <div className="divide-y divide-gray-200 flex-1">
+          {[...Array(6)].map((_, i) => (
+            <ItemSkeleton key={i} />
+          ))}
+        </div>
+        <div className="p-4 text-center bg-gray-50 mt-auto">
+          <Link
+            href="/blocks"
+            className="text-grey-300 hover:text-[#0784c3] uppercase text-xs"
+          >
+            View All Blocks →
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="divide-y divide-gray-200 text-sm">
-      {blocks.map((block) => (
-        <div key={block.number} className="p-4 hover:bg-gray-50">
-          <div className="flex items-center gap-3">
-            <div className="text-gray-400">
-              <FontAwesomeIcon icon={faCube} className="w-6 h-6!" />
-            </div>
-            <div className="min-w-[180px]">
-              <span className="block text-black">
-                {block.number}
-              </span>
-              <span className="text-xs text-gray-500">
-                {formatTimeAgo(block.timestamp)}
-              </span>
-            </div>
-            <div className="flex-1">
-              <div className="text-xs text-gray-500">
-                {block.transactions} txns <span className="mx-1">in</span> 5 mins
+    <div className="flex flex-col h-[90%]">
+      <div className="divide-y divide-gray-200 text-sm flex-1">
+        {blocks.map((block) => (
+          <div key={block.number} className="p-4 hover:bg-gray-50">
+            <div className="flex items-center gap-3">
+              <div className="text-gray-400">
+                <FontAwesomeIcon icon={faCube} className="w-6 h-6!" />
+              </div>
+              <div className="min-w-[180px]">
+                <span className="block text-black">{block.number}</span>
+                <span className="text-xs text-gray-500">
+                  {formatTimeAgo(block.timestamp)}
+                </span>
+              </div>
+              <div className="flex-1">
+                <div className="text-xs text-gray-500">
+                  {block.transactions} txns <span className="mx-1">in</span> 5
+                  mins
+                </div>
+              </div>
+              <div className="text-right whitespace-nowrap">
+                <span className="bg-transparent border border-gray-300 text-black py-1 px-2 rounded-md text-xs">
+                  {block.reward} DFS
+                </span>
               </div>
             </div>
-            <div className="text-right whitespace-nowrap">
-              <span className="bg-transparent border border-gray-300 text-black py-1 px-2 rounded-md text-xs">
-                {block.reward} DFS
-              </span>
-            </div>
           </div>
-        </div>
-      ))}
-      <div className="p-4 text-center bg-gray-50">
-        <Link 
-          href="/blocks" 
+        ))}
+      </div>
+      <div className="p-4 text-center bg-gray-50 mt-auto">
+        <Link
+          href="/blocks"
           className="text-grey-300 hover:text-[#0784c3] uppercase text-xs"
         >
           View All Blocks →
         </Link>
       </div>
     </div>
-  )
-} 
+  );
+}

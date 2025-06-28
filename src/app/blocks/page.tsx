@@ -163,26 +163,13 @@ function BlocksContent() {
           )}
         </div>
 
-        {/* Replace the pagination section with the new component */}
-        <Pagination
-          currentPage={blocksData.currentPage}
-          totalPages={Math.ceil(blocksData.total / blocksData.perPage)}
-          basePath="/blocks"
-        />
-
-        {/* Info Text */}
-        {/* <div className="p-4 bg-gray-50 text-sm text-gray-600 border-t border-gray-200">
-          <span className="mr-1">ℹ️</span>A block is a container of
-          transactions. Block explorers track the details of all blocks in the
-          network.{" "}
-          <Link
-            href="/knowledge-base"
-            className="text-[#0784c3] hover:text-blue-600"
-          >
-            Learn more about blocks in our Knowledge Base
-          </Link>
-          .
-        </div> */}
+        <div className="flex items-center justify-end gap-2 p-4">
+          <Pagination
+            currentPage={blocksData.currentPage}
+            totalPages={Math.ceil(blocksData.total / blocksData.perPage)}
+            basePath="/blocks"
+          />
+        </div>
       </div>
     </div>
   );
