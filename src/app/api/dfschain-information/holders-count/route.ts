@@ -12,14 +12,15 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const holdersCount = await getHoldersCount(tokenAddress);
+  try {
+    const holdersCount = await getHoldersCount(tokenAddress);
 
-  if (!holdersCount) {
+    return NextResponse.json({ data: holdersCount }, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching holders count:", error);
     return NextResponse.json(
       { error: "Failed to fetch holders count" },
       { status: 500 }
     );
   }
-
-  return NextResponse.json({ data: holdersCount }, { status: 200 });
 }
