@@ -10,6 +10,7 @@ import {
   doc,
 } from "firebase/firestore";
 import { db } from "@/src/lib/firebase";
+import { DFS_CIRCULATION_SUPPLY } from "@/src/lib/constant";
 
 export async function getDfsBaseFee() {
   // TODO: need to calculate to be $0.01 based on the web3 token price by sync in the future
@@ -18,7 +19,7 @@ export async function getDfsBaseFee() {
 
 export async function getDfsCirculationSupply() {
   // TODO: cuirculation supply should be provided by Token foundation
-  return 100000000;
+  return DFS_CIRCULATION_SUPPLY;
 }
 
 export async function getHoldersCount(tokenAddress: string) {
