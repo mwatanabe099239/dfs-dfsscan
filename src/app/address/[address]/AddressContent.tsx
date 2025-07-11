@@ -473,7 +473,9 @@ export default function AddressContent({ address }: { address: string }) {
                   />
                 )}
                 <h1 className="text-lg">Token</h1>
-                <span className="text-gray-600">{address}</span>
+                <span className="text-gray-600">
+                  {tokenData.name} ({tokenData.symbol})
+                </span>
               </div>
               <button
                 className="text-gray-400 hover:text-gray-600 cursor-pointer"
