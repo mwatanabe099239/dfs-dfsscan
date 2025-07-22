@@ -11,7 +11,7 @@ import {
   TooltipTrigger,
 } from "@/src/components/ui/tooltip";
 import { Transaction } from "@/src/types";
-import { formatTimeAgo } from "@/src/lib/utils";
+import { formatNumber, formatTimeAgo, shortenAddress } from "@/src/lib/utils";
 import {
   ButtonGroup,
   SponsorTitle,
@@ -139,7 +139,7 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
                   } ${
                     transaction.method === "Token Created"
                       ? "DFS"
-                      : transaction.token.symbol
+                      : transaction.token.symbol || "DFS"
                   }`}</span>{" "}
                   To{" "}
                   <span className="text-[#0784c3]">
@@ -150,6 +150,74 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
                 </span>
               </div>
             </div>
+
+            {/* Transaction Details */}
+            {transaction?.allTransfers &&
+              transaction?.allTransfers?.length > 0 && (
+                <div className="flex md:flex-row flex-col pb-3 border-b border-gray-100 items-start">
+                  <InfoLabel
+                    label="DRC-20 Tokens Transferred:"
+                    tooltip="List of DRC-20 tokens transferred in the transaction."
+                  />
+                  <div className="transaction-details space-y-1">
+                    {transaction?.allTransfers?.map((tokenTransfer, index) => (
+                      <div key={index} className="flex items-center gap-2">
+                        <span className="text-gray-900 font-semibold whitespace-nowrap">
+                          From
+                        </span>
+                        <span className="text-[#0784c3] cursor-pointer">
+                          {shortenAddress(tokenTransfer.fromAddress)}
+                        </span>
+                        <span className="text-gray-900 font-semibold whitespace-nowrap">
+                          To
+                        </span>
+                        <span className="text-[#0784c3] cursor-pointer">
+                          {shortenAddress(tokenTransfer.toAddress)}
+                        </span>
+                        <span className="text-gray-900 font-semibold whitespace-nowrap">
+                          For
+                        </span>
+                        <span className="text-gray-900 font-normal whitespace-nowrap">
+                          {formatNumber(tokenTransfer.amount, 6)}
+                        </span>
+                        <div
+                          className="flex items-center gap-1 cursor-pointer border border-dashed border-white hover:border-[#ffda6a] rounded-md p-[2px] hover:bg-[#ffda6a30]"
+                          onClick={() => {
+                            if (tokenTransfer.token.address === "drc20_dfs")
+                              return;
+                            window.open(
+                              `https://dfsscan.com/address/${tokenTransfer.token.address}`,
+                              "_blank"
+                            );
+                          }}
+                        >
+                          {tokenTransfer.token.logoUrl ? (
+                            <Image
+                              src={tokenTransfer.token.logoUrl}
+                              alt={tokenTransfer.token.symbol}
+                              width={20}
+                              height={20}
+                              className="rounded-full"
+                            />
+                          ) : (
+                            <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
+                              <span className="text-gray-900 font-normal whitespace-nowrap">
+                                {tokenTransfer.token.symbol.charAt(0)}
+                              </span>
+                            </div>
+                          )}
+                          <span className="text-gray-900 font-normal whitespace-nowrap">
+                            {tokenTransfer.token.name}
+                          </span>
+                          <span className="text-gray-900 font-normal whitespace-nowrap">
+                            ({tokenTransfer.token.symbol})
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
             {/* Sporsored */}
             <div className="flex items-start md:flex-row flex-col pb-3 border-b border-gray-100">
@@ -229,7 +297,7 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
               />
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  {transaction.amount}{" "}
+                  {formatNumber(Number(transaction.amount), 6)}{" "}
                   {transaction.method === "Token Created"
                     ? "DFS"
                     : transaction.token.symbol}
@@ -243,7 +311,9 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
                 label="Transaction Fee:"
                 tooltip="Amount paid for processing the transaction."
               />
-              <div className="flex-1">{transaction.gasFee} DFS</div>
+              <div className="flex-1">
+                {formatNumber(Number(transaction.gasFee), 6)} DFS
+              </div>
             </div>
 
             {/* {transaction.message && (

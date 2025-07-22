@@ -5,10 +5,11 @@ import Navbar from "@/src/components/Navbar";
 import TopBar from "@/src/components/TopBar";
 import { Roboto } from "next/font/google";
 import { Suspense } from "react";
-import SkeletonLoading from "../components/SkeletonLoading";
+import SkeletonLoading from "@/src/components/SkeletonLoading";
+import ReactQueryProvider from "@/src/providers/react-query-provider";
+import Footer from "@/src/components/Footer";
 import "./globals.scss";
 import "@fortawesome/fontawesome-svg-core/styles.css";
-import Footer from "../components/Footer";
 config.autoAddCss = false;
 
 const roboto = Roboto({
@@ -39,11 +40,13 @@ export default function RootLayout({
         }}
       >
         <Suspense fallback={<SkeletonLoading />}>
-          <TopBar />
-          <Navbar />
-          <main className="mx-auto pt-8 pb-20">{children}</main>
-          <Footer />
-          <Toaster />
+          <ReactQueryProvider>
+            <TopBar />
+            <Navbar />
+            <main className="mx-auto pt-8 pb-20">{children}</main>
+            <Footer />
+            <Toaster />
+          </ReactQueryProvider>
         </Suspense>
       </body>
     </html>

@@ -9,7 +9,7 @@ import {
   getTokenTotalTransactionWithPagination,
   getTransactionsWithPagination,
 } from "@/src/lib/firebase";
-import { formatTimeAgo, shortenAddress, shortenHash } from "@/src/lib/utils";
+import { formatNumber, formatTimeAgo, shortenAddress, shortenHash } from "@/src/lib/utils";
 import Pagination from "@/src/components/common/Pagination";
 import { Copy, Download, MoveRight } from "lucide-react";
 import { toast } from "react-hot-toast";
@@ -178,9 +178,9 @@ const TransactionRow = ({
         </div>
       </td>
       <td className="p-3">
-        {tx.amount} {tx.method === "Token Created" ? "DFS" : tx.token.symbol}
+        {formatNumber(Number(tx.amount), 6)} {tx.method === "Token Created" ? "DFS" : tx.token.symbol}
       </td>
-      <td className="p-3 text-gray-600 text-xs">{tx.gasFee} DFS</td>
+      <td className="p-3 text-gray-600 text-xs">{formatNumber(Number(tx.gasFee), 6)} DFS</td>
     </tr>
   );
 };

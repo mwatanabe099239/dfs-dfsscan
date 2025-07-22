@@ -1,14 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { NetworkStats } from "@/src/types";
+import { useQuery } from "@tanstack/react-query";
 import { formatCompactNumber, formatNumber } from "@/src/lib/utils";
-import { Separator } from "../ui/separator";
+import { Separator } from "@/src/components/ui/separator";
 import { TransactionHistoryChart } from "./twoWeekTransactionChart";
 import Image from "next/image";
 import { Globe, List, CreditCard, Landmark, ClockFading } from "lucide-react";
 import { DFS_BASE_FEE_IN_USD } from "@/src/lib/constant";
-import { RowSkeleton } from "../common/ItemSkeleton";
+import { RowSkeleton } from "@/src/components/common/ItemSkeleton";
 
 interface StatsItemProps {
   icon: React.ReactNode;
@@ -53,77 +52,117 @@ const StatsItem = ({
   </div>
 );
 
-export default function NetworkStatsSection() {
-  const [isLoading, setIsLoading] = useState(true);
+// API fetch functions
+const fetchTokenPrice = async () => {
+  const response = await fetch("/api/dfs-onchain-token-price");
+  return response.json();
+};
 
-  const [networkStats, setNetworkStats] = useState<NetworkStats>({
-    onChainTokenPrice: {
-      priceUsd: 0,
-      priceChange: {
-        m5: 0,
-        h1: 0,
-        h6: 0,
-        h24: 0,
-      },
-    },
-    dfsCirculationSupply: 0,
-    latestBlock: 0,
-    dfsTransactionCount: 0,
-    twoWeekTransactionHistory: [],
-    holdersCount: 0,
-    dfsBaseFee: 0,
+const fetchCirculationSupply = async () => {
+  const response = await fetch(
+    "/api/dfschain-information/dfs-circulation-supply"
+  );
+  return response.json();
+};
+
+const fetchLatestBlock = async () => {
+  const response = await fetch("/api/dfschain-information/latest-block");
+  return response.json();
+};
+
+const fetchTransactionCount = async () => {
+  const response = await fetch(
+    "/api/dfschain-information/dfs-transaction-count?duration=all"
+  );
+  return response.json();
+};
+
+const fetchTransactionHistory = async () => {
+  const response = await fetch(
+    "/api/dfschain-information/two-week-transaction-history"
+  );
+  return response.json();
+};
+
+const fetchHoldersCount = async () => {
+  const response = await fetch(
+    "/api/dfschain-information/holders-count?tokenAddress=drc20_dfs"
+  );
+  return response.json();
+};
+
+const fetchBaseFee = async () => {
+  const response = await fetch("/api/dfschain-information/dfs-base-fee");
+  return response.json();
+};
+
+export default function NetworkStatsSection() {
+  // Individual queries for each API endpoint
+  const { data: priceData, isLoading: isPriceLoading } = useQuery({
+    queryKey: ["token-price"],
+    queryFn: fetchTokenPrice,
+    staleTime: 30000, // 30 seconds
   });
 
-  useEffect(() => {
-    const init = async () => {
-      setIsLoading(true);
-      const [
-        priceData,
-        dfsCirculationSupplyData,
-        latestBlockData,
-        dfsTransactionCountData,
-        twoWeekTransactionHistoryData,
-        holdersCountData,
-        baseFeeInUsd,
-      ] = await Promise.all([
-        fetch("/api/dfs-onchain-token-price").then((res) => res.json()),
-        fetch("/api/dfschain-information/dfs-circulation-supply").then((res) =>
-          res.json()
-        ),
-        fetch("/api/dfschain-information/latest-block").then((res) =>
-          res.json()
-        ),
-        fetch(
-          "/api/dfschain-information/dfs-transaction-count?duration=all"
-        ).then((res) => res.json()),
-        fetch("/api/dfschain-information/two-week-transaction-history").then(
-          (res) => res.json()
-        ),
-        fetch(
-          "/api/dfschain-information/holders-count?tokenAddress=drc20_dfs"
-        ).then((res) => res.json()),
-        fetch("/api/dfschain-information/dfs-base-fee").then((res) =>
-          res.json()
-        ),
-      ]);
+  const { data: circulationSupplyData, isLoading: isCirculationLoading } =
+    useQuery({
+      queryKey: ["circulation-supply"],
+      queryFn: fetchCirculationSupply,
+      staleTime: 300000, // 5 minutes
+    });
 
-      const baseFeeInDFS = baseFeeInUsd.data / priceData.data.priceUsd;
+  const { data: latestBlockData, isLoading: isBlockLoading } = useQuery({
+    queryKey: ["latest-block"],
+    queryFn: fetchLatestBlock,
+    staleTime: 10000, // 10 seconds
+  });
 
-      setNetworkStats({
-        onChainTokenPrice: priceData.data,
-        dfsCirculationSupply: dfsCirculationSupplyData.data,
-        latestBlock: latestBlockData.data,
-        dfsTransactionCount: dfsTransactionCountData.data,
-        twoWeekTransactionHistory: twoWeekTransactionHistoryData.data,
-        holdersCount: holdersCountData.data,
-        dfsBaseFee: baseFeeInDFS,
-      });
+  const { data: transactionCountData, isLoading: isTransactionCountLoading } =
+    useQuery({
+      queryKey: ["transaction-count"],
+      queryFn: fetchTransactionCount,
+      staleTime: 60000, // 1 minute
+    });
 
-      setIsLoading(false);
-    };
+  const { data: transactionHistoryData, isLoading: isHistoryLoading } =
+    useQuery({
+      queryKey: ["transaction-history"],
+      queryFn: fetchTransactionHistory,
+      staleTime: 300000, // 5 minutes
+    });
 
-    init();
-  }, []);
+  const { data: holdersCountData, isLoading: isHoldersLoading } = useQuery({
+    queryKey: ["holders-count"],
+    queryFn: fetchHoldersCount,
+    staleTime: 300000, // 5 minutes
+  });
+
+  const { data: baseFeeData, isLoading: isBaseFeeLoading } = useQuery({
+    queryKey: ["base-fee"],
+    queryFn: fetchBaseFee,
+    staleTime: 60000, // 1 minute
+  });
+
+  // Check if any query is loading
+  const isLoading =
+    isPriceLoading ||
+    isCirculationLoading ||
+    isBlockLoading ||
+    isTransactionCountLoading ||
+    isHistoryLoading ||
+    isHoldersLoading ||
+    isBaseFeeLoading;
+
+  // Calculate derived values
+  const baseFeeInDFS =
+    priceData?.data && baseFeeData?.data
+      ? baseFeeData.data / priceData.data.priceUsd
+      : 0;
+
+  const marketCap =
+    priceData?.data && circulationSupplyData?.data
+      ? circulationSupplyData.data * priceData.data.priceUsd
+      : 0;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 py-0">
@@ -141,14 +180,16 @@ export default function NetworkStatsSection() {
             }
             label="DFS Price"
             mainValue={`$${formatNumber(
-              Number(networkStats.onChainTokenPrice.priceUsd.toFixed(6))
+              Number((priceData?.data?.priceUsd || 0).toFixed(6))
             )}`}
             subValue={`
                ${
-                 networkStats.onChainTokenPrice.priceChange.h24 >= 0 ? "+" : "-"
-               }${networkStats.onChainTokenPrice.priceChange.h24.toFixed(2)}%`}
+                 (priceData?.data?.priceChange?.h24 || 0) >= 0 ? "+" : "-"
+               }${Math.abs(priceData?.data?.priceChange?.h24 || 0).toFixed(
+              2
+            )}%`}
             subValueColor={
-              networkStats.onChainTokenPrice.priceChange.h24 >= 0
+              (priceData?.data?.priceChange?.h24 || 0) >= 0
                 ? "text-[#17c671]"
                 : "text-[#ea3943]"
             }
@@ -159,12 +200,9 @@ export default function NetworkStatsSection() {
             icon={<Globe className="w-6 h-6" />}
             label="Circulation Supply (MCap)"
             mainValue={`${formatNumber(
-              Number(networkStats.dfsCirculationSupply.toFixed(6))
+              Number((circulationSupplyData?.data || 0).toFixed(6))
             )}`}
-            subValue={`$${formatCompactNumber(
-              Number(networkStats.dfsCirculationSupply) *
-                networkStats.onChainTokenPrice.priceUsd
-            )}`}
+            subValue={`$${formatCompactNumber(marketCap)}`}
             isLoading={isLoading}
           />
           <Separator className="bg-gray-200 my-4 xl:hidden block" />
@@ -175,14 +213,14 @@ export default function NetworkStatsSection() {
           <StatsItem
             icon={<List className="w-6 h-6" />}
             label="DFS Holders"
-            mainValue={networkStats.holdersCount.toLocaleString()}
+            mainValue={(holdersCountData?.data || 0).toLocaleString()}
             isLoading={isLoading}
           />
           <Separator className="bg-gray-200 my-4" />
           <StatsItem
             icon={<CreditCard className="w-6 h-6" />}
             label="Total Transactions"
-            mainValue={networkStats.dfsTransactionCount.toLocaleString()}
+            mainValue={(transactionCountData?.data || 0).toLocaleString()}
             isLoading={isLoading}
           />
           <Separator className="bg-gray-200 my-4 xl:hidden block" />
@@ -193,9 +231,7 @@ export default function NetworkStatsSection() {
           <StatsItem
             icon={<Landmark className="w-6 h-6" />}
             label="Base Fee"
-            mainValue={`${formatNumber(
-              Number(networkStats.dfsBaseFee.toFixed(6))
-            )} DFS`}
+            mainValue={`${formatNumber(Number(baseFeeInDFS.toFixed(6)))} DFS`}
             subValue={`$${DFS_BASE_FEE_IN_USD}`}
             subValueColor="text-[#0784c3]"
             isLoading={isLoading}
@@ -204,7 +240,7 @@ export default function NetworkStatsSection() {
           <StatsItem
             icon={<ClockFading className="w-6 h-6" />}
             label="Latest Block"
-            mainValue={networkStats.latestBlock.toString()}
+            mainValue={(latestBlockData?.data || 0).toString()}
             isLoading={isLoading}
           />
           <Separator className="bg-gray-200 my-4 xl:hidden block" />
@@ -215,9 +251,7 @@ export default function NetworkStatsSection() {
           <div className="uppercase text-sm text-gray-500">
             DFS Chain Transaction History In 14 Days
           </div>
-          <TransactionHistoryChart
-            data={networkStats.twoWeekTransactionHistory}
-          />
+          <TransactionHistoryChart data={transactionHistoryData?.data || []} />
         </div>
       </div>
     </div>

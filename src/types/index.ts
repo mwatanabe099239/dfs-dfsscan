@@ -18,6 +18,18 @@ export interface Transaction {
     totalSupply: string;
   };
   transactionHash: string;
+  allTransfers?: {
+   fromAddress: string;
+   toAddress: string;
+   amount: number;
+   token: {
+    id: string;
+    logoUrl: string;
+    name: string;
+    symbol: string;
+    address: string;
+   } 
+  }[];
 }
 
 export interface Block {
