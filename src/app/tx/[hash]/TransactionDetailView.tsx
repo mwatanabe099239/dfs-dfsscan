@@ -132,14 +132,14 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
                 <span className="">Transaction Action:</span>
               </div>
               <div className="flex-1 flex gap-2 text-gray-600">
-                <span className="break-all">
+                  <span className="break-all">
                   Transfer{" "}
                   <span className="text-gray-900 font-normal whitespace-nowrap">{`${
                     transaction.amount
                   } ${
                     transaction.method === "Token Created"
                       ? "DFS"
-                      : transaction.token.symbol || "DFS"
+                      : transaction.token?.symbol || "DFS"
                   }`}</span>{" "}
                   To{" "}
                   <span className="text-[#0784c3]">
@@ -300,7 +300,7 @@ export default function TransactionDetailView({ transaction }: ViewProps) {
                   {formatNumber(Number(transaction.amount), 6)}{" "}
                   {transaction.method === "Token Created"
                     ? "DFS"
-                    : transaction.token.symbol}
+                    : transaction.token?.symbol || "DFS"}
                 </div>
               </div>
             </div>
