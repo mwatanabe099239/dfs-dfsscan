@@ -18,16 +18,7 @@ const getDfsChainUrl = (path: string): string => {
 };
 
 const FOOTER_SECTIONS = {
-  chains: {
-    title: "Chains",
-    links: [
-      {
-        label: "DFS Chain",
-        href: getDfsChainUrl("/"),
-        isExternal: true,
-      },
-    ],
-  },
+  
   useDfsChain: {
     title: "Use DFS Chain",
     links: [
@@ -195,7 +186,7 @@ export default function Footer() {
                 height={32}
                 className="w-8 h-auto"
               />
-              <span className="font-normal">Powered by DIFINES</span>
+              <a href="https://difines.org" target="_blank" rel="noopener noreferrer"><span className="font-normal">Powered by DIFINES</span></a>
             </div>
             <p className="text-xs text-black font-thin">
               DFS Scan is a block explorer and analytics platform for
