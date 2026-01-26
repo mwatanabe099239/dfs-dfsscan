@@ -17,53 +17,22 @@ const getDfsChainUrl = (path: string): string => {
   return baseUrl ? `${baseUrl}${cleanPath}` : cleanPath;
 };
 
-const FOOTER_SECTIONS = {
-  
-  useDfsChain: {
-    title: "Use DFS Chain",
-    links: [
-      { label: "Make Wallet", href: process.env.NEXT_PUBLIC_METAFACE_BASEURL, isExternal: true },
-      { label: "Get Token", href: process.env.NEXT_PUBLIC_WEX_BASEURL, isExternal: true },
-      { label: "Get Stake", href: getDfsChainUrl("/staking"), isExternal: true },
-      { label: "Explore DApps", href: getDfsChainUrl("/explore-dapps"), isExternal: true },
-      { label: "Pay by Crypto", href: getDfsChainUrl("/payviner"), isExternal: true },
-    ],
-  },
-  build: {
-    title: "Build",
-    links: [
-      { label: "Whitepaper", href: getDfsChainUrl("/whitepaper"), isExternal: true },
-      { label: "FAQ", href: getDfsChainUrl("/faq"), isExternal: true },
-      { label: "Feedback", href: getDfsChainUrl("/feedback"), isExternal: true },
-    ],
-  },
-  participate: {
-    title: "Participate",
-    links: [
-      { label: "Community", href: getDfsChainUrl("/community"), isExternal: true },
-      { label: "Referral Program", href: getDfsChainUrl("/referral"), isExternal: true },
-      { label: "Newsletter", href: getDfsChainUrl("/newsletter"), isExternal: true },
-    ],
-  },
-  about: {
-    title: "About",
-    links: [
-      { label: "About Us", href: getDfsChainUrl("/about"), isExternal: true },
-      { label: "Blog", href: getDfsChainUrl("/blog"), isExternal: true },
-      { label: "Careers", href: getDfsChainUrl("/careers"), isExternal: true },
-      { label: "Partners", href: getDfsChainUrl("/partners"), isExternal: true },
-      { label: "Contact Us", href: getDfsChainUrl("/contact"), isExternal: true },
-    ],
-  },
-  legal: {
-    title: "Legal",
-    links: [
-      { label: "Privacy Policy", href: getDfsChainUrl("/privacy-policy"), isExternal: true },
-      { label: "Terms of Use", href: getDfsChainUrl("/terms-of-use"), isExternal: true },
-      { label: "Cookies", href: getDfsChainUrl("/cookies"), isExternal: true },
-    ],
-  },
-};
+const DFS_CHAIN_LINKS = [
+  { label: "Make Wallet", href: process.env.NEXT_PUBLIC_METAFACE_BASEURL || "#", isExternal: true },
+  { label: "Get Token", href: process.env.NEXT_PUBLIC_WEX_BASEURL || "#", isExternal: true },
+  { label: "Get Stake", href: getDfsChainUrl("/staking"), isExternal: true },
+  { label: "Explore DApps", href: getDfsChainUrl("/explore-dapps"), isExternal: true },
+  { label: "Pay by Crypto", href: getDfsChainUrl("/payviner"), isExternal: true },
+];
+
+const ABOUT_LINKS = [
+  { label: "Blog", href: getDfsChainUrl("/blog"), isExternal: true },
+  { label: "Whitepaper", href: getDfsChainUrl("/whitepaper"), isExternal: true },
+  { label: "FAQ", href: getDfsChainUrl("/whitepaper/#faq"), isExternal: true },
+  { label: "Privacy Policy", href: getDfsChainUrl("/whitepaper/#privacy-policy"), isExternal: true },
+  { label: "Terms of Use", href: getDfsChainUrl("/whitepaper/#terms-of-use"), isExternal: true },
+  { label: "Cookies", href: getDfsChainUrl("/whitepaper/#cookies"), isExternal: true },
+];
 
 // Social Media Icon Components
 const TwitterIcon = () => (
@@ -103,123 +72,49 @@ const MediumIcon = () => (
 );
 
 const SOCIAL_LINKS = [
-  { name: "Twitter", href: getDfsChainUrl("/twitter"), icon: TwitterIcon, bgColor: "bg-gray-200", iconColor: "text-gray-600" },
-  { name: "Telegram", href: getDfsChainUrl("/telegram"), icon: TelegramIcon, bgColor: "bg-gray-200", iconColor: "text-gray-600" },
-  { name: "Discord", href: getDfsChainUrl("/discord"), icon: DiscordIcon, bgColor: "bg-gray-200", iconColor: "text-gray-600" },
-  { name: "GitHub", href: getDfsChainUrl("/github"), icon: GitHubIcon, bgColor: "bg-gray-200", iconColor: "text-gray-600" },
-  { name: "YouTube", href: getDfsChainUrl("/youtube"), icon: YouTubeIcon, bgColor: "bg-gray-200", iconColor: "text-gray-600" },
-  { name: "Medium", href: getDfsChainUrl("/medium"), icon: MediumIcon, bgColor: "bg-gray-200", iconColor: "text-gray-600" },
+  { name: "Twitter", href: "https://x.com/difines_ofc", icon: TwitterIcon },
+  { name: "Telegram", href: "https://t.me/DFSChain", icon: TelegramIcon },
+  { name: "Discord", href: "#", icon: DiscordIcon },
+  { name: "YouTube", href: "#", icon: YouTubeIcon },
 ];
 
 const FooterLinkComponent = ({ link }: { link: FooterLink }) => (
   <Link
     href={link.href}
-    className="hover:text-[#0784c3] text-[#081d35] text-xs flex items-center gap-1 font-thin relative w-fit"
+    className="hover:text-gray-900 hover:underline text-gray-600 text-sm font-normal transition-colors"
     target={link.isExternal ? "_blank" : "_self"}
     rel={link.isExternal ? "noopener noreferrer" : ""}
   >
     {link.label}
-    {link.isExternal && (
-      <svg
-        className="w-3 h-3"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-        />
-      </svg>
-    )}
   </Link>
 );
 
-const FooterSection = ({
-  title,
-  links,
-}: {
-  title: string;
-  links: FooterLink[];
-}) => (
-  <div className="space-y-2 col-span-1">
-    <h3 className="font-medium text-gray-900 text-sm">{title}</h3>
-    <div className="flex flex-col space-y-2">
-      {links.map((link, index) => (
-        <FooterLinkComponent key={index} link={link} />
-      ))}
-    </div>
-  </div>
-);
 
 export default function Footer() {
   return (
     <footer className="bg-[#f8f9fa]">
-      <div className="container mx-auto px-4">
-        {/* Top Section */}
-        <div className="flex items-center justify-between border-b border-gray-200 py-5">
-          <Link
-            href="https://twitter.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm flex items-center gap-1 cursor-pointer text-gray-700 hover:text-[#0784c3]"
-          >
-            <span className="">X</span>
-            <span className="">(Twitter)</span>
-          </Link>
-
-          <Link href="#top" className="text-sm hover:text-[#0784c3]">
-            ↑ Back to Top
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-9 gap-8 py-8">
-          {/* Logo and Description Section */}
-          <div className="space-y-2 md:col-span-3 col-span-1">
-            <div className="flex items-center gap-2">
-              <Image
-                src="/dfs-logo.png"
-                alt="DFS Logo"
-                width={32}
-                height={32}
-                className="w-8 h-auto"
-              />
-              <a href="https://difines.org" target="_blank" rel="noopener noreferrer"><span className="font-normal">Powered by DIFINES</span></a>
+      <div className="w-full py-8 flex justify-center">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
+          {/* Left Section - Logo, Copyright, Social Icons */}
+          <div className="space-y-4 md:mr-36">
+            <div className="space-y-2">
+              <p className="text-sm text-gray-500 font-normal">Managed by</p>
+              <div className="flex items-center gap-2">
+                <Image
+                  src="/dfs-logo.png"
+                  alt="DFS Scan Logo"
+                  width={32}
+                  height={32}
+                  className="w-8 h-auto"
+                />
+                <span className="font-bold text-gray-900 text-lg">DFS Scan</span>
+              </div>
+              <p className="text-sm text-gray-600 font-normal">
+                © 2026 DIFINES. All rights reserved.
+              </p>
             </div>
-            <p className="text-xs text-black font-thin">
-              DFS Scan is a block explorer and analytics platform for
-              DFSWebChain (centralized) and the upcoming DFSChain
-              (decentralized).
-            </p>
-            <button className="flex items-center gap-2 text-xs text-black hover:text-[#0784c3] bg-gray-200 px-2 py-1 rounded-md cursor-pointer">
-              <Image
-                src="/images/face-logo.png"
-                alt="Meta Logo"
-                width={20}
-                height={20}
-                className="w-5 h-auto"
-              />
-              Add DFS Network
-            </button>
-          </div>
-
-          {/* Menu Sections */}
-          {Object.entries(FOOTER_SECTIONS).map(([key, section]) => (
-            <FooterSection
-              key={key}
-              title={section.title}
-              links={section.links as FooterLink[]}
-            />
-          ))}
-        </div>
-
-        {/* Social Media Section */}
-        <div className="flex flex-col md:flex-row items-center justify-between py-4 border-t border-gray-200">
-          <div className="flex items-center gap-3 mb-4 md:mb-0">
-            <span className="text-sm text-gray-700">Follow us:</span>
-            <div className="flex items-center gap-2">
+            {/* Social Media Icons */}
+            <div className="flex items-center gap-3 pt-2">
               {SOCIAL_LINKS.map((social) => {
                 const IconComponent = social.icon;
                 return (
@@ -228,7 +123,7 @@ export default function Footer() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`w-8 h-8 rounded-full ${social.bgColor} flex items-center justify-center transition-all cursor-pointer hover:scale-110 hover:shadow-md ${social.iconColor}`}
+                    className="w-8 h-8 rounded-full flex items-center justify-center transition-colors text-gray-500 hover:text-gray-900"
                     aria-label={social.name}
                   >
                     <IconComponent />
@@ -237,41 +132,25 @@ export default function Footer() {
               })}
             </div>
           </div>
-        </div>
 
-        {/* Bottom Section */}
-        <div className="flex flex-col md:flex-row justify-between items-center py-4 border-t border-gray-200 text-sm text-black font-thin">
-          <div className="flex items-center gap-2">
-            <span>DFS Scan © 2025 (DFS-D) </span>
-            <span>|</span>
-            <div className="flex items-center gap-1">
-              <span>👨‍👦‍👦Built by team</span>
-              <Link
-                href="https://difines.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#0784c3] hover:text-blue-700 flex items-center gap-1"
-              >
-                DIFINES
-                <svg
-                  className="w-3 h-3"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                  />
-                </svg>
-              </Link>
+          {/* Middle Section - DFS Chain Links */}
+          <div className="space-y-3">
+            <h3 className="font-bold text-gray-900 text-base">DFS Scan</h3>
+            <div className="flex flex-col space-y-2">
+              {DFS_CHAIN_LINKS.map((link, index) => (
+                <FooterLinkComponent key={index} link={link} />
+              ))}
             </div>
           </div>
-          <div className="flex items-center gap-1 cursor-pointer">
-            <span>Donations</span>
-            <span className="text-red-500">❤</span>
+
+          {/* Right Section - About Links */}
+          <div className="space-y-3">
+            <h3 className="font-bold text-gray-900 text-base">About</h3>
+            <div className="flex flex-col space-y-2">
+              {ABOUT_LINKS.map((link, index) => (
+                <FooterLinkComponent key={index} link={link} />
+              ))}
+            </div>
           </div>
         </div>
       </div>
