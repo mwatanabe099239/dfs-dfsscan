@@ -7,7 +7,7 @@ type PageProps = {
 }
 
 export default async function TransactionDetail({ params }: PageProps) {
-  const { hash } = await params
+  const { hash } = await params;
   const transaction = await getTransactionByHash(hash)
 
   if (!transaction) {
@@ -15,7 +15,7 @@ export default async function TransactionDetail({ params }: PageProps) {
   }
 
   return (
-    <div className="container mx-auto px-4">
+    <div className={`container mx-auto px-4`}>
       <TransactionDetailView transaction={transaction} />
     </div>
   )

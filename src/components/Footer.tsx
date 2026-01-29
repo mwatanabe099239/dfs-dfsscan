@@ -101,13 +101,12 @@ export default function Footer() {
               <p className="text-sm text-gray-500 font-normal">Managed by</p>
               <div className="flex items-center gap-2">
                 <Image
-                  src="/dfs-logo.png"
+                  src="/logo.png"
                   alt="DFS Scan Logo"
-                  width={32}
-                  height={32}
-                  className="w-8 h-auto"
+                  width={100}
+                  height={100}
+                  className="w-32 h-auto"
                 />
-                <span className="font-bold text-gray-900 text-lg">DFS Scan</span>
               </div>
               <p className="text-sm text-gray-600 font-normal">
                 © 2026 DIFINES. All rights reserved.

@@ -478,30 +478,87 @@ export async function getTokenTransactionsWithLimitWithTotalCount(
   tokenAddress: string,
   limitNumber: number
 ): Promise<{ transactions: Transaction[]; totalCount: number }> {
-  const txQuery = query(
-    collection(db, "transactions"),
-    where("token.tokenAddress", "==", tokenAddress),
-    orderBy("createdAt", "desc"),
-    limit(limitNumber)
+  try {
+    const txQuery = query(
+      collection(db, "transactions"),
+      where("token.tokenAddress", "==", tokenAddress),
+      orderBy("createdAt", "desc"),
+      limit(limitNumber)
+    );
+
+    const countQuery = query(
+      collection(db, "transactions"),
+      where("token.tokenAddress", "==", tokenAddress)
+    );
+
+    const [txSnapshot, countSnapshot] = await Promise.all([
+      getDocs(txQuery),
+      getCountFromServer(countQuery),
+    ]);
+
+    const transactions = txSnapshot.docs.map((doc) => ({
+      ...doc.data(),
+      createdAt: doc.data().createdAt.toDate(),
+    })) as Transaction[];
+
+    return {
+      transactions,
+      totalCount: countSnapshot.data().count,
+    };
+  } catch (error: any) {
+    // If index error, try without orderBy as fallback
+    if (error?.code === "failed-precondition" || error?.message?.includes("index")) {
+      console.warn("Firestore index required. Falling back to query without orderBy. Please create the index:", error.message);
+      
+      const txQuery = query(
+        collection(db, "transactions"),
+        where("token.tokenAddress", "==", tokenAddress),
+        limit(limitNumber)
+      );
+
+      const countQuery = query(
+        collection(db, "transactions"),
+        where("token.tokenAddress", "==", tokenAddress)
+      );
+
+      const [txSnapshot, countSnapshot] = await Promise.all([
+        getDocs(txQuery),
+        getCountFromServer(countQuery),
+      ]);
+
+      const transactions = txSnapshot.docs.map((doc) => ({
+        ...doc.data(),
+        createdAt: doc.data().createdAt.toDate(),
+      })) as Transaction[];
+
+      // Sort manually as fallback
+      transactions.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+      return {
+        transactions: transactions.slice(0, limitNumber),
+        totalCount: countSnapshot.data().count,
+      };
+    }
+    throw error;
+  }
+}
+
+// Fetch tokens with web3TokenAddress
+export async function getTokensWithWeb3Address(limitCount: number = 10) {
+  // Firestore doesn't support != null queries directly, so we fetch all and filter
+  const tokensQuery = query(
+    collection(db, "tokens"),
+    limit(100) // Fetch more to filter, adjust as needed
   );
 
-  const countQuery = query(
-    collection(db, "transactions"),
-    where("token.tokenAddress", "==", tokenAddress)
-  );
-
-  const [txSnapshot, countSnapshot] = await Promise.all([
-    getDocs(txQuery),
-    getCountFromServer(countQuery),
-  ]);
-
-  const transactions = txSnapshot.docs.map((doc) => ({
-    ...doc.data(),
-    createdAt: doc.data().createdAt.toDate(),
-  })) as Transaction[];
-
-  return {
-    transactions,
-    totalCount: countSnapshot.data().count,
-  };
+  const snapshot = await getDocs(tokensQuery);
+  const tokens = snapshot.docs
+    .map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }))
+    .filter((token: any) => token.web3TokenAddress && token.web3TokenAddress.trim() !== "")
+    .slice(0, limitCount);
+  
+  return tokens;
 }

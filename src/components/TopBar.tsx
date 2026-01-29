@@ -6,16 +6,20 @@ import { usePathname } from "next/navigation";
 import { useDfsTokenPrice } from "../hooks/useDfsTokenPrice";
 import { RowSkeleton } from "./common/ItemSkeleton";
 import { formatNumber } from "../lib/utils";
+import { useViewMode } from "@/src/contexts/ViewModeContext";
 
 export default function TopBar() {
   const currentPath = usePathname();
   const isHome = currentPath === "/";
+  const { viewMode } = useViewMode();
 
   const { data, loading } = useDfsTokenPrice();
 
+  const isSolanaMode = viewMode === "solanascan";
+
   return (
     <div
-      className={`bg-white border-b border-gray-200 z-10 ${
+      className={`${isSolanaMode ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"} border-b z-10 ${
         isHome ? "md:block hidden" : "block"
       }`}
     >
@@ -24,12 +28,16 @@ export default function TopBar() {
           {/* Left section */}
           <div className="md:block hidden">
             <div className="flex items-center gap-3 text-xs">
-              <button className="text-xs text-black hover:text-[#0784c3] border border-gray-300 rounded-md p-1">
+              <button className={`text-xs border rounded-md p-1 ${
+                isSolanaMode 
+                  ? "text-gray-300 hover:text-white border-gray-600" 
+                  : "text-black hover:text-[#0784c3] border-gray-300"
+              }`}>
                 DFS WEBNET
               </button>
-              <span className="text-gray-600 flex items-center gap-1">
+              <span className={`flex items-center gap-1 ${isSolanaMode ? "text-gray-300" : "text-gray-600"}`}>
                 DFS Price:{" "}
-                <span className="text-[#0784c3]">
+                <span className={isSolanaMode ? "text-white" : "text-[#0784c3]"}>
                   {loading ? (
                     <RowSkeleton className="h-3" />
                   ) : (
@@ -37,9 +45,9 @@ export default function TopBar() {
                   )}
                 </span>
               </span>
-              <span className="text-gray-600 flex items-center gap-1">
+              <span className={`flex items-center gap-1 ${isSolanaMode ? "text-gray-300" : "text-gray-600"}`}>
                 Gas:{" "}
-                <span className="text-[#0784c3]">
+                <span className={isSolanaMode ? "text-white" : "text-[#0784c3]"}>
                   {loading ? (
                     <RowSkeleton className="h-3" />
                   ) : (
@@ -51,15 +59,17 @@ export default function TopBar() {
           </div>
 
           {/* Right section */}
-          <div className="flex items-center gap-2 md:w-auto w-full">
+          <div className="flex items-center gap-3 md:w-auto w-full">
             {isHome ? <></> : <TopSearchBar />}
-            <Image
-              src="/dfs-logo-black.png"
-              alt="DFS Logo"
-              className="mt-1 md:block hidden"
-              width={20}
-              height={20}
-            />
+            {!isSolanaMode && (
+              <Image
+                src="/dfs-logo-black.png"
+                alt="DFS Logo"
+                className="mt-1 md:block hidden"
+                width={20}
+                height={20}
+              />
+            )}
           </div>
         </div>
       </div>

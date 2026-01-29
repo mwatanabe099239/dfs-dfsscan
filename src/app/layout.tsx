@@ -2,11 +2,14 @@ import type { Metadata } from "next";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import { Toaster } from "react-hot-toast";
 import Navbar from "@/src/components/Navbar";
-import TopBar from "@/src/components/TopBar";
+import ConditionalTopBar from "@/src/components/ConditionalTopBar";
+import ConditionalMain from "@/src/components/ConditionalMain";
 import { Roboto } from "next/font/google";
 import { Suspense } from "react";
 import SkeletonLoading from "@/src/components/SkeletonLoading";
 import ReactQueryProvider from "@/src/providers/react-query-provider";
+import { ViewModeProvider } from "@/src/contexts/ViewModeContext";
+import ViewModeWrapper from "@/src/components/ViewModeWrapper";
 import Footer from "@/src/components/Footer";
 import "./globals.scss";
 import "@fortawesome/fontawesome-svg-core/styles.css";
@@ -41,11 +44,15 @@ export default function RootLayout({
       >
         <Suspense fallback={<SkeletonLoading />}>
           <ReactQueryProvider>
-            <TopBar />
-            <Navbar />
-            <main className="mx-auto pt-8 pb-20">{children}</main>
-            <Footer />
-            <Toaster />
+            <ViewModeProvider>
+              <ViewModeWrapper>
+                <ConditionalTopBar />
+                <Navbar />
+                <ConditionalMain>{children}</ConditionalMain>
+                <Footer />
+                <Toaster />
+              </ViewModeWrapper>
+            </ViewModeProvider>
           </ReactQueryProvider>
         </Suspense>
       </body>

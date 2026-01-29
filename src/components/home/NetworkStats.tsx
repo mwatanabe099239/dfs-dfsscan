@@ -8,6 +8,7 @@ import Image from "next/image";
 import { Globe, List, CreditCard, Landmark, ClockFading } from "lucide-react";
 import { DFS_BASE_FEE_IN_USD } from "@/src/lib/constant";
 import { RowSkeleton } from "@/src/components/common/ItemSkeleton";
+import { useViewMode } from "@/src/contexts/ViewModeContext";
 
 interface StatsItemProps {
   icon: React.ReactNode;
@@ -16,6 +17,7 @@ interface StatsItemProps {
   subValue?: string;
   subValueColor?: string;
   isLoading: boolean;
+  isSolanaMode?: boolean;
 }
 
 const StatsItem = ({
@@ -25,25 +27,26 @@ const StatsItem = ({
   subValue,
   subValueColor,
   isLoading,
+  isSolanaMode = false,
 }: StatsItemProps) => (
   <div className="flex gap-2 items-start">
     <div className="flex items-center gap-1.5 mb-0.5">
-      <div className="text-gray-600 text-2xl w-6">{icon}</div>
+      <div className={`text-2xl w-6 ${isSolanaMode ? "text-gray-400" : "text-gray-600"}`}>{icon}</div>
     </div>
     <div className="flex flex-col gap-0.5">
-      <div className="uppercase text-sm text-gray-500">{label}</div>
+      <div className={`uppercase text-sm ${isSolanaMode ? "text-gray-400" : "text-gray-500"}`}>{label}</div>
       {isLoading ? (
         <RowSkeleton className="!w-16" />
       ) : (
         <div className="flex items-baseline gap-0.5">
-          <span className="text-base">{mainValue}</span>
+          <span className={`text-base ${isSolanaMode ? "text-gray-200" : ""}`}>{mainValue}</span>
           {subValue && (
             <>
-              <span className="text-sm text-gray-600">(</span>
-              <span className={`text-sm ${subValueColor || "text-gray-600"}`}>
+              <span className={`text-sm ${isSolanaMode ? "text-gray-500" : "text-gray-600"}`}>(</span>
+              <span className={`text-sm ${subValueColor || (isSolanaMode ? "text-gray-400" : "text-gray-600")}`}>
                 {subValue}
               </span>
-              <span className="text-sm text-gray-600">)</span>
+              <span className={`text-sm ${isSolanaMode ? "text-gray-500" : "text-gray-600"}`}>)</span>
             </>
           )}
         </div>
@@ -97,6 +100,9 @@ const fetchBaseFee = async () => {
 };
 
 export default function NetworkStatsSection() {
+  const { viewMode } = useViewMode();
+  const isSolanaMode = viewMode === "solanascan";
+
   // Individual queries for each API endpoint
   const { data: priceData, isLoading: isPriceLoading } = useQuery({
     queryKey: ["token-price"],
@@ -166,7 +172,7 @@ export default function NetworkStatsSection() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 py-0">
-      <div className="flex items-center md:border-r border-gray-200 md:px-4">
+      <div className={`flex items-center md:border-r md:px-4 ${isSolanaMode ? "border-gray-700" : "border-gray-200"}`}>
         <div className="flex flex-col justify-items-start w-full">
           <StatsItem
             icon={
@@ -194,8 +200,9 @@ export default function NetworkStatsSection() {
                 : "text-[#ea3943]"
             }
             isLoading={isLoading}
+            isSolanaMode={isSolanaMode}
           />
-          <Separator className="bg-gray-200 my-4" />
+          <Separator className={`my-4 ${isSolanaMode ? "bg-gray-700" : "bg-gray-200"}`} />
           <StatsItem
             icon={<Globe className="w-6 h-6" />}
             label="Circulation Supply (MCap)"
@@ -204,51 +211,56 @@ export default function NetworkStatsSection() {
             )}`}
             subValue={`$${formatCompactNumber(marketCap)}`}
             isLoading={isLoading}
+            isSolanaMode={isSolanaMode}
           />
-          <Separator className="bg-gray-200 my-4 xl:hidden block" />
+          <Separator className={`my-4 xl:hidden block ${isSolanaMode ? "bg-gray-700" : "bg-gray-200"}`} />
         </div>
       </div>
-      <div className="flex items-center md:border-r border-gray-200 md:px-4">
+      <div className={`flex items-center md:border-r md:px-4 ${isSolanaMode ? "border-gray-700" : "border-gray-200"}`}>
         <div className="flex flex-col justify-items-start w-full">
           <StatsItem
             icon={<List className="w-6 h-6" />}
             label="DFS Holders"
             mainValue={(holdersCountData?.data || 0).toLocaleString()}
             isLoading={isLoading}
+            isSolanaMode={isSolanaMode}
           />
-          <Separator className="bg-gray-200 my-4" />
+          <Separator className={`my-4 ${isSolanaMode ? "bg-gray-700" : "bg-gray-200"}`} />
           <StatsItem
             icon={<CreditCard className="w-6 h-6" />}
             label="Total Transactions"
             mainValue={(transactionCountData?.data || 0).toLocaleString()}
             isLoading={isLoading}
+            isSolanaMode={isSolanaMode}
           />
-          <Separator className="bg-gray-200 my-4 xl:hidden block" />
+          <Separator className={`my-4 xl:hidden block ${isSolanaMode ? "bg-gray-700" : "bg-gray-200"}`} />
         </div>
       </div>
-      <div className="flex items-center md:border-r border-gray-200 md:px-4">
+      <div className={`flex items-center md:border-r md:px-4 ${isSolanaMode ? "border-gray-700" : "border-gray-200"}`}>
         <div className="flex flex-col justify-items-start w-full">
           <StatsItem
             icon={<Landmark className="w-6 h-6" />}
             label="Base Fee"
             mainValue={`${formatNumber(Number(baseFeeInDFS.toFixed(6)))} DFS`}
             subValue={`$${DFS_BASE_FEE_IN_USD}`}
-            subValueColor="text-[#0784c3]"
+            subValueColor={isSolanaMode ? "text-white" : "text-[#0784c3]"}
             isLoading={isLoading}
+            isSolanaMode={isSolanaMode}
           />
-          <Separator className="bg-gray-200 my-4" />
+          <Separator className={`my-4 ${isSolanaMode ? "bg-gray-700" : "bg-gray-200"}`} />
           <StatsItem
             icon={<ClockFading className="w-6 h-6" />}
             label="Latest Block"
             mainValue={(latestBlockData?.data || 0).toString()}
             isLoading={isLoading}
+            isSolanaMode={isSolanaMode}
           />
-          <Separator className="bg-gray-200 my-4 xl:hidden block" />
+          <Separator className={`my-4 xl:hidden block ${isSolanaMode ? "bg-gray-700" : "bg-gray-200"}`} />
         </div>
       </div>
       <div className="flex items-center md:px-4">
         <div className="flex flex-col justify-items-start w-full">
-          <div className="uppercase text-sm text-gray-500">
+          <div className={`uppercase text-sm ${isSolanaMode ? "text-gray-400" : "text-gray-500"}`}>
             DFS Chain Transaction History In 14 Days
           </div>
           <TransactionHistoryChart data={transactionHistoryData?.data || []} />
