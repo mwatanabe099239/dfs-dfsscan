@@ -242,7 +242,7 @@ export default function TokenDashboard() {
 
         {/* Footer */}
         <div className="px-4 pb-4 pt-4 border-t border-gray-200 bg-gray-50 w-full">
-          <Link href="/leaderboard/token" className="w-full">
+          <Link href="/coming-soon" className="w-full">
             <div className="flex gap-1 flex-row items-center justify-center flex-wrap hover:text-[#2563eb] text-gray-500">
               <div className="text-[12px] leading-[16px] text-inherit font-medium transition-colors uppercase">
                 Visit Token Dashboard

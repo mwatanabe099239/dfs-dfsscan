@@ -10,7 +10,7 @@ import CustomizeCardModal from "./CustomizeCardModal";
 type ViewType = "transactions" | "blocks";
 
 export default function SolscanTable() {
-  const [viewType, setViewType] = useState<ViewType>("blocks");
+  const [viewType, setViewType] = useState<ViewType>("transactions");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [blocks, setBlocks] = useState<Block[]>([]);

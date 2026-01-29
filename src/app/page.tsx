@@ -76,21 +76,22 @@ export default function Home() {
             </div>
           ) : (
             <>
-              {/* Latest Blocks */}
+              {/* Latest Transactions and Latest Blocks */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <div className={`bg-white rounded-lg shadow-md lg:col-span-1`}>
-                <h2 className={`text-sm font-medium p-4 border-b border-gray-200`}>
-                  Latest Blocks
-                </h2>
-                <LatestBlocks />
-              </div>
-
               {/* Latest Transactions */}
               <div className={`bg-white rounded-lg shadow-md lg:col-span-1`}>
                 <h2 className={`text-sm font-medium p-4 border-b border-gray-200`}>
                   Latest Transactions
                 </h2>
                 <LatestTransactions />
+              </div>
+
+              {/* Latest Blocks */}
+              <div className={`bg-white rounded-lg shadow-md lg:col-span-1`}>
+                <h2 className={`text-sm font-medium p-4 border-b border-gray-200`}>
+                  Latest Blocks
+                </h2>
+                <LatestBlocks />
               </div>
             </div>
             </>

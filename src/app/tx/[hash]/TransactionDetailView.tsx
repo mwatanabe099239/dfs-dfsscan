@@ -357,6 +357,7 @@ function BSCScanView({ transaction }: ViewProps) {
 // SolanaScan View Component
 function SolanaScanView({ transaction }: ViewProps) {
   const [activeTab, setActiveTab] = useState<"overview" | "balance_change" | "raw">("overview");
+  // Disabled tabs: balance_change and raw
 
   const handleCopy = async (tx: string) => {
     try {
@@ -492,7 +493,8 @@ function SolanaScanView({ transaction }: ViewProps) {
                   >
                     Overview
                   </button>
-                  <button
+                  {/* Balance Changes tab - disabled */}
+                  {/* <button
                     type="button"
                     role="tab"
                     aria-selected={activeTab === "balance_change"}
@@ -506,8 +508,9 @@ function SolanaScanView({ transaction }: ViewProps) {
                     data-radix-collection-item=""
                   >
                     Balance Changes
-                  </button>
-                  <button
+                  </button> */}
+                  {/* Raw tab - disabled */}
+                  {/* <button
                     type="button"
                     role="tab"
                     aria-selected={activeTab === "raw"}
@@ -521,20 +524,18 @@ function SolanaScanView({ transaction }: ViewProps) {
                     data-radix-collection-item=""
                   >
                     Raw
-                  </button>
+                  </button> */}
                 </div>
               </div>
               <div className="flex gap-1 flex-row items-stretch justify-start flex-wrap">
-                <a target="_blank" rel="noopener noreferrer" href="https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-transaction-detail">
-                  <button className="whitespace-nowrap ring-offset-background focus-visible:outline-none disabled:pointer-events-none rounded-lg inline-flex items-center justify-center h-auto transition-colors border border-gray-200 bg-white hover:bg-gray-50 hover:text-gray-900 disabled:bg-gray-100 text-gray-700 ring-transparent ring-offset-0 focus-visible:ring-offset-0 focus-visible:ring-transparent py-1.5 gap-0.5 px-2 text-[12px] leading-[14px] font-normal">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-code-xml" aria-hidden="true">
-                      <path d="m18 16 4-4-4-4"></path>
-                      <path d="m6 8-4 4 4 4"></path>
-                      <path d="m14.5 4-5 16"></path>
-                    </svg>
-                    API
-                  </button>
-                </a>
+                <button className="whitespace-nowrap ring-offset-background focus-visible:outline-none disabled:pointer-events-none rounded-lg inline-flex items-center justify-center h-auto transition-colors border border-gray-200 bg-white hover:bg-gray-50 hover:text-gray-900 disabled:bg-gray-100 text-gray-700 ring-transparent ring-offset-0 focus-visible:ring-offset-0 focus-visible:ring-transparent py-1.5 gap-0.5 px-2 text-[12px] leading-[14px] font-normal">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-code-xml" aria-hidden="true">
+                    <path d="m18 16 4-4-4-4"></path>
+                    <path d="m6 8-4 4 4 4"></path>
+                    <path d="m14.5 4-5 16"></path>
+                  </svg>
+                  API
+                </button>
                 <button className="whitespace-nowrap ring-offset-background focus-visible:outline-none disabled:pointer-events-none rounded-lg inline-flex items-center justify-center font-bold h-auto transition-colors border border-gray-200 bg-white hover:bg-gray-50 hover:text-gray-900 disabled:bg-gray-100 text-gray-700 ring-transparent ring-offset-0 focus-visible:ring-offset-0 focus-visible:ring-transparent py-1.5 text-[12px] leading-4.5 gap-0.5 px-2" type="button" id="radix-:r62:" aria-haspopup="menu" aria-expanded="false" data-state="closed">
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-list" aria-hidden="true">
                     <path d="M3 5h.01"></path>
@@ -674,12 +675,10 @@ function SolanaScanView({ transaction }: ViewProps) {
                                   <Copy className="w-3 h-3 cursor-pointer text-[#adb5bd] hover:text-[#2563eb]" onClick={() => handleCopy(transaction.transactionHash)} />
                                 </div>
                               </div>
-                              <a href={`/tx/inspector?txhash=${transaction.transactionHash}`}>
-                                <button className="whitespace-nowrap ring-offset-background focus-visible:outline-none disabled:pointer-events-none rounded-lg inline-flex items-center justify-center font-bold transition-colors text-white bg-[#009978] hover:bg-[#008066] disabled:opacity-40 ring-transparent ring-offset-0 focus-visible:ring-offset-0 focus-visible:ring-transparent py-[6px] text-[12px] leading-2 gap-1 h-7 px-3">
-                                  <Eye className="w-3.5 h-3.5" />
-                                  Inspect Tx
-                                </button>
-                              </a>
+                              <button className="whitespace-nowrap ring-offset-background focus-visible:outline-none disabled:pointer-events-none rounded-lg inline-flex items-center justify-center font-bold transition-colors text-white bg-[#009978] hover:bg-[#008066] disabled:opacity-40 ring-transparent ring-offset-0 focus-visible:ring-offset-0 focus-visible:ring-transparent py-[6px] text-[12px] leading-2 gap-1 h-7 px-3">
+                                <Eye className="w-3.5 h-3.5" />
+                                Inspect Tx
+                              </button>
                             </div>
                           </div>
                         </div>
@@ -702,12 +701,10 @@ function SolanaScanView({ transaction }: ViewProps) {
                                   </TooltipProvider>
                                   <div className="text-[14px] leading-[24px] text-gray-900 md:text-gray-600 font-medium md:font-normal">Transaction Hash</div>
                                 </div>
-                                <a href={`/tx/inspector?txhash=${transaction.transactionHash}`}>
-                                  <button className="whitespace-nowrap ring-offset-background focus-visible:outline-none disabled:pointer-events-none rounded-lg inline-flex items-center justify-center font-bold transition-colors text-white bg-[#009978] hover:bg-[#008066] disabled:opacity-40 ring-transparent ring-offset-0 focus-visible:ring-offset-0 focus-visible:ring-transparent py-[6px] text-[12px] leading-2 gap-1 h-7 px-3">
-                                    <Eye className="w-3.5 h-3.5" />
-                                    Inspect Tx
-                                  </button>
-                                </a>
+                                <button className="whitespace-nowrap ring-offset-background focus-visible:outline-none disabled:pointer-events-none rounded-lg inline-flex items-center justify-center font-bold transition-colors text-white bg-[#009978] hover:bg-[#008066] disabled:opacity-40 ring-transparent ring-offset-0 focus-visible:ring-offset-0 focus-visible:ring-transparent py-[6px] text-[12px] leading-2 gap-1 h-7 px-3">
+                                  <Eye className="w-3.5 h-3.5" />
+                                  Inspect Tx
+                                </button>
                               </div>
                               <div className="flex gap-1 flex-row items-center justify-start flex-wrap">
                                 <div className="flex gap-1 flex-row items-center justify-start flex-nowrap flex-1 min-w-0">
@@ -1225,7 +1222,8 @@ function SolanaScanView({ transaction }: ViewProps) {
               </div>
             )}
             
-            {activeTab === "balance_change" && (
+            {/* Balance change tab content - disabled */}
+            {/* {activeTab === "balance_change" && (
               <div className="ring-offset-background focus-visible:outline-none w-full mt-0 border-none">
                 <div className="flex flex-col gap-4 items-stretch justify-start">
                   <div className="rounded-xl border border-gray-200 shadow-sm p-0 bg-white overflow-hidden w-full">
@@ -1247,9 +1245,10 @@ function SolanaScanView({ transaction }: ViewProps) {
                   </div>
                 </div>
               </div>
-            )}
+            )} */}
             
-            {activeTab === "raw" && (
+            {/* Raw tab content - disabled */}
+            {/* {activeTab === "raw" && (
               <div className="ring-offset-background focus-visible:outline-none w-full mt-0 border-none">
                 <div className="rounded-xl border border-gray-200 shadow-sm p-0 bg-white overflow-hidden w-full">
                   <div className="flex flex-col gap-4 items-start justify-start">
@@ -1263,7 +1262,7 @@ function SolanaScanView({ transaction }: ViewProps) {
                   </div>
                 </div>
               </div>
-            )}
+            )} */}
           </div>
         </div>
       </div>

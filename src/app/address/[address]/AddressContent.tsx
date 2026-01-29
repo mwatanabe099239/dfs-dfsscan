@@ -597,9 +597,6 @@ function BSCScanWalletView({
               <button className="px-3 py-1 border border-gray-200 rounded-lg cursor-pointer bg-[#0784c3] text-white">
                 Transactions
               </button>
-              <button className="px-3 py-1 border border-gray-200 rounded-lg cursor-pointer bg-gray-200">
-                NFT Transfer
-              </button>
             </div>
 
             <div className="bg-white rounded-lg shadow">
@@ -1465,28 +1462,20 @@ function SolanaScanWalletView({
             data-orientation="horizontal"
             style={{ outline: "none" }}
           >
-            {["Transactions", "Transfers", "Activities", "Balance Changes", "Analytics", "Portfolio", "Stake Accounts", "Cards"].map((tab, index) => {
-              const tabKey = tab.toLowerCase().replace(/\s+/g, "_");
-              const isActive = activeTab === tabKey;
-              return (
-                <button
-                  key={tab}
-                  type="button"
-                  role="tab"
-                  aria-selected={isActive}
-                  aria-controls={`radix-tab-content-${tabKey}`}
-                  data-state={isActive ? "active" : "inactive"}
-                  id={`radix-tab-trigger-${tabKey}`}
-                  onClick={() => setActiveTab(tabKey)}
-                  className={`py-1.5 font-medium ring-offset-background focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 ring-transparent ring-offset-0 focus-visible:ring-offset-0 focus-visible:ring-transparent relative inline-flex items-center justify-center whitespace-nowrap bg-gray-100 hover:bg-gray-200 border-0 rounded-lg text-xs text-gray-700 data-[state=active]:shadow-none data-[state=active]:text-white data-[state=active]:font-bold data-[state=active]:!bg-[#009978] data-[state=active]:hover:!bg-[#008066] ml-2 first:ml-0 transition-colors duration-200 px-3 h-7 w-full`}
-                  tabIndex={-1}
-                  data-orientation="horizontal"
-                  data-radix-collection-item=""
-                >
-                  {tab}
-                </button>
-              );
-            })}
+            <button
+              type="button"
+              role="tab"
+              aria-selected={true}
+              aria-controls="radix-tab-content-transactions"
+              data-state="active"
+              id="radix-tab-trigger-transactions"
+              className="py-1.5 font-medium ring-offset-background focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 ring-transparent ring-offset-0 focus-visible:ring-offset-0 focus-visible:ring-transparent relative inline-flex items-center justify-center whitespace-nowrap bg-gray-100 hover:bg-gray-200 border-0 rounded-lg text-xs text-gray-700 data-[state=active]:shadow-none data-[state=active]:text-white data-[state=active]:font-bold data-[state=active]:!bg-[#009978] data-[state=active]:hover:!bg-[#008066] ml-2 first:ml-0 transition-colors duration-200 px-3 h-7 w-full"
+              tabIndex={0}
+              data-orientation="horizontal"
+              data-radix-collection-item=""
+            >
+              Transactions
+            </button>
           </div>
         </div>
       </div>
