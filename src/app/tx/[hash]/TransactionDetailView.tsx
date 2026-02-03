@@ -98,7 +98,7 @@ function BSCScanView({ transaction }: ViewProps) {
                 tooltip="The status of the transaction"
               />
               <div className="flex-1">
-                <span className="inline-flex items-center gap-1 text-[#00a186] bg-[#00a18610] border border-[#00a18630] px-2 py-1 rounded-md text-xs">
+                <span className="inline-flex items-center gap-1 text-[#21f201] bg-[#21f20110] border border-[#21f20130] px-2 py-1 rounded-md text-xs">
                   <FontAwesomeIcon icon={faCheckCircle} />
                   <span className="font-medium">Success</span>
                 </span>
@@ -411,7 +411,7 @@ function SolanaScanView({ transaction }: ViewProps) {
                     <div>
                       <span className="font-semibold">Sponsored: </span>
                       Advertise across our explorers and boost your visibility.{" "}
-                      <span className="text-[#14F195] cursor-pointer hover:underline">
+                      <span className="text-[#21f201] cursor-pointer hover:underline">
                         Book your slot here!
                       </span>
                     </div>
@@ -422,7 +422,7 @@ function SolanaScanView({ transaction }: ViewProps) {
             <div className="w-full lg:w-[458px]">
               <div className="flex flex-row items-center justify-start flex-wrap gap-1 sm:gap-3 w-full sm:w-auto">
                 <button type="button" className="flex-1">
-                  <div className="flex justify-center items-center font-medium transition-colors flex-nowrap bg-white h-[32px] text-[12px] leading-[25px] gap-1 px-1.5 sm:px-[10px] py-[6px] w-full sm:w-auto border border-gray-200 rounded-lg hover:text-white hover:bg-[#009978] text-gray-700">
+                  <div className="flex justify-center items-center font-medium transition-colors flex-nowrap bg-white h-[32px] text-[12px] leading-[25px] gap-1 px-1.5 sm:px-[10px] py-[6px] w-full sm:w-auto border border-gray-200 rounded-lg hover:text-white hover:bg-[#21f201] text-gray-700">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" className="text-inherit hidden sm:block">
                       <path d="M14.6667 14.1665C14.6667 14.4398 14.44 14.6665 14.1667 14.6665H1.83333C1.55999 14.6665 1.33333 14.4398 1.33333 14.1665C1.33333 13.8932 1.55999 13.6665 1.83333 13.6665H14.1667C14.44 13.6665 14.6667 13.8932 14.6667 14.1665Z" fill="currentColor"></path>
                       <path d="M10.26 3.01353L3.10001 10.1735C2.82668 10.4469 2.61331 10.6668 2.12001 10.1735H2.11335C1.18668 9.2402 0.333331 8.58686 2.11335 6.80687L6.88001 2.0402C8.58669 0.333508 9.32001 1.10687 10.2533 2.0402C10.6667 2.45352 10.5267 2.74687 10.26 3.01353Z" fill="currentColor"></path>
@@ -433,7 +433,7 @@ function SolanaScanView({ transaction }: ViewProps) {
                   </div>
                 </button>
                 <button type="button" className="flex-1">
-                  <div className="flex justify-center items-center font-medium transition-colors flex-nowrap bg-white h-[32px] text-[12px] leading-[25px] gap-1 px-1.5 sm:px-[10px] py-[6px] w-full sm:w-auto border border-gray-200 rounded-lg hover:text-white hover:bg-[#009978] text-gray-700">
+                  <div className="flex justify-center items-center font-medium transition-colors flex-nowrap bg-white h-[32px] text-[12px] leading-[25px] gap-1 px-1.5 sm:px-[10px] py-[6px] w-full sm:w-auto border border-gray-200 rounded-lg hover:text-white hover:bg-[#21f201] text-gray-700">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" className="text-inherit hidden sm:block">
                       <path d="M6.33334 9.76699V11.567C6.33334 13.067 5.73334 13.667 4.23334 13.667H2.43334C0.933336 13.667 0.333336 13.067 0.333336 11.567V9.76699C0.333336 8.26699 0.933336 7.66699 2.43334 7.66699H4.23334C5.73334 7.66699 6.33334 8.26699 6.33334 9.76699Z" fill="currentColor"></path>
                       <path d="M10.6667 6.3335C12.3235 6.3335 13.6667 4.99035 13.6667 3.3335C13.6667 1.67664 12.3235 0.333496 10.6667 0.333496C9.00982 0.333496 7.66667 1.67664 7.66667 3.3335C7.66667 4.99035 9.00982 6.3335 10.6667 6.3335Z" fill="currentColor"></path>
@@ -445,7 +445,7 @@ function SolanaScanView({ transaction }: ViewProps) {
                   </div>
                 </button>
                 <button type="button" className="flex-1">
-                  <div className="flex justify-center items-center font-medium transition-colors flex-nowrap bg-white h-[32px] text-[12px] leading-[25px] gap-1 px-1.5 sm:px-[10px] py-[6px] w-full sm:w-auto border border-gray-200 rounded-lg hover:text-white hover:bg-[#009978] text-gray-700">
+                  <div className="flex justify-center items-center font-medium transition-colors flex-nowrap bg-white h-[32px] text-[12px] leading-[25px] gap-1 px-1.5 sm:px-[10px] py-[6px] w-full sm:w-auto border border-gray-200 rounded-lg hover:text-white hover:bg-[#21f201] text-gray-700">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-inherit w-4 h-4 hidden sm:block">
                       <path d="M15.033 9.44a.647.647 0 0 1 0 1.12l-4.065 2.352a.645.645 0 0 1-.968-.56V7.648a.645.645 0 0 1 .967-.56z"></path>
                       <path d="M12 17v4"></path>
@@ -457,7 +457,7 @@ function SolanaScanView({ transaction }: ViewProps) {
                   </div>
                 </button>
                 <button type="button" className="flex-1">
-                  <div className="flex justify-center items-center font-medium transition-colors flex-nowrap bg-white h-[32px] text-[12px] leading-[25px] gap-1 px-1.5 sm:px-[10px] py-[6px] w-full sm:w-auto border border-gray-200 rounded-lg hover:text-white hover:bg-[#009978] text-gray-700">
+                  <div className="flex justify-center items-center font-medium transition-colors flex-nowrap bg-white h-[32px] text-[12px] leading-[25px] gap-1 px-1.5 sm:px-[10px] py-[6px] w-full sm:w-auto border border-gray-200 rounded-lg hover:text-white hover:bg-[#21f201] text-gray-700">
                     <svg xmlns="http://www.w3.org/2000/svg" width="17" height="16" viewBox="0 0 17 16" className="text-inherit hidden sm:block">
                       <path d="M15.8333 10.4208C15.799 8.50726 15.5729 6.57224 15.2023 4.61916C14.9003 3.26221 13.8141 2.05364 12.0784 1.96513C10.7971 1.91242 10.5493 2.64231 9.09755 2.62828C8.69994 2.6257 8.30263 2.6257 7.90502 2.62828C6.45297 2.64231 6.20461 1.91242 4.92385 1.96513C3.18791 2.05364 2.06786 3.25906 1.79888 4.61916C1.42791 6.57224 1.2019 8.50697 1.16781 10.4205C1.1595 11.7528 2.47492 12.6391 3.34289 12.6999C5.01953 12.8265 6.35156 9.86994 7.36648 9.86966C8.12302 9.87395 8.87927 9.87424 9.6358 9.86966C10.651 9.86966 11.9819 12.8268 13.6597 12.7002C14.5274 12.6394 15.8769 11.7471 15.8336 10.4208H15.8333ZM6.6363 6.68711H5.85427V7.46914C5.85427 7.79914 5.58672 8.06669 5.25672 8.06669C4.92672 8.06669 4.65916 7.79914 4.65916 7.46914V6.68711H3.87713C3.54713 6.68711 3.27958 6.41955 3.27958 6.08955C3.27958 5.75955 3.54713 5.492 3.87713 5.492H4.65916V4.70997C4.65916 4.37997 4.92672 4.11242 5.25672 4.11242C5.58672 4.11242 5.85427 4.37997 5.85427 4.70997V5.492H6.6363C6.9663 5.492 7.23385 5.75955 7.23385 6.08955C7.23385 6.41955 6.9663 6.68711 6.6363 6.68711ZM11.4651 8.0664C10.9973 8.07901 10.6083 7.70948 10.5957 7.24197C10.5834 6.77276 10.9532 6.38317 11.4207 6.37114C11.8888 6.3594 12.2784 6.72864 12.2904 7.19671C12.3022 7.66479 11.9329 8.05437 11.4651 8.0664ZM12.8759 5.80768C12.4081 5.82086 12.0183 5.45104 12.0054 4.98325C11.9936 4.51461 12.3629 4.1256 12.831 4.1127C13.2996 4.10039 13.6886 4.4702 13.7012 4.93828C13.7135 5.40606 13.3434 5.79593 12.8759 5.80768Z" fill="currentColor"></path>
                     </svg>
@@ -710,7 +710,7 @@ function SolanaScanView({ transaction }: ViewProps) {
                                 <div className="flex gap-1 flex-row items-center justify-start flex-nowrap flex-1 min-w-0">
                                   <span className="inline-block break-all text-[14px] border-none">{transaction.transactionHash}</span>
                                   <div className="inline-flex align-middle">
-                                    <Copy className="w-3 h-3 cursor-pointer text-[#adb5bd] hover:text-[#009978]" onClick={() => handleCopy(transaction.transactionHash)} />
+                                    <Copy className="w-3 h-3 cursor-pointer text-[#adb5bd] hover:text-[#21f201]" onClick={() => handleCopy(transaction.transactionHash)} />
                                   </div>
                                 </div>
                               </div>

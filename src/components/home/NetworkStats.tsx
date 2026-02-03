@@ -196,7 +196,7 @@ export default function NetworkStatsSection() {
             )}%`}
             subValueColor={
               (priceData?.data?.priceChange?.h24 || 0) >= 0
-                ? "text-[#17c671]"
+                ? "text-[#21f201]"
                 : "text-[#ea3943]"
             }
             isLoading={isLoading}

@@ -39,7 +39,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className={`${viewMode === "solanascan" && isHomePage ? "bg-black" : "bg-white border-gray-200 border-b"} ${viewMode === "solanascan" ? "" : "shadow-[0_2px_4px_0_rgba(0,0,0,0.05)]"} z-10`}>
+    <nav className={`${viewMode === "solanascan" && isHomePage ? "bg-transparent" : "bg-white border-gray-200 border-b"} ${viewMode === "solanascan" ? "" : "shadow-[0_2px_4px_0_rgba(0,0,0,0.05)]"} relative z-10`}>
       <div className="container mx-auto">
         <div className="flex justify-between h-14 px-4 items-center">
           {/* Left section with Logo and Price/Gas (SolanaScan) */}
@@ -56,13 +56,13 @@ export default function Navbar() {
             {viewMode === "solanascan" && (
               <div className="hidden md:flex items-center gap-3 text-xs">
                 <div
-                  className="flex items-center gap-3 px-3 py-1 rounded-md"
+                  className="flex items-center gap-3 p-2 rounded-md"
                   style={{
-                    backgroundColor: isHomePage ? "#ffffff33" : "gray-200"
+                    backgroundColor: isHomePage ? "#ffffff33" : "#e0e0e088"
                   }}
                 >
                   <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 flex-shrink-0 flex items-center justify-center">
+                    <div className="w-4 h-4 flex-shrink-0 flex items-center justify-center rounded-full bg-white p-0.5">
                       <Image
                         src="/dfs-logo.png"
                         alt="DFS"
@@ -88,7 +88,7 @@ export default function Navbar() {
                       )}
                     </span>
                   </div>
-                  <div className="h-4 w-px bg-gray-500"></div>
+                  <div className={`h-4 w-px ${isHomePage ? "bg-white" : "bg-gray-300"}`}></div>
                   <span className={`${isHomePage ? "text-white" : "text-gray-600"} flex items-center gap-1`}>
                     Avg Fee:{" "}
                     <span className={`${isHomePage ? "text-blue-300" : "text-blue-600"}`}>

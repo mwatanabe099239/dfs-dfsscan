@@ -81,7 +81,7 @@ const SOCIAL_LINKS = [
 const FooterLinkComponent = ({ link }: { link: FooterLink }) => (
   <Link
     href={link.href}
-    className="hover:text-gray-900 hover:underline text-gray-600 text-sm font-normal transition-colors"
+    className="hover:text-gray-900 hover:underline text-gray-600 text-xs font-normal transition-colors"
     target={link.isExternal ? "_blank" : "_self"}
     rel={link.isExternal ? "noopener noreferrer" : ""}
   >
@@ -98,8 +98,8 @@ export default function Footer() {
           {/* Left Section - Logo, Copyright, Social Icons */}
           <div className="space-y-4 md:mr-36">
             <div className="space-y-2">
-              <p className="text-sm text-gray-500 font-normal">Managed by</p>
-              <div className="flex items-center gap-2">
+              <p className="text-xs text-gray-500 font-normal">Managed by</p>
+              <div className="flex items-center gap-2 mb-4">
                 <Image
                   src="/logo.png"
                   alt="DFS Scan Logo"
@@ -108,7 +108,7 @@ export default function Footer() {
                   className="w-32 h-auto"
                 />
               </div>
-              <p className="text-sm text-gray-600 font-normal">
+              <p className="text-xs text-gray-600 font-normal">
                 © 2026 DIFINES. All rights reserved.
               </p>
             </div>
@@ -134,7 +134,7 @@ export default function Footer() {
 
           {/* Middle Section - DFS Chain Links */}
           <div className="space-y-3">
-            <h3 className="font-bold text-gray-900 text-base">DFS Scan</h3>
+            <h4 className="font-bold text-gray-900 text-base">DFS Scan</h4>
             <div className="flex flex-col space-y-2">
               {DFS_CHAIN_LINKS.map((link, index) => (
                 <FooterLinkComponent key={index} link={link} />
@@ -144,7 +144,7 @@ export default function Footer() {
 
           {/* Right Section - About Links */}
           <div className="space-y-3">
-            <h3 className="font-bold text-gray-900 text-base">About</h3>
+            <h4 className="font-bold text-gray-900 text-base">About</h4>
             <div className="flex flex-col space-y-2">
               {ABOUT_LINKS.map((link, index) => (
                 <FooterLinkComponent key={index} link={link} />

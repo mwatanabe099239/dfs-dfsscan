@@ -61,7 +61,7 @@ export default function CustomizeCardModal({
                       onClick={() => setSelected("transactions")}
                       className={`aspect-square h-4 w-4 rounded-full border-2 flex items-center justify-center ${
                         selected === "transactions"
-                          ? "border-blue-600"
+                          ? "border-green-500"
                           : "border-gray-300"
                       }`}
                     >
@@ -76,7 +76,7 @@ export default function CustomizeCardModal({
                           strokeWidth="2"
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          className="text-blue-600 fill-current"
+                          className="text-green-500 fill-current"
                         >
                           <circle cx="12" cy="12" r="10"></circle>
                         </svg>
@@ -97,7 +97,7 @@ export default function CustomizeCardModal({
                       onClick={() => setSelected("blocks")}
                       className={`aspect-square h-4 w-4 rounded-full border-2 flex items-center justify-center ${
                         selected === "blocks"
-                          ? "border-blue-600"
+                          ? "border-green-500"
                           : "border-gray-300"
                       }`}
                     >
@@ -112,7 +112,7 @@ export default function CustomizeCardModal({
                           strokeWidth="2"
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          className="text-blue-600 fill-current"
+                          className="text-green-500 fill-current"
                         >
                           <circle cx="12" cy="12" r="10"></circle>
                         </svg>
@@ -143,7 +143,7 @@ export default function CustomizeCardModal({
             </button>
             <button
               onClick={handleSave}
-              className="whitespace-nowrap ring-offset-background focus-visible:outline-none disabled:pointer-events-none rounded-lg inline-flex items-center justify-center font-bold h-auto transition-colors text-white bg-blue-600 hover:bg-blue-700 py-1.5 text-[12px] leading-[18px] px-3 gap-1"
+              className="whitespace-nowrap ring-offset-background focus-visible:outline-none disabled:pointer-events-none rounded-lg inline-flex items-center justify-center font-bold h-auto transition-colors text-white bg-green-500 hover:bg-green-600 py-1.5 text-[12px] leading-[18px] px-3 gap-1"
               type="button"
             >
               Save Changes

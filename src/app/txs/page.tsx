@@ -157,8 +157,8 @@ const BSCScanTransactionRow = ({
       </td>
       <td className="p-3">
         {isTotalTx || isTokenTx ? (
-          <div className="bg-[#00a18610] border border-[#00a18630] rounded-full text-center h-6 w-6 flex items-center justify-center">
-            <MoveRight className="w-4 h-auto text-[#00a186]" />
+          <div className="bg-[#21f20110] border border-[#21f20130] rounded-full text-center h-6 w-6 flex items-center justify-center">
+            <MoveRight className="w-4 h-auto text-[#21f201]" />
           </div>
         ) : (
           <>
@@ -167,7 +167,7 @@ const BSCScanTransactionRow = ({
                 OUT
               </div>
             ) : (
-              <div className="bg-[#00a18610] border border-[#00a18630] text-[#00a186] flex items-center justify-center h-6 w-10 text-center rounded-md text-[10px] font-medium">
+              <div className="bg-[#21f20110] border border-[#21f20130] text-[#21f201] flex items-center justify-center h-6 w-10 text-center rounded-md text-[10px] font-medium">
                 IN
               </div>
             )}
@@ -625,6 +625,7 @@ function SolanaScanView({
   changePerPage: (newPerPage: number) => void;
 }) {
   const [showColumnMenu, setShowColumnMenu] = useState(false);
+  const { viewMode } = useViewMode();
 
   // Default values
   const defaultColumnOrder = [
@@ -732,7 +733,7 @@ function SolanaScanView({
   };
 
   return (
-    <div className="container mx-auto px-4 space-y-4">
+    <div className={`${viewMode === "solanascan" ? "mt-4" : ""} container mx-auto px-4 space-y-4`}>
       {/* Header with address */}
       <div className="flex flex-col border-b border-gray-200 pb-4 mb-4">
         <h1 className="text-xl font-semibold text-gray-900">Transactions</h1>
@@ -848,7 +849,7 @@ function SolanaScanView({
                                       })
                                     }
                                     onClick={(e) => e.stopPropagation()}
-                                    className="w-4 h-4 text-[#009978] border-gray-300 rounded focus:ring-[#009978] cursor-pointer"
+                                    className="w-4 h-4 text-[#21f201] border-gray-300 rounded focus:ring-[#21f201] cursor-pointer"
                                   />
                                   <span className="text-sm text-gray-700">{column.label}</span>
                                 </div>
@@ -873,7 +874,7 @@ function SolanaScanView({
                           <button
                             type="button"
                             onClick={handleApplyColumns}
-                            className="px-4 py-2 text-sm font-medium text-white bg-[#009978] hover:bg-[#008066] rounded-lg transition-colors"
+                            className="px-4 py-2 text-sm font-medium text-white bg-[#21f201] hover:bg-[#1bd301] rounded-lg transition-colors"
                           >
                             Apply
                           </button>

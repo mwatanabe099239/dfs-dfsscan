@@ -307,8 +307,8 @@ export default function TokenTransactions({
                 </td>
                 <td className="p-3">
                   {isTokenTransfer ? (
-                    <div className="bg-[#00a18610] border border-[#00a18630] rounded-full text-center h-6 w-6 flex items-center justify-center">
-                      <MoveRight className="w-4 h-auto text-[#00a186]" />
+                    <div className="bg-[#21f20110] border border-[#21f20130] rounded-full text-center h-6 w-6 flex items-center justify-center">
+                      <MoveRight className="w-4 h-auto text-[#21f201]" />
                     </div>
                   ) : (
                     <>
@@ -317,7 +317,7 @@ export default function TokenTransactions({
                           OUT
                         </div>
                       ) : (
-                        <div className="bg-[#00a18610] border border-[#00a18630] text-[#00a186] flex items-center justify-center h-6 w-10 text-center rounded-md text-[10px] font-medium">
+                        <div className="bg-[#21f20110] border border-[#21f20130] text-[#21f201] flex items-center justify-center h-6 w-10 text-center rounded-md text-[10px] font-medium">
                           IN
                         </div>
                       )}

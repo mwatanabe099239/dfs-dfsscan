@@ -45,7 +45,7 @@ export default function SearchBar() {
 
   if (viewMode === "solanascan") {
     return (
-      <div className="w-full sm:max-w-[458px]">
+      <div className="w-full max-w-[680px]">
         <div className="w-full h-11 relative">
           <div className="flex gap-1 flex-row items-center justify-start flex-wrap bg-white rounded-lg w-full z-20 border border-gray-200 absolute">
             <div className="grid items-center gap-1.5 w-full">
@@ -62,7 +62,7 @@ export default function SearchBar() {
                 />
                 <span className="absolute top-0 right-2 h-full flex items-center text-md">
                   <button
-                    className="whitespace-nowrap ring-offset-background focus-visible:outline-none disabled:pointer-events-none inline-flex items-center justify-center font-bold transition-colors text-white bg-[#1F2937] hover:bg-[#111827] disabled:opacity-40 ring-transparent ring-offset-0 focus-visible:ring-offset-0 focus-visible:ring-transparent text-[12px] leading-4.5 gap-1 w-8 h-8 px-2 py-1 rounded-lg"
+                    className="whitespace-nowrap ring-offset-background focus-visible:outline-none disabled:pointer-events-none inline-flex items-center justify-center font-bold transition-colors text-white bg-[#c74ae3] disabled:opacity-40 ring-transparent ring-offset-0 focus-visible:ring-offset-0 focus-visible:ring-transparent text-[12px] leading-4.5 gap-1 w-8 h-8 px-2 py-1 rounded-lg"
                     onClick={handleSearch}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-search" aria-hidden="true">
@@ -80,7 +80,7 @@ export default function SearchBar() {
   }
 
   return (
-    <div className="relative w-full max-w-3xl">
+    <div className="relative w-full max-w-[680px]">
       <div className="flex">
         <button
           className="flex items-center gap-2 px-4 py-3 bg-white border border-r-0 border-gray-300 rounded-l-lg text-gray-600 hover:bg-gray-50"

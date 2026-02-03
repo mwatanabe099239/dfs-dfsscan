@@ -5,9 +5,42 @@ import SearchBar from "@/src/components/SearchBar";
 import Image from "next/image";
 
 const ROTATING_TEXTS = [
-  { text: "Explorer", color: "#10B981" }, // green
-  { text: "Portfolio", color: "#3B82F6" }, // blue
-  { text: "Analytics", color: "#EC4899" }, // pink
+  { 
+    text: "Explorer", 
+    color: "#21f201", // green
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M2 12h20" />
+        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+      </svg>
+    )
+  },
+  { 
+    text: "Portfolio", 
+    color: "#21f201", // green
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+        <path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z" />
+        <path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12" />
+        <path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17" />
+      </svg>
+    )
+  },
+  { 
+    text: "Analytics", 
+    color: "#A855F7", // purple/pink
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+        <path d="M12 16v5" />
+        <path d="M16 14v7" />
+        <path d="M20 10v11" />
+        <path d="m22 3-8.646 8.646a.5.5 0 0 1-.708 0L9.354 8.354a.5.5 0 0 0-.707 0L2 15" />
+        <path d="M4 18v3" />
+        <path d="M8 14v7" />
+      </svg>
+    )
+  },
 ];
 
 export default function AnimatedHeader() {
@@ -72,7 +105,7 @@ export default function AnimatedHeader() {
 
   return (
     <>
-      <div className="relative py-8 w-full  overflow-hidden bg-black">
+      <div className="relative py-8 pt-24 w-full  overflow-hidden bg-[#1a1a1a]">
         {/* Animated Dots Background SVG */}
         <svg
           key={dotColor}
@@ -126,11 +159,12 @@ export default function AnimatedHeader() {
           <div className="w-full md:w-2/3">
             <div className="text-left mb-2">
               <h1 className="text-xl mb-1 font-bold text-white flex items-center gap-2">
-                <span>DFS Chain</span>
+                <span className="text-2xl">DFS Chain</span>
                 <span 
-                  className="transition-all duration-500 ease-in-out"
+                  className="transition-all duration-500 ease-in-out flex items-center gap-1 text-2xl"
                   style={{ color: currentText.color }}
                 >
+                  {currentText.icon}
                   {currentText.text}
                 </span>
               </h1>
