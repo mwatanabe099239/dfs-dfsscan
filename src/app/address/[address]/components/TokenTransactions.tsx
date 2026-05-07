@@ -1,6 +1,12 @@
 import Link from "next/link";
 import { Transaction } from "@/src/types";
-import { formatTimeAgo, shortenAddress, shortenHash } from "@/src/lib/utils";
+import {
+  formatTimeAgo,
+  formatTxValue,
+  isNftTransferTx,
+  shortenAddress,
+  shortenHash,
+} from "@/src/lib/utils";
 import { Copy, MoveRight, Eye, HelpCircle, Funnel, Clock } from "lucide-react";
 import { toast } from "react-hot-toast";
 
@@ -187,7 +193,17 @@ export default function TokenTransactions({
                       )}
                       {columnKey === "value" && (
                         <div className="flex gap-2 flex-row items-center justify-start flex-nowrap">
-                          {tx.token?.logoUrl ? (
+                          {isNftTransferTx(tx) ? (
+                            tx.nft?.imageUrl ? (
+                              <img
+                                src={tx.nft.imageUrl}
+                                alt={tx.nft.symbol || tx.nft.name || "NFT"}
+                                className="w-3.5 h-3.5 rounded-full"
+                              />
+                            ) : (
+                              <div className="w-3.5 h-3.5 rounded-full bg-gray-300" />
+                            )
+                          ) : tx.token?.logoUrl ? (
                             <img
                               src={tx.token.logoUrl}
                               alt={tx.token.symbol || "Token"}
@@ -197,7 +213,7 @@ export default function TokenTransactions({
                             <div className="w-3.5 h-3.5 rounded-full bg-gray-300" />
                           )}
                           <div className="not-italic font-normal text-gray-700 text-[14px] leading-[24px]">
-                            <span>{tx.amount || "0"} {tx.token?.symbol || (tx.method === "Transfer" ? "DFS" : "DFS")}</span>
+                            <span>{formatTxValue(tx)}</span>
                           </div>
                         </div>
                       )}
@@ -353,10 +369,7 @@ export default function TokenTransactions({
                     </>
                   )}
                 </td>
-                <td className="p-3">
-                  {tx.amount}{" "}
-                  {tx.method === "Transfer" ? tx.token?.symbol || "DFS" : "DFS"}
-                </td>
+                <td className="p-3">{formatTxValue(tx)}</td>
                 <td className="p-3 text-gray-600 text-xs">{tx.gasFee} DFS</td>
               </tr>
             ))}

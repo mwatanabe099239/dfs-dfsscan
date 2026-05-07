@@ -1,6 +1,8 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+import type { Transaction } from "@/src/types";
+
 export function formatTimeAgo(timestamp: number): string {
   const seconds = Math.floor(Date.now() / 1000 - timestamp);
 
@@ -61,6 +63,67 @@ export const shortenHash = (hash: string, to: number = 12) => {
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+/**
+ * Detects whether a transaction row represents the NFT-custody leg of an
+ * NFT-related event (mint/listing/delisting/purchase transfer).
+ *
+ * We deliberately avoid relying on a single literal method string because
+ * older docs / case drift (`"NFT Transfer"` vs `"nft transfer"` vs
+ * `"NFT_TRANSFER"`) can leak through. The fallback signal is the presence of
+ * NFT metadata (`tx.nft?.tokenId` or top-level `tx.tokenId`) on a row that is
+ * NOT the native DFS-token leg. The DFS-payment leg of a purchase carries
+ * `token.tokenAddress === "drc20_dfs"`, so it is excluded.
+ */
+export function isNftTransferTx(
+  tx: Pick<Transaction, "method" | "nft" | "tokenId" | "token">,
+): boolean {
+  const m = (tx.method || "").trim().toLowerCase().replace(/[_-]+/g, " ");
+  // Any explicit "NFT …" method (Transfer, Listing, Delisting, Mint, …) is
+  // an NFT-custody row — the Value column should render the NFT, not DFS.
+  if (m.startsWith("nft ")) return true;
+
+  const hasNftId = Boolean(
+    (tx.nft?.tokenId && String(tx.nft.tokenId)) ||
+      (tx.tokenId && String(tx.tokenId)),
+  );
+  if (!hasNftId) return false;
+
+  const tokenAddress = (tx.token?.tokenAddress || "").toLowerCase();
+  const tokenSymbol = (tx.token?.symbol || "").toLowerCase();
+  const isNativeDfsLeg = tokenAddress === "drc20_dfs" || tokenSymbol === "dfs";
+  return !isNativeDfsLeg;
+}
+
+/**
+ * Renders the "value" column for a transaction row.
+ *  - DFS / token transfers   → "0.123456 DFS"
+ *  - NFT Transfer            → "#<tokenId> <SYMBOL>"   (no DFS suffix)
+ *
+ * For NFT Transfer rows, the on-chain token id may live in `tx.nft.tokenId`,
+ * the top-level `tx.tokenId`, or — for purchases mirrored by the marketplace —
+ * in `tx.amount`. The function picks the first non-empty source.
+ */
+export function formatTxValue(
+  tx: Pick<
+    Transaction,
+    "amount" | "method" | "token" | "nft" | "tokenId"
+  >,
+  decimalPlaces: number = 6,
+): string {
+  if (isNftTransferTx(tx)) {
+    const tokenId =
+      (tx.nft?.tokenId && String(tx.nft.tokenId)) ||
+      (tx.tokenId && String(tx.tokenId)) ||
+      (tx.amount && String(tx.amount)) ||
+      "";
+    const symbol = tx.nft?.symbol || tx.nft?.name || "NFT";
+    return tokenId ? `#${tokenId} ${symbol}` : symbol;
+  }
+  const sym =
+    tx.method === "Token Created" ? "DFS" : tx.token?.symbol || "DFS";
+  return `${formatNumber(Number(tx.amount), decimalPlaces)} ${sym}`;
 }
 
 export function formatCompactNumber(value: number): string {

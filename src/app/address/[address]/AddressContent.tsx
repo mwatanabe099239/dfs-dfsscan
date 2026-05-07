@@ -15,7 +15,7 @@ import { faQuestionCircle as faQuestionCircleRegular } from "@fortawesome/free-r
 import Link from "next/link";
 import { minidenticon } from "minidenticons";
 import toast from "react-hot-toast";
-import { Transaction } from "@/src/types";
+import { Transaction, type ScanNftHolding } from "@/src/types";
 import {
   getNativeBalance,
   getUserTokens,
@@ -27,6 +27,7 @@ import {
 import { formatTimeAgo, shortenHash, formatNumber } from "@/src/lib/utils";
 import TokenTransactions from "./components/TokenTransactions";
 import TokenHolders from "./components/TokenHolders";
+import WalletNftsEtherscanTable from "./components/WalletNftsEtherscanTable";
 import QRCode from "react-qr-code";
 import Image from "next/image";
 import { shortenAddress } from "@/src/lib/utils";
@@ -46,12 +47,12 @@ type AddressType = "wallet" | "token" | "invalid";
 
 type TokenHolding = {
   address: string;
-  symbol: string;
+  symbol?: string;
   balance: string;
   value: string;
   price: string;
-  tokenAddress: string;
-  name: string;
+  tokenAddress?: string;
+  name?: string;
   logoUrl: string;
 };
 
@@ -68,13 +69,18 @@ type TokenData = {
 type TabType = "transactions" | "holders";
 
 function getAddressType(address: string): AddressType {
+  const a = address.trim();
+  const lower = a.toLowerCase();
   if (
-    address.startsWith("dfs") &&
-    (address.length === 46 || NON_USER_ADDRESS.includes(address))
+    lower.startsWith("dfs") &&
+    (a.length === 46 ||
+      lower.length === 46 ||
+      NON_USER_ADDRESS.includes(a) ||
+      NON_USER_ADDRESS.includes(lower))
   ) {
     return "wallet";
   }
-  if (address.startsWith("drc20") && address.length === 48) {
+  if (lower.startsWith("drc20") && a.length === 48) {
     return "token";
   }
   return "invalid";
@@ -110,6 +116,7 @@ export default function AddressContent({ address }: { address: string }) {
   const [activeTab, setActiveTab] = useState<TabType>("transactions");
   const [holders, setHolders] = useState<any[]>([]);
   const [qrCodeModalOpen, setQrCodeModalOpen] = useState(false);
+  const [nftHoldings, setNftHoldings] = useState<ScanNftHolding[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -117,13 +124,26 @@ export default function AddressContent({ address }: { address: string }) {
       const type = getAddressType(address);
       setAddressType(type);
 
+      if (type !== "wallet") {
+        setNftHoldings([]);
+      }
+
       if (type === "wallet") {
-        const [{ transactions, totalCount }, balance, tokens] =
+        const [{ transactions, totalCount }, balance, tokens, nftsPayload] =
           await Promise.all([
             getTransactionsByAddressWithLimitWithTotalCount(address, 10),
             getNativeBalance(address),
             getUserTokens(address),
+            fetch(
+              `/api/wallet-nfts?address=${encodeURIComponent(address)}`
+            ).then(async (r) =>
+              r.ok ? ((await r.json()) as { nfts?: ScanNftHolding[] }) : {}
+            ),
           ]);
+
+        setNftHoldings(
+          Array.isArray(nftsPayload?.nfts) ? nftsPayload.nfts : []
+        );
 
         // Fetch prices for tokens with web3TokenAddress or web3WalletAddress
         const pricePromises = tokens.map(async (token: any) => {
@@ -238,10 +258,21 @@ export default function AddressContent({ address }: { address: string }) {
     fetchData();
   }, [address]);
 
-  // Filter tokens based on search
-  const filteredTokens = walletData.tokenHoldings.filter((token) =>
-    token.symbol.toLowerCase().includes(searchToken.toLowerCase())
-  );
+  const { viewMode } = useViewMode();
+
+  // Filter tokens based on search (symbol/name/address may be missing from Firestore)
+  const searchLower = searchToken.toLowerCase().trim();
+  const filteredTokens = walletData.tokenHoldings.filter((token) => {
+    if (!searchLower) return true;
+    const sym = (token.symbol ?? "").toLowerCase();
+    const name = (token.name ?? "").toLowerCase();
+    const addr = (token.tokenAddress ?? token.address ?? "").toLowerCase();
+    return (
+      sym.includes(searchLower) ||
+      name.includes(searchLower) ||
+      addr.includes(searchLower)
+    );
+  });
 
   const handleCopyClick = async () => {
     try {
@@ -264,8 +295,6 @@ export default function AddressContent({ address }: { address: string }) {
     return <div>Invalid address format</div>;
   }
 
-  const { viewMode } = useViewMode();
-
   if (addressType === "wallet") {
     if (viewMode === "solanascan") {
       return (
@@ -282,6 +311,7 @@ export default function AddressContent({ address }: { address: string }) {
           qrCodeModalOpen={qrCodeModalOpen}
           setQrCodeModalOpen={setQrCodeModalOpen}
           handleCopyClick={handleCopyClick}
+          nftHoldings={nftHoldings}
         />
       );
     }
@@ -300,6 +330,7 @@ export default function AddressContent({ address }: { address: string }) {
         qrCodeModalOpen={qrCodeModalOpen}
         setQrCodeModalOpen={setQrCodeModalOpen}
         handleCopyClick={handleCopyClick}
+        nftHoldings={nftHoldings}
       />
     );
   }
@@ -355,6 +386,7 @@ function BSCScanWalletView({
   qrCodeModalOpen,
   setQrCodeModalOpen,
   handleCopyClick,
+  nftHoldings,
 }: {
   address: string;
   walletData: any;
@@ -368,10 +400,14 @@ function BSCScanWalletView({
   qrCodeModalOpen: boolean;
   setQrCodeModalOpen: (open: boolean) => void;
   handleCopyClick: () => void;
+  nftHoldings: ScanNftHolding[];
 }) {
   const { data: dfsPriceData } = useDfsTokenPrice();
   const dfsPrice = dfsPriceData.priceData?.priceUsd || 0;
   const dfsValue = Number(walletData.balance || 0) * dfsPrice;
+  const [walletDetailTab, setWalletDetailTab] = useState<
+    "transactions" | "nfts"
+  >("transactions");
 
   const handleQrCodeClick = () => {
     setQrCodeModalOpen(true);
@@ -468,7 +504,7 @@ function BSCScanWalletView({
                         {filteredTokens.length > 0 ? (
                           filteredTokens.map((token, index) => (
                             <Link
-                              href={`/address/${token.tokenAddress}`}
+                              href={`/address/${token.tokenAddress ?? token.address}`}
                               key={index}
                             >
                               <div className="py-1 px-2">
@@ -485,7 +521,7 @@ function BSCScanWalletView({
                                         {token.logoUrl ? (
                                           <Image
                                             src={token.logoUrl}
-                                            alt={token.name}
+                                            alt={token.name ?? ""}
                                             width={14}
                                             height={14}
                                             className="rounded-full object-cover min-w-3 min-h-3"
@@ -493,16 +529,25 @@ function BSCScanWalletView({
                                         ) : (
                                           <img
                                             src={`data:image/svg+xml;utf8,${encodeURIComponent(
-                                              minidenticon(token.tokenAddress)
+                                              minidenticon(
+                                                token.tokenAddress ??
+                                                  token.address ??
+                                                  address
+                                              )
                                             )}`}
                                             alt=""
                                             className="w-6 h-6 rounded-full bg-gray-100"
                                           />
                                         )}
-                                        <span>{`DRC-20: ${token.name} (${token.symbol})`}</span>
+                                        <span>{`DRC-20: ${token.name ?? "—"} (${token.symbol ?? "—"})`}</span>
                                       </div>
                                       <div className="text-gray-500">
-                                        {token.balance} {token.symbol}
+                                        {`${token.balance}${
+                                          token.symbol != null &&
+                                          String(token.symbol) !== ""
+                                            ? ` ${token.symbol}`
+                                            : ""
+                                        }`}
                                       </div>
                                     </div>
                                     <div className="text-right">
@@ -594,19 +639,43 @@ function BSCScanWalletView({
           {/* Transactions Table Section */}
           <div className="">
             <div className="flex overflow-x-auto items-center gap-2 mb-4 text-sm text-gray-700">
-              <button className="px-3 py-1 border border-gray-200 rounded-lg cursor-pointer bg-[#0784c3] text-white">
+              <button
+                type="button"
+                onClick={() => setWalletDetailTab("transactions")}
+                className={`px-3 py-1 border border-gray-200 rounded-lg cursor-pointer ${
+                  walletDetailTab === "transactions"
+                    ? "bg-[#0784c3] text-white"
+                    : "bg-white text-gray-700 hover:bg-gray-50"
+                }`}
+              >
                 Transactions
+              </button>
+              <button
+                type="button"
+                onClick={() => setWalletDetailTab("nfts")}
+                className={`px-3 py-1 border border-gray-200 rounded-lg cursor-pointer ${
+                  walletDetailTab === "nfts"
+                    ? "bg-[#0784c3] text-white"
+                    : "bg-white text-gray-700 hover:bg-gray-50"
+                }`}
+              >
+                NFTs
               </button>
             </div>
 
-            <div className="bg-white rounded-lg shadow">
-              {/* Transaction List */}
-              <TokenTransactions
-                transactions={transactions}
-                address={address}
-                totalCount={totalCount}
-              />
-            </div>
+            {walletDetailTab === "transactions" ? (
+              <div className="bg-white rounded-lg shadow">
+                <TokenTransactions
+                  transactions={transactions}
+                  address={address}
+                  totalCount={totalCount}
+                />
+              </div>
+            ) : (
+              <div className="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
+                <WalletNftsEtherscanTable nfts={nftHoldings} variant="bsc" />
+              </div>
+            )}
           </div>
         </div>
 
@@ -829,6 +898,7 @@ function SolanaScanWalletView({
   qrCodeModalOpen,
   setQrCodeModalOpen,
   handleCopyClick,
+  nftHoldings,
 }: {
   address: string;
   walletData: any;
@@ -842,8 +912,11 @@ function SolanaScanWalletView({
   qrCodeModalOpen: boolean;
   setQrCodeModalOpen: (open: boolean) => void;
   handleCopyClick: () => void;
+  nftHoldings: ScanNftHolding[];
 }) {
-  const [activeTab, setActiveTab] = useState("transactions");
+  const [walletInventoryTab, setWalletInventoryTab] = useState<
+    "transactions" | "nfts"
+  >("transactions");
   const [hideSpam, setHideSpam] = useState(false);
   const [hideFailed, setHideFailed] = useState(false);
   const [oldestFirst, setOldestFirst] = useState(false);
@@ -1236,7 +1309,7 @@ function SolanaScanWalletView({
                         {filteredTokens.length > 0 ? (
                           filteredTokens.map((token, index) => (
                             <Link
-                              href={`/address/${token.tokenAddress}`}
+                              href={`/address/${token.tokenAddress ?? token.address}`}
                               key={index}
                             >
                               <div className="py-1 px-2">
@@ -1253,7 +1326,7 @@ function SolanaScanWalletView({
                                         {token.logoUrl ? (
                                           <Image
                                             src={token.logoUrl}
-                                            alt={token.name}
+                                            alt={token.name ?? ""}
                                             width={14}
                                             height={14}
                                             className="rounded-full object-cover min-w-3 min-h-3"
@@ -1261,16 +1334,25 @@ function SolanaScanWalletView({
                                         ) : (
                                           <img
                                             src={`data:image/svg+xml;utf8,${encodeURIComponent(
-                                              minidenticon(token.tokenAddress)
+                                              minidenticon(
+                                                token.tokenAddress ??
+                                                  token.address ??
+                                                  address
+                                              )
                                             )}`}
                                             alt=""
                                             className="w-6 h-6 rounded-full bg-gray-100"
                                           />
                                         )}
-                                        <span>{`DRC-20: ${token.name} (${token.symbol})`}</span>
+                                        <span>{`DRC-20: ${token.name ?? "—"} (${token.symbol ?? "—"})`}</span>
                                       </div>
                                       <div className="text-gray-500">
-                                        {token.balance} {token.symbol}
+                                        {`${token.balance}${
+                                          token.symbol != null &&
+                                          String(token.symbol) !== ""
+                                            ? ` ${token.symbol}`
+                                            : ""
+                                        }`}
                                       </div>
                                     </div>
                                     <div className="text-right">
@@ -1454,10 +1536,10 @@ function SolanaScanWalletView({
       {/* Tabs Navigation */}
       <div className="tab-wrapper relative overflow-x-scroll no-scrollbar flex items-start sm:items-center sm:justify-between gap-2 flex-col sm:flex-row mb-3 w-full">
         <div dir="ltr" className="w-auto whitespace-nowrap" style={{ position: "relative", "--radix-scroll-area-corner-width": "0px", "--radix-scroll-area-corner-height": "0px" } as React.CSSProperties}>
-          <div 
-            role="tablist" 
-            aria-orientation="horizontal" 
-            className="items-center justify-start rounded-md text-gray-500 h-auto inline-flex bg-transparent p-0 w-full"
+          <div
+            role="tablist"
+            aria-orientation="horizontal"
+            className="items-center justify-start rounded-md text-gray-500 h-auto inline-flex flex-wrap gap-2 bg-transparent p-0 w-full"
             tabIndex={0}
             data-orientation="horizontal"
             style={{ outline: "none" }}
@@ -1465,22 +1547,32 @@ function SolanaScanWalletView({
             <button
               type="button"
               role="tab"
-              aria-selected={true}
-              aria-controls="radix-tab-content-transactions"
-              data-state="active"
-              id="radix-tab-trigger-transactions"
-              className="py-1.5 font-medium ring-offset-background focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 ring-transparent ring-offset-0 focus-visible:ring-offset-0 focus-visible:ring-transparent relative inline-flex items-center justify-center whitespace-nowrap bg-gray-100 hover:bg-gray-200 border-0 rounded-lg text-xs text-gray-700 data-[state=active]:shadow-none data-[state=active]:text-white data-[state=active]:font-bold data-[state=active]:!bg-[#009978] data-[state=active]:hover:!bg-[#008066] ml-2 first:ml-0 transition-colors duration-200 px-3 h-7 w-full"
-              tabIndex={0}
-              data-orientation="horizontal"
-              data-radix-collection-item=""
+              aria-selected={walletInventoryTab === "transactions"}
+              aria-controls="radix-tab-content-wallet-transactions"
+              data-state={walletInventoryTab === "transactions" ? "active" : "inactive"}
+              id="radix-tab-trigger-wallet-transactions"
+              onClick={() => setWalletInventoryTab("transactions")}
+              className="py-1.5 font-medium ring-offset-background focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 ring-transparent ring-offset-0 focus-visible:ring-offset-0 focus-visible:ring-transparent relative inline-flex items-center justify-center whitespace-nowrap bg-gray-100 hover:bg-gray-200 border-0 rounded-lg text-xs text-gray-700 data-[state=active]:shadow-none data-[state=active]:text-white data-[state=active]:font-bold data-[state=active]:!bg-[#009978] data-[state=active]:hover:!bg-[#008066] transition-colors duration-200 px-3 h-7"
             >
               Transactions
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={walletInventoryTab === "nfts"}
+              aria-controls="radix-tab-content-wallet-nfts"
+              data-state={walletInventoryTab === "nfts" ? "active" : "inactive"}
+              id="radix-tab-trigger-wallet-nfts"
+              onClick={() => setWalletInventoryTab("nfts")}
+              className="py-1.5 font-medium ring-offset-background focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 ring-transparent ring-offset-0 focus-visible:ring-offset-0 focus-visible:ring-transparent relative inline-flex items-center justify-center whitespace-nowrap bg-gray-100 hover:bg-gray-200 border-0 rounded-lg text-xs text-gray-700 data-[state=active]:shadow-none data-[state=active]:text-white data-[state=active]:font-bold data-[state=active]:!bg-[#009978] data-[state=active]:hover:!bg-[#008066] transition-colors duration-200 px-3 h-7"
+            >
+              NFTs
             </button>
           </div>
         </div>
       </div>
 
-      {/* Transactions Table */}
+      {walletInventoryTab === "transactions" ? (
       <div className="bg-white rounded-lg border border-gray-200">
         <div className="p-4 border-b border-gray-200">
           <div className="flex gap-2 flex-row items-center justify-end flex-nowrap">
@@ -1669,6 +1761,11 @@ function SolanaScanWalletView({
           />
         </div>
       </div>
+        ) : (
+          <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+            <WalletNftsEtherscanTable nfts={nftHoldings} variant="solana" />
+          </div>
+        )}
 
       {qrCodeModalOpen && (
         <QRCodeModal

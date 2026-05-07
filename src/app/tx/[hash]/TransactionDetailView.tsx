@@ -12,7 +12,14 @@ import {
   TooltipTrigger,
 } from "@/src/components/ui/tooltip";
 import { Transaction } from "@/src/types";
-import { formatNumber, formatTimeAgo, shortenAddress, shortenHash } from "@/src/lib/utils";
+import {
+  formatNumber,
+  formatTimeAgo,
+  formatTxValue,
+  isNftTransferTx,
+  shortenAddress,
+  shortenHash,
+} from "@/src/lib/utils";
 import {
   ButtonGroup,
   SponsorTitle,
@@ -138,13 +145,9 @@ function BSCScanView({ transaction }: ViewProps) {
               <div className="flex-1 flex gap-2 text-gray-600">
                   <span className="break-all">
                   Transfer{" "}
-                  <span className="text-gray-900 font-normal whitespace-nowrap">{`${
-                    transaction.amount
-                  } ${
-                    transaction.method === "Token Created"
-                      ? "DFS"
-                      : transaction.token?.symbol || "DFS"
-                  }`}</span>{" "}
+                  <span className="text-gray-900 font-normal whitespace-nowrap">
+                    {formatTxValue(transaction)}
+                  </span>{" "}
                   To{" "}
                   <span className="text-[#0784c3]">
                     {transaction.method === "Token Created"
@@ -301,10 +304,7 @@ function BSCScanView({ transaction }: ViewProps) {
               />
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  {formatNumber(Number(transaction.amount), 6)}{" "}
-                  {transaction.method === "Token Created"
-                    ? "DFS"
-                    : transaction.token?.symbol || "DFS"}
+                  {formatTxValue(transaction)}
                 </div>
               </div>
             </div>
@@ -604,39 +604,41 @@ function SolanaScanView({ transaction }: ViewProps) {
                                   <div>
                                     <div className="text-gray-700 text-[14px] leading-[24px] font-bold">
                                       <div className="inline-flex">
-                                        <span>{formatNumber(Number(transaction.amount), 6)}</span>
+                                        <span>{formatTxValue(transaction)}</span>
                                       </div>
                                     </div>
                                   </div>
-                                  <span className="whitespace-nowrap inline-flex items-center max-w-full min-w-0">
-                                    <span className="inline-flex align-middle mr-1">
-                                      <div className="inline-flex items-center">
-                                        {transaction.token?.logoUrl ? (
-                                          <div className="flex align-middle" style={{ minWidth: "16px", maxWidth: "16px", height: "16px", position: "relative" }}>
-                                            <Image
-                                              src={transaction.token.logoUrl}
-                                              alt={transaction.token.symbol}
-                                              width={16}
-                                              height={16}
-                                              className="rounded-[5px] object-cover"
-                                              style={{ position: "absolute", height: "100%", objectFit: "cover", left: 0 }}
-                                            />
-                                          </div>
-                                        ) : (
-                                          <div className="flex align-middle" style={{ minWidth: "16px", maxWidth: "16px", height: "16px", position: "relative" }}>
-                                            <div className="w-full h-full bg-gray-200 rounded-[5px]"></div>
-                                          </div>
-                                        )}
-                                      </div>
+                                  {!isNftTransferTx(transaction) && (
+                                    <span className="whitespace-nowrap inline-flex items-center max-w-full min-w-0">
+                                      <span className="inline-flex align-middle mr-1">
+                                        <div className="inline-flex items-center">
+                                          {transaction.token?.logoUrl ? (
+                                            <div className="flex align-middle" style={{ minWidth: "16px", maxWidth: "16px", height: "16px", position: "relative" }}>
+                                              <Image
+                                                src={transaction.token.logoUrl}
+                                                alt={transaction.token.symbol}
+                                                width={16}
+                                                height={16}
+                                                className="rounded-[5px] object-cover"
+                                                style={{ position: "absolute", height: "100%", objectFit: "cover", left: 0 }}
+                                              />
+                                            </div>
+                                          ) : (
+                                            <div className="flex align-middle" style={{ minWidth: "16px", maxWidth: "16px", height: "16px", position: "relative" }}>
+                                              <div className="w-full h-full bg-gray-200 rounded-[5px]"></div>
+                                            </div>
+                                          )}
+                                        </div>
+                                      </span>
+                                      <span className="align-middle font-normal text-gray-700 text-[14px] leading-[20px] border border-dashed border-transparent box-content break-all truncate px-[3px] -mx-1 rounded-sm text-[#2563eb]">
+                                        <div className="inline">
+                                          <Link href={`/address/${transaction.token?.tokenAddress || "#"}`} className="text-current hover:underline">
+                                            {transaction.method === "Token Created" ? "DFS" : transaction.token?.symbol || "DFS"}
+                                          </Link>
+                                        </div>
+                                      </span>
                                     </span>
-                                    <span className="align-middle font-normal text-gray-700 text-[14px] leading-[20px] border border-dashed border-transparent box-content break-all truncate px-[3px] -mx-1 rounded-sm text-[#2563eb]">
-                                      <div className="inline">
-                                        <Link href={`/address/${transaction.token?.tokenAddress || "#"}`} className="text-current hover:underline">
-                                          {transaction.method === "Token Created" ? "DFS" : transaction.token?.symbol || "DFS"}
-                                        </Link>
-                                      </div>
-                                    </span>
-                                  </span>
+                                  )}
                                 </div>
                               </div>
                             </div>
@@ -957,44 +959,46 @@ function SolanaScanView({ transaction }: ViewProps) {
                                         <div>
                                           <div className="text-gray-700 text-[14px] leading-[24px] font-bold">
                                             <div className="inline-flex">
-                                              <span>{formatNumber(Number(transaction.amount), 6)}</span>
+                                              <span>{formatTxValue(transaction)}</span>
                                             </div>
                                           </div>
                                         </div>
-                                        <span className="whitespace-nowrap inline-flex items-center max-w-full min-w-0">
-                                          <span className="inline-flex align-middle mr-1">
-                                            <div className="inline-flex items-center">
-                                              {transaction.token?.logoUrl ? (
-                                                <div className="flex align-middle" style={{ minWidth: "16px", maxWidth: "16px", height: "16px", position: "relative" }}>
-                                                  <Image
-                                                    src={transaction.token.logoUrl}
-                                                    alt={transaction.token.symbol}
-                                                    width={16}
-                                                    height={16}
-                                                    className="rounded-[5px] object-cover"
-                                                    style={{ position: "absolute", height: "100%", objectFit: "cover", left: 0 }}
-                                                  />
-                                                </div>
-                                              ) : (
-                                                <div className="flex align-middle" style={{ minWidth: "16px", maxWidth: "16px", height: "16px", position: "relative" }}>
-                                                  <div className="w-full h-full bg-gray-200 rounded-[5px]"></div>
-                                                </div>
-                                              )}
-                                            </div>
+                                        {!isNftTransferTx(transaction) && (
+                                          <span className="whitespace-nowrap inline-flex items-center max-w-full min-w-0">
+                                            <span className="inline-flex align-middle mr-1">
+                                              <div className="inline-flex items-center">
+                                                {transaction.token?.logoUrl ? (
+                                                  <div className="flex align-middle" style={{ minWidth: "16px", maxWidth: "16px", height: "16px", position: "relative" }}>
+                                                    <Image
+                                                      src={transaction.token.logoUrl}
+                                                      alt={transaction.token.symbol}
+                                                      width={16}
+                                                      height={16}
+                                                      className="rounded-[5px] object-cover"
+                                                      style={{ position: "absolute", height: "100%", objectFit: "cover", left: 0 }}
+                                                    />
+                                                  </div>
+                                                ) : (
+                                                  <div className="flex align-middle" style={{ minWidth: "16px", maxWidth: "16px", height: "16px", position: "relative" }}>
+                                                    <div className="w-full h-full bg-gray-200 rounded-[5px]"></div>
+                                                  </div>
+                                                )}
+                                              </div>
+                                            </span>
+                                            <span className="align-middle font-normal text-gray-600 text-[14px] leading-[20px] border border-dashed border-transparent box-content break-all truncate px-[3px] -mx-1 rounded-sm text-[#2563eb]">
+                                              <div className="inline">
+                                                <Link href={`/address/${transaction.token?.tokenAddress || "#"}`} className="text-current hover:underline">
+                                                  {transaction.token?.symbol || "DFS"}
+                                                </Link>
+                                              </div>
+                                            </span>
+                                            <span className="inline-flex items-center ml-1 gap-2 align-middle">
+                                              <div className="inline-flex align-middle">
+                                                <Copy className="w-3 h-3 cursor-pointer text-[#adb5bd] hover:text-[#2563eb]" onClick={() => handleCopy(transaction.amount)} />
+                                              </div>
+                                            </span>
                                           </span>
-                                          <span className="align-middle font-normal text-gray-600 text-[14px] leading-[20px] border border-dashed border-transparent box-content break-all truncate px-[3px] -mx-1 rounded-sm text-[#2563eb]">
-                                            <div className="inline">
-                                              <Link href={`/address/${transaction.token?.tokenAddress || "#"}`} className="text-current hover:underline">
-                                                {transaction.token?.symbol || "DFS"}
-                                              </Link>
-                                            </div>
-                                          </span>
-                                          <span className="inline-flex items-center ml-1 gap-2 align-middle">
-                                            <div className="inline-flex align-middle">
-                                              <Copy className="w-3 h-3 cursor-pointer text-[#adb5bd] hover:text-[#2563eb]" onClick={() => handleCopy(transaction.amount)} />
-                                            </div>
-                                          </span>
-                                        </span>
+                                        )}
                                       </div>
                                     </div>
                                   </div>

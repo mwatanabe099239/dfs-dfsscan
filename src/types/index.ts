@@ -18,6 +18,21 @@ export interface Transaction {
     totalSupply: string;
   };
   transactionHash: string;
+  /**
+   * NFT metadata populated by `dfs_marketplace` mirrors and Metaface NFT sends.
+   * When `method === "NFT Transfer"`, the value column should render this
+   * (token id + symbol) instead of treating `amount` as DFS.
+   */
+  nft?: {
+    contractAddress?: string;
+    tokenId?: string;
+    name?: string;
+    symbol?: string;
+    imageUrl?: string;
+  };
+  /** Top-level mirror fields written by the marketplace, also present on Metaface NFT sends. */
+  collectionId?: string;
+  tokenId?: string;
   allTransfers?: {
    fromAddress: string;
    toAddress: string;
@@ -56,6 +71,18 @@ export interface WalletInfo {
     token: TokenInfo;
     balance: string;
   }[];
+}
+
+/** DRC721-style mint held under `nfts/{collectionId}/tokens` (or legacy `tokens`). */
+export interface ScanNftHolding {
+  docId: string;
+  collectionId: string;
+  tokenId: string;
+  name: string;
+  image: string;
+  state?: string;
+  owner: string;
+  tokenURI?: string;
 }
 
 export interface NetworkStats {

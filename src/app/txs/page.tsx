@@ -9,7 +9,14 @@ import {
   getTokenTotalTransactionWithPagination,
   getTransactionsWithPagination,
 } from "@/src/lib/firebase";
-import { formatNumber, formatTimeAgo, shortenAddress, shortenHash } from "@/src/lib/utils";
+import {
+  formatNumber,
+  formatTimeAgo,
+  formatTxValue,
+  isNftTransferTx,
+  shortenAddress,
+  shortenHash,
+} from "@/src/lib/utils";
 import Pagination from "@/src/components/common/Pagination";
 import { Copy, Download, MoveRight, Eye, HelpCircle, Funnel, Clock, GripVertical, ChevronDown } from "lucide-react";
 import { toast } from "react-hot-toast";
@@ -196,9 +203,7 @@ const BSCScanTransactionRow = ({
           />
         </div>
       </td>
-      <td className="p-3">
-        {formatNumber(Number(tx.amount), 6)} {tx.method === "Token Created" ? "DFS" : tx.token?.symbol || "DFS"}
-      </td>
+      <td className="p-3">{formatTxValue(tx)}</td>
       <td className="p-3 text-gray-600 text-xs">{formatNumber(Number(tx.gasFee), 6)} DFS</td>
     </tr>
   );
@@ -379,18 +384,27 @@ const SolanaScanTransactionRow = ({
             )}
             {columnKey === "value" && (
               <div className="flex gap-2 flex-row items-center justify-start flex-nowrap">
-                {tx.token?.logoUrl && (
-                  <Image
-                    src={tx.token.logoUrl}
-                    alt={tx.token.symbol || "token"}
-                    width={14}
-                    height={14}
-                    className="rounded-full h-3.5 w-3.5 object-cover"
-                  />
-                )}
+                {isNftTransferTx(tx)
+                  ? tx.nft?.imageUrl && (
+                      <Image
+                        src={tx.nft.imageUrl}
+                        alt={tx.nft.symbol || tx.nft.name || "NFT"}
+                        width={14}
+                        height={14}
+                        className="rounded-full h-3.5 w-3.5 object-cover"
+                      />
+                    )
+                  : tx.token?.logoUrl && (
+                      <Image
+                        src={tx.token.logoUrl}
+                        alt={tx.token.symbol || "token"}
+                        width={14}
+                        height={14}
+                        className="rounded-full h-3.5 w-3.5 object-cover"
+                      />
+                    )}
                 <div className="not-italic font-normal text-gray-700 text-[14px] leading-[24px]">
-                  <span>{formatNumber(Number(tx.amount), 6)}</span>{" "}
-                  {tx.method === "Token Created" ? "DFS" : tx.token?.symbol || "DFS"}
+                  <span>{formatTxValue(tx)}</span>
                 </div>
               </div>
             )}
