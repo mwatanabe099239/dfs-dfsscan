@@ -4,6 +4,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  isTokenAddress,
+  isTransactionHash,
+  isWalletLikeAddress,
+} from "@/src/lib/address";
 
 export default function SearchBar() {
   const router = useRouter();
@@ -17,9 +22,9 @@ export default function SearchBar() {
   const handleSearch = () => {
     if (!searchQuery) return;
 
-    const isToken = searchQuery.startsWith("drc20_0x");
-    const isAddress = searchQuery.startsWith("dfs_0x");
-    const isTxn = searchQuery.startsWith("dfs_0x") && searchQuery.length === 70;
+    const isToken = isTokenAddress(searchQuery);
+    const isAddress = isWalletLikeAddress(searchQuery);
+    const isTxn = isTransactionHash(searchQuery);
 
     if (isToken || isAddress) {
       const href = `/address/${searchQuery}`;

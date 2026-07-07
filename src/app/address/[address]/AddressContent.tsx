@@ -17,8 +17,7 @@ import { minidenticon } from "minidenticons";
 import toast from "react-hot-toast";
 import { Transaction, type ScanNftHolding } from "@/src/types";
 import {
-  getNativeBalance,
-  getUserTokens,
+  getWalletBalances,
   getTokenData,
   getTokenHolders,
   getTransactionsByAddressWithLimitWithTotalCount,
@@ -31,8 +30,8 @@ import WalletNftsEtherscanTable from "./components/WalletNftsEtherscanTable";
 import QRCode from "react-qr-code";
 import Image from "next/image";
 import { shortenAddress } from "@/src/lib/utils";
+import { getAddressKind, filterTransactionsForAddressView, type AddressKind } from "@/src/lib/address";
 import { List, Star, CodeXml, ChevronDown, DollarSign, Info, Tags, WalletMinimal, Copy, Tag, SlidersHorizontal, GripVertical } from "lucide-react";
-import { NON_USER_ADDRESS } from "@/src/lib/constant";
 import { useViewMode } from "@/src/contexts/ViewModeContext";
 import SearchBar from "@/src/components/SearchBar";
 import {
@@ -43,7 +42,7 @@ import {
 } from "@/src/components/ui/tooltip";
 import { useDfsTokenPrice } from "@/src/hooks/useDfsTokenPrice";
 
-type AddressType = "wallet" | "token" | "invalid";
+type AddressType = AddressKind;
 
 type TokenHolding = {
   address: string;
@@ -67,24 +66,6 @@ type TokenData = {
 };
 
 type TabType = "transactions" | "holders";
-
-function getAddressType(address: string): AddressType {
-  const a = address.trim();
-  const lower = a.toLowerCase();
-  if (
-    lower.startsWith("dfs") &&
-    (a.length === 46 ||
-      lower.length === 46 ||
-      NON_USER_ADDRESS.includes(a) ||
-      NON_USER_ADDRESS.includes(lower))
-  ) {
-    return "wallet";
-  }
-  if (lower.startsWith("drc20") && a.length === 48) {
-    return "token";
-  }
-  return "invalid";
-}
 
 export default function AddressContent({ address }: { address: string }) {
   const [loading, setLoading] = useState(true);
@@ -121,19 +102,21 @@ export default function AddressContent({ address }: { address: string }) {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const type = getAddressType(address);
+      const type = getAddressKind(address);
       setAddressType(type);
 
-      if (type !== "wallet") {
+      if (type !== "wallet" && type !== "contract") {
         setNftHoldings([]);
       }
 
-      if (type === "wallet") {
-        const [{ transactions, totalCount }, balance, tokens, nftsPayload] =
-          await Promise.all([
+      if (type === "wallet" || type === "contract") {
+        const [
+          { transactions, totalCount },
+          { balance, tokens },
+          nftsPayload,
+        ] = await Promise.all([
             getTransactionsByAddressWithLimitWithTotalCount(address, 10),
-            getNativeBalance(address),
-            getUserTokens(address),
+            getWalletBalances(address),
             fetch(
               `/api/wallet-nfts?address=${encodeURIComponent(address)}`
             ).then(async (r) =>
@@ -220,8 +203,13 @@ export default function AddressContent({ address }: { address: string }) {
             total: transactions.length,
           },
         });
-        setTotalCount(totalCount);
-        setTransactions(transactions);
+        const filteredTransactions = filterTransactionsForAddressView(
+          transactions,
+          address,
+          type
+        );
+        setTotalCount(filteredTransactions.length);
+        setTransactions(filteredTransactions);
       }
 
       if (type === "token") {
@@ -295,11 +283,14 @@ export default function AddressContent({ address }: { address: string }) {
     return <div>Invalid address format</div>;
   }
 
-  if (addressType === "wallet") {
+  if (addressType === "wallet" || addressType === "contract") {
+    const isContract = addressType === "contract";
+
     if (viewMode === "solanascan") {
       return (
         <SolanaScanWalletView
           address={address}
+          isContract={isContract}
           walletData={walletData}
           transactions={transactions}
           totalCount={totalCount}
@@ -319,6 +310,7 @@ export default function AddressContent({ address }: { address: string }) {
     return (
       <BSCScanWalletView
         address={address}
+        isContract={isContract}
         walletData={walletData}
         transactions={transactions}
         totalCount={totalCount}
@@ -375,6 +367,7 @@ export default function AddressContent({ address }: { address: string }) {
 // BSCScan Wallet View
 function BSCScanWalletView({
   address,
+  isContract = false,
   walletData,
   transactions,
   totalCount,
@@ -389,6 +382,7 @@ function BSCScanWalletView({
   nftHoldings,
 }: {
   address: string;
+  isContract?: boolean;
   walletData: any;
   transactions: Transaction[];
   totalCount: number;
@@ -427,7 +421,12 @@ function BSCScanWalletView({
                   alt=""
                   className="w-6 h-6 rounded-full bg-gray-100"
                 />
-                <h1 className="text-lg">Address</h1>
+                <h1 className="text-lg">{isContract ? "Contract" : "Address"}</h1>
+                {isContract && (
+                  <span className="rounded bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">
+                    Burn-to-Earn Pool
+                  </span>
+                )}
                 <span className="text-gray-600">{address}</span>
               </div>
               <button
@@ -887,6 +886,7 @@ function BSCScanTokenView({
 // SolanaScan Wallet View
 function SolanaScanWalletView({
   address,
+  isContract = false,
   walletData,
   transactions,
   totalCount,
@@ -901,6 +901,7 @@ function SolanaScanWalletView({
   nftHoldings,
 }: {
   address: string;
+  isContract?: boolean;
   walletData: any;
   transactions: Transaction[];
   totalCount: number;
@@ -1058,7 +1059,7 @@ function SolanaScanWalletView({
                       />
                     </div>
                   </div>
-                  Account
+                  Account{isContract ? " (Contract)" : ""}
                 </div>
               </h4>
             </div>

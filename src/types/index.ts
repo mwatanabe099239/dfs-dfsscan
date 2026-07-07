@@ -33,17 +33,22 @@ export interface Transaction {
   /** Top-level mirror fields written by the marketplace, also present on Metaface NFT sends. */
   collectionId?: string;
   tokenId?: string;
+  /** Set on burn-to-earn txs so explorers can index every party involved. */
+  relatedAddresses?: string[];
   allTransfers?: {
-   fromAddress: string;
-   toAddress: string;
-   amount: number;
-   token: {
-    id: string;
-    logoUrl: string;
-    name: string;
-    symbol: string;
-    address: string;
-   } 
+    fromAddress: string;
+    toAddress: string;
+    amount: number;
+    /** Present for token transfers; omitted for contract-creation markers. */
+    token?: {
+      id: string;
+      logoUrl: string;
+      name: string;
+      symbol: string;
+      address: string;
+    };
+    /** Set when a burn-to-earn contract wallet is registered. */
+    isContractCreation?: boolean;
   }[];
 }
 

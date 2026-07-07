@@ -6,13 +6,18 @@ import {
   orderBy,
   limit,
   getDocs,
+  getDoc,
+  doc,
   where,
   startAfter,
 } from "firebase/firestore";
 import { Transaction } from "../types";
 import { Block } from "../types";
 import { getCountFromServer } from "firebase/firestore";
-import { NON_USER_ADDRESS } from "./constant";
+import {
+  normalizeAddress,
+  resolvesFromNonUsers,
+} from "./address";
 import { calculateBlockNumber } from "@/src/services/dfschain-information";
 
 const firebaseConfig = {
@@ -325,110 +330,171 @@ export async function getAddressTotalTransactionWithPagination(
 export async function getTransactionsByAddress(
   address: string
 ): Promise<Transaction[]> {
-  const txQuery = query(
-    collection(db, "transactions"),
-    or(where("toAddress", "==", address), where("fromAddress", "==", address)),
-    orderBy("createdAt", "desc")
+  const normalized = address.trim().toLowerCase();
+
+  async function queryByField(
+    field: string,
+    value: string,
+    useOrderBy: boolean,
+    op: "==" | "array-contains" = "=="
+  ): Promise<Transaction[]> {
+    try {
+      const snapshot = useOrderBy
+        ? await getDocs(
+            query(
+              collection(db, "transactions"),
+              where(field, op, value),
+              orderBy("createdAt", "desc")
+            )
+          )
+        : await getDocs(
+            query(collection(db, "transactions"), where(field, op, value))
+          );
+      return snapshot.docs.map((docSnap) => ({
+        ...docSnap.data(),
+        createdAt: docSnap.data().createdAt.toDate(),
+      })) as Transaction[];
+    } catch (error: unknown) {
+      const err = error as { code?: string; message?: string };
+      if (
+        useOrderBy &&
+        (err?.code === "failed-precondition" ||
+          err?.message?.includes("index"))
+      ) {
+        return queryByField(field, value, false, op);
+      }
+      console.warn(`Transaction query failed (${field})`, error);
+      return [];
+    }
+  }
+
+  const [fromTransactions, toTransactions, relatedTransactions] =
+    await Promise.all([
+      queryByField("fromAddress", normalized, true),
+      queryByField("toAddress", normalized, true),
+      queryByField("relatedAddresses", normalized, true, "array-contains"),
+    ]);
+
+  const merged = new Map<string, Transaction>();
+  for (const tx of [
+    ...fromTransactions,
+    ...toTransactions,
+    ...relatedTransactions,
+  ]) {
+    const key = tx.transactionHash || `${tx.fromAddress}-${tx.toAddress}-${tx.createdAt?.getTime?.() ?? 0}`;
+    merged.set(key, tx);
+  }
+
+  return Array.from(merged.values()).sort(
+    (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
   );
-
-  const snapshot = await getDocs(txQuery);
-
-  return snapshot.docs.map((doc) => ({
-    ...doc.data(),
-    createdAt: doc.data().createdAt.toDate(),
-  })) as Transaction[];
 }
 
 export async function getTransactionsByAddressWithLimitWithTotalCount(
   address: string,
   limitNumber: number
 ): Promise<{ transactions: Transaction[]; totalCount: number }> {
-  // Query for total count
-  const countQuery = query(
-    collection(db, "transactions"),
-    or(where("toAddress", "==", address), where("fromAddress", "==", address))
-  );
-
-  const txQuery = query(
-    collection(db, "transactions"),
-    or(where("toAddress", "==", address), where("fromAddress", "==", address)),
-    orderBy("createdAt", "desc"),
-    limit(limitNumber)
-  );
-
-  // Execute both queries in parallel
-  const [countSnapshot, txSnapshot] = await Promise.all([
-    getCountFromServer(countQuery),
-    getDocs(txQuery),
-  ]);
-
-  const transactions = txSnapshot.docs.map((doc) => ({
-    ...doc.data(),
-    createdAt: doc.data().createdAt.toDate(),
-  })) as Transaction[];
+  const normalized = address.trim().toLowerCase();
+  const allTransactions = await getTransactionsByAddress(normalized);
 
   return {
-    transactions,
-    totalCount: countSnapshot.data().count,
+    transactions: allTransactions.slice(0, limitNumber),
+    totalCount: allTransactions.length,
   };
 }
 
-export async function getNativeBalance(address: string): Promise<string> {
-  let userQuery;
-  let snapshot;
-  if (NON_USER_ADDRESS.includes(address)) {
-    userQuery = query(
-      collection(db, "non_users"),
-      where("walletAddress", "==", address),
-      limit(1)
+async function queryWalletByAddress(
+  collectionName: "users" | "non_users",
+  walletAddress: string
+) {
+  const variants = Array.from(
+    new Set([walletAddress.trim(), walletAddress.trim().toLowerCase()])
+  ).filter(Boolean);
+
+  for (const w of variants) {
+    const snapshot = await getDocs(
+      query(
+        collection(db, collectionName),
+        where("walletAddress", "==", w),
+        limit(1)
+      )
     );
 
-    snapshot = await getDocs(userQuery);
-  }else {
-    userQuery = query(
-      collection(db, "users"),
-      where("walletAddress", "==", address),
-      limit(1)
-    );
-  
-    snapshot = await getDocs(userQuery);
+    if (!snapshot.empty) {
+      return snapshot.docs[0].data();
+    }
   }
 
-  
-  if (snapshot.empty) {
+  for (const w of variants) {
+    const directDoc = await getDoc(doc(db, collectionName, w));
+    if (directDoc.exists()) {
+      return directDoc.data();
+    }
+  }
+
+  return null;
+}
+
+/** Resolve wallet or contract balances from `users` / `non_users`. */
+async function resolveWalletData(address: string) {
+  const walletAddress = normalizeAddress(address);
+
+  if (resolvesFromNonUsers(walletAddress)) {
+    return queryWalletByAddress("non_users", walletAddress);
+  }
+
+  const userData = await queryWalletByAddress("users", walletAddress);
+  if (userData) return userData;
+
+  return queryWalletByAddress("non_users", walletAddress);
+}
+
+export async function getNativeBalance(address: string): Promise<string> {
+  const walletData = await resolveWalletData(address);
+  if (!walletData) {
     return "0";
   }
 
-  return snapshot.docs[0].data().nativeTokenBalance || "0";
+  return String(walletData.nativeTokenBalance ?? "0");
 }
 
 export async function getUserTokens(address: string): Promise<any[]> {
-  let userQuery;
-  let snapshot;
-  if (NON_USER_ADDRESS.includes(address)) {
-    userQuery = query(
-      collection(db, "non_users"),
-      where("walletAddress", "==", address),
-      limit(1)
-    );
-
-    snapshot = await getDocs(userQuery);
-  }else {
-    userQuery = query(
-      collection(db, "users"),
-      where("walletAddress", "==", address),
-      limit(1)
-    );
-
-    snapshot = await getDocs(userQuery);
-  }
-
-  if (snapshot.empty) {
+  const walletData = await resolveWalletData(address);
+  if (!walletData) {
     return [];
   }
 
-  const userData = snapshot.docs[0].data();
-  return userData.tokens || [];
+  return walletData.tokens || [];
+}
+
+/** Prefer server-side admin read (works when client Firestore rules block `users`). */
+export async function getWalletBalances(
+  address: string
+): Promise<{ balance: string; tokens: any[] }> {
+  if (typeof window !== "undefined") {
+    try {
+      const res = await fetch(
+        `/api/wallet-balance?address=${encodeURIComponent(address)}`
+      );
+      if (res.ok) {
+        const data = await res.json();
+        if (data.adminConfigured !== false) {
+          return {
+            balance: String(data.nativeTokenBalance ?? "0"),
+            tokens: Array.isArray(data.tokens) ? data.tokens : [],
+          };
+        }
+      }
+    } catch (error) {
+      console.warn("Wallet balance API unavailable, using client Firestore", error);
+    }
+  }
+
+  const [balance, tokens] = await Promise.all([
+    getNativeBalance(address),
+    getUserTokens(address),
+  ]);
+  return { balance, tokens };
 }
 
 export async function getTokenData(tokenAddress: string) {
@@ -447,13 +513,27 @@ export async function getTokenData(tokenAddress: string) {
 }
 
 export async function getTokenHolders(tokenAddress: string) {
-  const usersQuery = query(
-    collection(db, "users"),
-    where("tokenHoldings", "array-contains", tokenAddress)
-  );
+  const normalized = normalizeAddress(tokenAddress);
 
-  const snapshot = await getDocs(usersQuery);
-  return snapshot.docs.map((doc) => doc.data());
+  const [usersSnapshot, nonUsersSnapshot] = await Promise.all([
+    getDocs(
+      query(
+        collection(db, "users"),
+        where("tokenHoldings", "array-contains", normalized)
+      )
+    ),
+    getDocs(
+      query(
+        collection(db, "non_users"),
+        where("tokenHoldings", "array-contains", normalized)
+      )
+    ),
+  ]);
+
+  return [
+    ...usersSnapshot.docs.map((docSnap) => docSnap.data()),
+    ...nonUsersSnapshot.docs.map((docSnap) => docSnap.data()),
+  ];
 }
 
 export async function getTokenTransactions(tokenAddress: string) {

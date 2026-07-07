@@ -167,8 +167,14 @@ function BSCScanView({ transaction }: ViewProps) {
                     tooltip="List of DRC-20 tokens transferred in the transaction."
                   />
                   <div className="transaction-details space-y-1">
-                    {transaction?.allTransfers?.map((tokenTransfer, index) => (
-                      <div key={index} className="flex items-center gap-2">
+                    {transaction?.allTransfers?.map((tokenTransfer, index) => {
+                      const token = tokenTransfer.token;
+                      const isContractCreation =
+                        tokenTransfer.isContractCreation ||
+                        (!token && Number(tokenTransfer.amount) === 0);
+
+                      return (
+                      <div key={index} className="flex items-center gap-2 flex-wrap">
                         <span className="text-gray-900 font-semibold whitespace-nowrap">
                           From
                         </span>
@@ -181,47 +187,60 @@ function BSCScanView({ transaction }: ViewProps) {
                         <span className="text-[#0784c3] cursor-pointer">
                           {shortenAddress(tokenTransfer.toAddress)}
                         </span>
-                        <span className="text-gray-900 font-semibold whitespace-nowrap">
-                          For
-                        </span>
-                        <span className="text-gray-900 font-normal whitespace-nowrap">
-                          {formatNumber(tokenTransfer.amount, 6)}
-                        </span>
-                        <div
-                          className="flex items-center gap-1 cursor-pointer border border-dashed border-white hover:border-[#ffda6a] rounded-md p-[2px] hover:bg-[#ffda6a30]"
-                          onClick={() => {
-                            if (tokenTransfer.token.address === "drc20_dfs")
-                              return;
-                            window.open(
-                              `https://dfsscan.com/address/${tokenTransfer.token.address}`,
-                              "_blank"
-                            );
-                          }}
-                        >
-                          {tokenTransfer.token.logoUrl ? (
-                            <Image
-                              src={tokenTransfer.token.logoUrl}
-                              alt={tokenTransfer.token.symbol}
-                              width={20}
-                              height={20}
-                              className="rounded-full"
-                            />
-                          ) : (
-                            <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
-                              <span className="text-gray-900 font-normal whitespace-nowrap">
-                                {tokenTransfer.token.symbol.charAt(0)}
-                              </span>
-                            </div>
-                          )}
-                          <span className="text-gray-900 font-normal whitespace-nowrap">
-                            {tokenTransfer.token.name}
+                        {!isContractCreation && (
+                          <>
+                            <span className="text-gray-900 font-semibold whitespace-nowrap">
+                              For
+                            </span>
+                            <span className="text-gray-900 font-normal whitespace-nowrap">
+                              {formatNumber(tokenTransfer.amount, 6)}
+                            </span>
+                            {token && (
+                              <div
+                                className="flex items-center gap-1 cursor-pointer border border-dashed border-white hover:border-[#ffda6a] rounded-md p-[2px] hover:bg-[#ffda6a30]"
+                                onClick={() => {
+                                  if (token.address === "drc20_dfs") return;
+                                  window.open(
+                                    `https://dfsscan.com/address/${token.address}`,
+                                    "_blank"
+                                  );
+                                }}
+                              >
+                                {token.logoUrl ? (
+                                  <Image
+                                    src={token.logoUrl}
+                                    alt={token.symbol || "Token"}
+                                    width={20}
+                                    height={20}
+                                    className="rounded-full"
+                                  />
+                                ) : (
+                                  <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
+                                    <span className="text-gray-900 font-normal whitespace-nowrap">
+                                      {(token.symbol || "?").charAt(0)}
+                                    </span>
+                                  </div>
+                                )}
+                                <span className="text-gray-900 font-normal whitespace-nowrap">
+                                  {token.name || "Unknown Token"}
+                                </span>
+                                {token.symbol && (
+                                  <span className="text-gray-900 font-normal whitespace-nowrap">
+                                    ({token.symbol})
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                          </>
+                        )}
+                        {isContractCreation && (
+                          <span className="rounded bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">
+                            Contract Created
                           </span>
-                          <span className="text-gray-900 font-normal whitespace-nowrap">
-                            ({tokenTransfer.token.symbol})
-                          </span>
-                        </div>
+                        )}
                       </div>
-                    ))}
+                    );
+                    })}
                   </div>
                 </div>
               )}
