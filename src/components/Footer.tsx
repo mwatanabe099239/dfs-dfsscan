@@ -17,6 +17,12 @@ const getDfsChainUrl = (path: string): string => {
   return baseUrl ? `${baseUrl}${cleanPath}` : cleanPath;
 };
 
+const getDifinesUrl = (path: string): string => {
+  const baseUrl = process.env.NEXT_PUBLIC_DIFINES_BASEURL || "";
+  const cleanPath = path.startsWith("/") ? path : `/${path}`;
+  return baseUrl ? `${baseUrl}${cleanPath}` : cleanPath;
+};
+
 const DFS_CHAIN_LINKS = [
   { label: "Make Wallet", href: process.env.NEXT_PUBLIC_METAFACE_BASEURL || "#", isExternal: true },
   { label: "Get Token", href: process.env.NEXT_PUBLIC_WEX_BASEURL || "#", isExternal: true },
@@ -26,6 +32,7 @@ const DFS_CHAIN_LINKS = [
 ];
 
 const ABOUT_LINKS = [
+  { label: "AI Consultant", href: getDifinesUrl("/ai"), isExternal: true },
   { label: "Blog", href: getDfsChainUrl("/blog"), isExternal: true },
   { label: "Whitepaper", href: getDfsChainUrl("/whitepaper"), isExternal: true },
   { label: "FAQ", href: getDfsChainUrl("/whitepaper/#faq"), isExternal: true },
