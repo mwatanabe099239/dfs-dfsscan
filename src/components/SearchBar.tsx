@@ -5,11 +5,7 @@ import { faSearch, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useViewMode } from "@/src/contexts/ViewModeContext";
-import {
-  isTokenAddress,
-  isTransactionHash,
-  isWalletLikeAddress,
-} from "@/src/lib/address";
+import { resolveSearchNavigation } from "@/src/lib/search";
 
 export default function SearchBar() {
   const router = useRouter();
@@ -17,29 +13,25 @@ export default function SearchBar() {
 
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
 
   const onSearchChange = (value: string) => {
     setSearchQuery(value);
   };
 
-  const handleSearch = () => {
-    if (!searchQuery) return;
+  const handleSearch = async () => {
+    if (!searchQuery.trim() || isSearching) return;
 
-    const isToken = isTokenAddress(searchQuery);
-    const isAddress = isWalletLikeAddress(searchQuery);
-    const isTxn = isTransactionHash(searchQuery);
-
-    if (isToken || isAddress) {
-      const href = `/address/${searchQuery}`;
-      router.push(href);
+    setIsSearching(true);
+    try {
+      const result = await resolveSearchNavigation(searchQuery);
+      if (result.type !== "none") {
+        router.push(result.href);
+        setSearchQuery("");
+      }
+    } finally {
+      setIsSearching(false);
     }
-
-    if (isTxn) {
-      const href = `/tx/${searchQuery}`;
-      router.push(href);
-    }
-
-    setSearchQuery("");
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -64,11 +56,13 @@ export default function SearchBar() {
                   value={searchQuery}
                   onChange={(e) => onSearchChange(e.target.value)}
                   onKeyDown={handleKeyDown}
+                  disabled={isSearching}
                 />
                 <span className="absolute top-0 right-2 h-full flex items-center text-md">
                   <button
                     className="whitespace-nowrap ring-offset-background focus-visible:outline-none disabled:pointer-events-none inline-flex items-center justify-center font-bold transition-colors text-white bg-[#c74ae3] disabled:opacity-40 ring-transparent ring-offset-0 focus-visible:ring-offset-0 focus-visible:ring-transparent text-[12px] leading-4.5 gap-1 w-8 h-8 px-2 py-1 rounded-lg"
                     onClick={handleSearch}
+                    disabled={isSearching}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-search" aria-hidden="true">
                       <path d="m21 21-4.34-4.34"></path>
@@ -102,10 +96,12 @@ export default function SearchBar() {
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             onKeyDown={handleKeyDown}
+            disabled={isSearching}
           />
           <button
-            className="absolute right-2 top-2 bottom-2 px-2 rounded-lg bg-[#0784c3] hover:bg-blue-600 text-white flex items-center cursor-pointer"
+            className="absolute right-2 top-2 bottom-2 px-2 rounded-lg bg-[#0784c3] hover:bg-blue-600 text-white flex items-center cursor-pointer disabled:opacity-40"
             onClick={handleSearch}
+            disabled={isSearching}
           >
             <FontAwesomeIcon icon={faSearch} />
           </button>

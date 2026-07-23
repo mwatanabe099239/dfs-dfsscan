@@ -4,39 +4,31 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  isTokenAddress,
-  isTransactionHash,
-  isWalletLikeAddress,
-} from "@/src/lib/address";
+import { resolveSearchNavigation } from "@/src/lib/search";
 
 export default function SearchBar() {
   const router = useRouter();
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
 
   const onSearchChange = (value: string) => {
     setSearchQuery(value);
   };
 
-  const handleSearch = () => {
-    if (!searchQuery) return;
+  const handleSearch = async () => {
+    if (!searchQuery.trim() || isSearching) return;
 
-    const isToken = isTokenAddress(searchQuery);
-    const isAddress = isWalletLikeAddress(searchQuery);
-    const isTxn = isTransactionHash(searchQuery);
-
-    if (isToken || isAddress) {
-      const href = `/address/${searchQuery}`;
-      router.push(href);
+    setIsSearching(true);
+    try {
+      const result = await resolveSearchNavigation(searchQuery);
+      if (result.type !== "none") {
+        router.push(result.href);
+        setSearchQuery("");
+      }
+    } finally {
+      setIsSearching(false);
     }
-
-    if (isTxn) {
-      const href = `/tx/${searchQuery}`;
-      router.push(href);
-    }
-
-    setSearchQuery("");
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -48,8 +40,9 @@ export default function SearchBar() {
   return (
     <div className="flex relative rounded-md w-full md:w-[500px] text-sm">
       <button
-        className="absolute left-2 top-2 bottom-2 rounded-lg text-gray-400 flex items-center cursor-pointer"
+        className="absolute left-2 top-2 bottom-2 rounded-lg text-gray-400 flex items-center cursor-pointer disabled:opacity-40"
         onClick={handleSearch}
+        disabled={isSearching}
       >
         <FontAwesomeIcon icon={faSearch} />
       </button>
@@ -60,6 +53,7 @@ export default function SearchBar() {
         value={searchQuery}
         onChange={(e) => onSearchChange(e.target.value)}
         onKeyDown={handleKeyDown}
+        disabled={isSearching}
       />
     </div>
   );

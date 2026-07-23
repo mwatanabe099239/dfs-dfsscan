@@ -1,4 +1,4 @@
-import { BLOCK_GENERATION_TIME, FIRST_BLOCK_TIME } from "@/src/lib/firebase";
+import { BLOCK_GENERATION_TIME, FIRST_BLOCK_TIME, parseCreatedAt } from "@/src/lib/firebase";
 import {
   collection,
   getDocs,
@@ -72,7 +72,7 @@ export async function getTwoWeekTransactionHistory(): Promise<
   const txSnapshot = await getDocs(txQuery);
   const transactions = txSnapshot.docs.map((doc) => ({
     ...doc.data(),
-    createdAt: doc.data().createdAt.toDate(),
+    createdAt: parseCreatedAt(doc.data().createdAt),
   }));
 
   // Create a map to store daily counts

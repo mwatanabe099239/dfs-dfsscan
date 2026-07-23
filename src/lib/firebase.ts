@@ -35,6 +35,33 @@ const app = initializeApp(firebaseConfig);
 // Initialize Firestore
 export const db = getFirestore(app);
 
+/** Normalize Firestore / legacy createdAt values into a Date. */
+export function parseCreatedAt(value: unknown): Date {
+  if (!value) return new Date(0);
+  if (value instanceof Date) return value;
+  if (typeof value === "object" && typeof (value as { toDate?: unknown }).toDate === "function") {
+    return (value as { toDate: () => Date }).toDate();
+  }
+  // Plain Firestore-like { seconds, nanoseconds } or {_seconds}
+  if (typeof value === "object") {
+    const seconds =
+      (value as { seconds?: number }).seconds ??
+      (value as { _seconds?: number })._seconds;
+    if (typeof seconds === "number") {
+      return new Date(seconds * 1000);
+    }
+  }
+  if (typeof value === "number") {
+    // Support both seconds and milliseconds
+    return new Date(value < 1e12 ? value * 1000 : value);
+  }
+  if (typeof value === "string") {
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? new Date(0) : parsed;
+  }
+  return new Date(0);
+}
+
 export async function getNetworkStats() {
   const txQuery = query(
     collection(db, "transactions"),
@@ -144,7 +171,7 @@ export async function getLatestTransactions(): Promise<Transaction[]> {
   const snapshot = await getDocs(txQuery);
   return snapshot.docs.map((doc) => ({
     ...doc.data(),
-    createdAt: doc.data().createdAt.toDate(),
+    createdAt: parseCreatedAt(doc.data().createdAt),
   })) as Transaction[];
 }
 
@@ -166,7 +193,7 @@ export async function getTransactionByHash(
   const doc = snapshot.docs[0];
   return {
     ...doc.data(),
-    createdAt: doc.data().createdAt.toDate(),
+    createdAt: parseCreatedAt(doc.data().createdAt),
   } as Transaction;
 }
 
@@ -210,7 +237,7 @@ export async function getTransactionsWithPagination(
 
   const transactions = txSnapshot.docs.map((doc) => ({
     ...doc.data(),
-    createdAt: doc.data().createdAt.toDate(),
+    createdAt: parseCreatedAt(doc.data().createdAt),
   })) as Transaction[];
 
   return {
@@ -265,7 +292,7 @@ export async function getTokenTotalTransactionWithPagination(
 
   const transactions = txSnapshot.docs.map((doc) => ({
     ...doc.data(),
-    createdAt: doc.data().createdAt.toDate(),
+    createdAt: parseCreatedAt(doc.data().createdAt),
   })) as Transaction[];
 
   return {
@@ -318,7 +345,7 @@ export async function getAddressTotalTransactionWithPagination(
 
   const transactions = txSnapshot.docs.map((doc) => ({
     ...doc.data(),
-    createdAt: doc.data().createdAt.toDate(),
+    createdAt: parseCreatedAt(doc.data().createdAt),
   })) as Transaction[];
 
   return {
@@ -352,7 +379,7 @@ export async function getTransactionsByAddress(
           );
       return snapshot.docs.map((docSnap) => ({
         ...docSnap.data(),
-        createdAt: docSnap.data().createdAt.toDate(),
+        createdAt: parseCreatedAt(docSnap.data().createdAt),
       })) as Transaction[];
     } catch (error: unknown) {
       const err = error as { code?: string; message?: string };
@@ -545,7 +572,7 @@ export async function getTokenTransactions(tokenAddress: string) {
   const snapshot = await getDocs(txQuery);
   const transactions = snapshot.docs.map((doc) => ({
     ...doc.data(),
-    createdAt: doc.data().createdAt.toDate(),
+    createdAt: parseCreatedAt(doc.data().createdAt),
   }));
 
   // Sort in memory instead
@@ -578,7 +605,7 @@ export async function getTokenTransactionsWithLimitWithTotalCount(
 
     const transactions = txSnapshot.docs.map((doc) => ({
       ...doc.data(),
-      createdAt: doc.data().createdAt.toDate(),
+      createdAt: parseCreatedAt(doc.data().createdAt),
     })) as Transaction[];
 
     return {
@@ -608,7 +635,7 @@ export async function getTokenTransactionsWithLimitWithTotalCount(
 
       const transactions = txSnapshot.docs.map((doc) => ({
         ...doc.data(),
-        createdAt: doc.data().createdAt.toDate(),
+        createdAt: parseCreatedAt(doc.data().createdAt),
       })) as Transaction[];
 
       // Sort manually as fallback
@@ -641,4 +668,62 @@ export async function getTokensWithWeb3Address(limitCount: number = 10) {
     .slice(0, limitCount);
   
   return tokens;
+}
+
+/**
+ * Resolve a search query to a DFS token address by exact tokenAddress,
+ * web3TokenAddress, symbol, or name (case-insensitive). Prefers exact
+ * matches over partial matches on symbol/name.
+ */
+export async function findTokenAddressByQuery(
+  searchQuery: string
+): Promise<string | null> {
+  const trimmed = searchQuery.trim();
+  if (!trimmed) return null;
+
+  const normalized = trimmed.toLowerCase();
+
+  // Exact tokenAddress lookup first (fast path)
+  const exactAddress = await getTokenData(trimmed);
+  if (exactAddress?.tokenAddress) {
+    return exactAddress.tokenAddress as string;
+  }
+
+  const tokensQuery = query(collection(db, "tokens"), limit(500));
+  const snapshot = await getDocs(tokensQuery);
+  const tokens = snapshot.docs.map((docSnap) => docSnap.data());
+
+  const exactMatches = tokens.filter((token: any) => {
+    const symbol = String(token.symbol ?? "").toLowerCase();
+    const name = String(token.name ?? "").toLowerCase();
+    const tokenAddress = String(token.tokenAddress ?? "").toLowerCase();
+    const web3Address = String(token.web3TokenAddress ?? "").toLowerCase();
+    return (
+      symbol === normalized ||
+      name === normalized ||
+      tokenAddress === normalized ||
+      web3Address === normalized
+    );
+  });
+
+  if (exactMatches.length > 0 && exactMatches[0].tokenAddress) {
+    return exactMatches[0].tokenAddress as string;
+  }
+
+  const partialMatches = tokens.filter((token: any) => {
+    const symbol = String(token.symbol ?? "").toLowerCase();
+    const name = String(token.name ?? "").toLowerCase();
+    const tokenAddress = String(token.tokenAddress ?? "").toLowerCase();
+    return (
+      symbol.includes(normalized) ||
+      name.includes(normalized) ||
+      tokenAddress.includes(normalized)
+    );
+  });
+
+  if (partialMatches.length > 0 && partialMatches[0].tokenAddress) {
+    return partialMatches[0].tokenAddress as string;
+  }
+
+  return null;
 }
