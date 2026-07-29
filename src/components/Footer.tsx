@@ -24,7 +24,7 @@ const DFS_CHAIN_LINKS = [
 ];
 
 const ACADEMY_LINKS = [
-  { label: "DFS Academy", href: process.env.NEXT_PUBLIC_DFS_ACADEMY_BASEURL || "#", isExternal: true },
+  { label: "DFS Academy", href: getDfsChainUrl("/academy"), isExternal: true },
   { label: "DIFINES AI", href: getDfsChainUrl("/ai"), isExternal: true },
 ];
 
