@@ -9,6 +9,7 @@ import {
 } from "@/src/lib/utils";
 import { Copy, MoveRight, Eye, HelpCircle, Funnel, Clock } from "lucide-react";
 import { toast } from "react-hot-toast";
+import AddressDisplay from "@/src/components/common/AddressDisplay";
 
 export default function TokenTransactions({
   transactions,
@@ -178,7 +179,7 @@ export default function TokenTransactions({
                         <span className="w-auto max-w-full inline-flex items-center whitespace-nowrap">
                             <span className="align-middle font-normal text-gray-700 text-[14px] leading-[20px] border border-dashed border-transparent box-content break-all px-[3px] -mx-1 rounded-md autoTruncate max-w-[200px]">
                             <div className="inline" data-state="closed">
-                              <span>{shortenAddress(tx.fromAddress)}</span>
+                              <AddressDisplay address={tx.fromAddress} link={false} />
                             </div>
                           </span>
                           <span className="inline-flex items-center ml-1 gap-2 align-middle">
@@ -308,12 +309,10 @@ export default function TokenTransactions({
                     </>
                   ) : (
                     <>
-                      <Link
-                        href={`/address/${tx.fromAddress}`}
+                      <AddressDisplay
+                        address={tx.fromAddress}
                         className="text-[#0784c3] hover:text-blue-600"
-                      >
-                        {shortenAddress(tx.fromAddress)}
-                      </Link>
+                      />
                       <Copy
                         className="w-4 h-4 text-gray-500 cursor-pointer"
                         onClick={() => handleCopyTx(tx.fromAddress)}
@@ -343,12 +342,10 @@ export default function TokenTransactions({
                 <td className="p-3 flex items-center gap-2">
                   {tx.method === "Token Created" ? (
                     <>
-                      <Link
-                        href={`/address/${tx.fromAddress}`}
+                      <AddressDisplay
+                        address={tx.fromAddress}
                         className="text-[#0784c3] hover:text-blue-600"
-                      >
-                        {shortenAddress(tx.fromAddress)}
-                      </Link>
+                      />
                       <Copy
                         className="w-4 h-4 text-gray-500 cursor-pointer"
                         onClick={() => handleCopyTx(tx.fromAddress)}
@@ -356,12 +353,10 @@ export default function TokenTransactions({
                     </>
                   ) : (
                     <>
-                      <Link
-                        href={`/address/${tx.toAddress}`}
+                      <AddressDisplay
+                        address={tx.toAddress}
                         className="text-[#0784c3] hover:text-blue-600"
-                      >
-                        {shortenAddress(tx.toAddress)}
-                      </Link>
+                      />
                       <Copy
                         className="w-4 h-4 text-gray-500 cursor-pointer"
                         onClick={() => handleCopyTx(tx.toAddress)}

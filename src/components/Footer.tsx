@@ -17,28 +17,23 @@ const getDfsChainUrl = (path: string): string => {
   return baseUrl ? `${baseUrl}${cleanPath}` : cleanPath;
 };
 
-const getDifinesUrl = (path: string): string => {
-  const baseUrl = process.env.NEXT_PUBLIC_DIFINES_BASEURL || "";
-  const cleanPath = path.startsWith("/") ? path : `/${path}`;
-  return baseUrl ? `${baseUrl}${cleanPath}` : cleanPath;
-};
-
 const DFS_CHAIN_LINKS = [
   { label: "Make Wallet", href: process.env.NEXT_PUBLIC_METAFACE_BASEURL || "#", isExternal: true },
   { label: "Get Token", href: process.env.NEXT_PUBLIC_WEX_BASEURL || "#", isExternal: true },
-  { label: "Get Stake", href: getDfsChainUrl("/staking"), isExternal: true },
   { label: "Explore DApps", href: getDfsChainUrl("/explore-dapps"), isExternal: true },
-  { label: "Pay by Crypto", href: getDfsChainUrl("/payviner"), isExternal: true },
+];
+
+const ACADEMY_LINKS = [
+  { label: "DFS Academy", href: process.env.NEXT_PUBLIC_DFS_ACADEMY_BASEURL || "#", isExternal: true },
+  { label: "DIFINES AI", href: getDfsChainUrl("/ai"), isExternal: true },
 ];
 
 const ABOUT_LINKS = [
-  { label: "AI Consultant", href: getDifinesUrl("/ai"), isExternal: true },
   { label: "Blog", href: getDfsChainUrl("/blog"), isExternal: true },
   { label: "Whitepaper", href: getDfsChainUrl("/whitepaper"), isExternal: true },
   { label: "FAQ", href: getDfsChainUrl("/whitepaper/#faq"), isExternal: true },
   { label: "Privacy Policy", href: getDfsChainUrl("/whitepaper/#privacy-policy"), isExternal: true },
   { label: "Terms of Use", href: getDfsChainUrl("/whitepaper/#terms-of-use"), isExternal: true },
-  { label: "Cookies", href: getDfsChainUrl("/whitepaper/#cookies"), isExternal: true },
 ];
 
 // Social Media Icon Components
@@ -60,21 +55,9 @@ const DiscordIcon = () => (
   </svg>
 );
 
-const GitHubIcon = () => (
-  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
-  </svg>
-);
-
 const YouTubeIcon = () => (
   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-  </svg>
-);
-
-const MediumIcon = () => (
-  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z"/>
   </svg>
 );
 
@@ -101,7 +84,7 @@ export default function Footer() {
   return (
     <footer className="bg-[#f8f9fa]">
       <div className="w-full py-8 flex justify-center">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 px-4">
           {/* Left Section - Logo, Copyright, Social Icons */}
           <div className="space-y-4 md:mr-36">
             <div className="space-y-2">
@@ -149,11 +132,21 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Right Section - About Links */}
+          {/* About Links */}
           <div className="space-y-3">
             <h4 className="font-bold text-gray-900 text-base">About</h4>
             <div className="flex flex-col space-y-2">
               {ABOUT_LINKS.map((link, index) => (
+                <FooterLinkComponent key={index} link={link} />
+              ))}
+            </div>
+          </div>
+
+          {/* Academy Section */}
+          <div className="space-y-3">
+            <h4 className="font-bold text-gray-900 text-base">Academy</h4>
+            <div className="flex flex-col space-y-2">
+              {ACADEMY_LINKS.map((link, index) => (
                 <FooterLinkComponent key={index} link={link} />
               ))}
             </div>

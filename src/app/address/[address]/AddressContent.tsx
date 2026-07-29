@@ -41,6 +41,7 @@ import {
   TooltipTrigger,
 } from "@/src/components/ui/tooltip";
 import { useDfsTokenPrice } from "@/src/hooks/useDfsTokenPrice";
+import AddressDisplay from "@/src/components/common/AddressDisplay";
 
 type AddressType = AddressKind;
 
@@ -427,7 +428,12 @@ function BSCScanWalletView({
                     Burn-to-Earn Pool
                   </span>
                 )}
-                <span className="text-gray-600">{address}</span>
+                <AddressDisplay
+                  address={address}
+                  full
+                  link={false}
+                  className="text-gray-600"
+                />
               </div>
               <button
                 className="text-gray-400 hover:text-gray-600 cursor-pointer"
@@ -604,9 +610,11 @@ function BSCScanWalletView({
                 <div className="">
                   <div className="text-gray-500 text-xs mb-1">FUNDED BY</div>
                   <div className="text-sm flex items-center gap-2">
-                    <span className="text-[#0784c3] cursor-pointer">
-                      {shortenAddress(address, 10)}
-                    </span>
+                    <AddressDisplay
+                      address={address}
+                      start={10}
+                      className="text-[#0784c3] cursor-pointer"
+                    />
                     <FontAwesomeIcon
                       icon={faCopy}
                       className="cursor-pointer text-gray-500"
@@ -1088,7 +1096,12 @@ function SolanaScanWalletView({
                   </div>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <span className="break-all font-normal text-gray-700 text-[14px] sm:text-[16px] align-middle">{address}</span>
+                  <AddressDisplay
+                    address={address}
+                    full
+                    link={false}
+                    className="break-all font-normal text-gray-700 text-[14px] sm:text-[16px] align-middle"
+                  />
                   <span className="inline-flex items-center gap-2 ml-2 align-middle">
                     <div className="inline-flex align-middle">
                       <Copy className="w-[18px] h-[18px] cursor-pointer text-[#adb5bd] hover:text-[#21f201]" onClick={handleCopyClick} />
@@ -1988,7 +2001,12 @@ function SolanaScanTokenView({
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <span className="break-all font-normal text-gray-700 text-[14px] sm:text-[16px] align-middle">{address}</span>
+                  <AddressDisplay
+                    address={address}
+                    full
+                    link={false}
+                    className="break-all font-normal text-gray-700 text-[14px] sm:text-[16px] align-middle"
+                  />
                   <span className="inline-flex items-center gap-2 ml-2 align-middle">
                     <div className="inline-flex align-middle">
                       <Copy className="w-[18px] h-[18px] cursor-pointer text-[#adb5bd] hover:text-[#21f201]" onClick={handleCopyClick} />
@@ -2596,7 +2614,8 @@ function QRCodeModal({
             className="z-10"
           />
           <div className="text-xs text-center text-gray-700 w-60 break-words mt-4 px-2">
-            {address}
+            <AddressDisplay address={address} full link={false} />
+            <div className="mt-1 text-[10px] text-gray-400 break-all">{address}</div>
           </div>
         </div>
       </div>

@@ -28,6 +28,7 @@ import { ArrowRightLeft, Copy, PlusIcon, Eye, ChevronDown, Code, List, Zap, GitC
 import toast from "react-hot-toast";
 import Image from "next/image";
 import SearchBar from "@/src/components/SearchBar";
+import AddressDisplay from "@/src/components/common/AddressDisplay";
 import { useViewMode } from "@/src/contexts/ViewModeContext";
 
 const InfoLabel = ({ label, tooltip }: { label: string; tooltip: string }) => (
@@ -149,11 +150,15 @@ function BSCScanView({ transaction }: ViewProps) {
                     {formatTxValue(transaction)}
                   </span>{" "}
                   To{" "}
-                  <span className="text-[#0784c3]">
-                    {transaction.method === "Token Created"
-                      ? transaction.fromAddress
-                      : transaction.toAddress}
-                  </span>
+                  <AddressDisplay
+                    address={
+                      transaction.method === "Token Created"
+                        ? transaction.fromAddress
+                        : transaction.toAddress
+                    }
+                    full
+                    className="text-[#0784c3]"
+                  />
                 </span>
               </div>
             </div>
@@ -178,15 +183,17 @@ function BSCScanView({ transaction }: ViewProps) {
                         <span className="text-gray-900 font-semibold whitespace-nowrap">
                           From
                         </span>
-                        <span className="text-[#0784c3] cursor-pointer">
-                          {shortenAddress(tokenTransfer.fromAddress)}
-                        </span>
+                        <AddressDisplay
+                          address={tokenTransfer.fromAddress}
+                          className="text-[#0784c3] cursor-pointer"
+                        />
                         <span className="text-gray-900 font-semibold whitespace-nowrap">
                           To
                         </span>
-                        <span className="text-[#0784c3] cursor-pointer">
-                          {shortenAddress(tokenTransfer.toAddress)}
-                        </span>
+                        <AddressDisplay
+                          address={tokenTransfer.toAddress}
+                          className="text-[#0784c3] cursor-pointer"
+                        />
                         {!isContractCreation && (
                           <>
                             <span className="text-gray-900 font-semibold whitespace-nowrap">
@@ -269,18 +276,15 @@ function BSCScanView({ transaction }: ViewProps) {
                 tooltip="The sending party of the transaction"
               />
               <div className="flex-1">
-                <Link
-                  href={`/address/${
+                <AddressDisplay
+                  address={
                     transaction.method === "Token Created"
                       ? ZERO_ADDRESS
                       : transaction.fromAddress
-                  }`}
+                  }
+                  full
                   className="text-[#0784c3] hover:text-blue-600 break-all"
-                >
-                  {transaction.method === "Token Created"
-                    ? ZERO_ADDRESS
-                    : transaction.fromAddress}
-                </Link>
+                />
               </div>
             </div>
 
@@ -291,18 +295,15 @@ function BSCScanView({ transaction }: ViewProps) {
                 tooltip="The receiving party of the transaction (could be a contract address)"
               />
               <div className="flex-1">
-                <Link
-                  href={`/address/${
+                <AddressDisplay
+                  address={
                     transaction.method === "Token Created"
                       ? transaction.fromAddress
                       : transaction.toAddress
-                  }`}
+                  }
+                  full
                   className="text-[#0784c3] hover:text-blue-600 break-all"
-                >
-                  {transaction.method === "Token Created"
-                    ? transaction.fromAddress
-                    : transaction.toAddress}
-                </Link>
+                />
               </div>
             </div>
 
@@ -599,11 +600,14 @@ function SolanaScanView({ transaction }: ViewProps) {
                                   <span className="w-auto max-w-full inline-flex items-center whitespace-nowrap">
                                     <span className="align-middle font-normal text-[14px] leading-[20px] border border-dashed border-transparent box-content break-all px-[3px] -mx-1 rounded-md text-[#2563eb] autoTruncate max-w-[250px]">
                                       <div className="inline">
-                                        <Link href={`/address/${
-                                          transaction.method === "Token Created" ? ZERO_ADDRESS : transaction.fromAddress
-                                        }`} className="text-current hover:underline">
-                                          {shortenAddress(transaction.method === "Token Created" ? ZERO_ADDRESS : transaction.fromAddress)}
-                                        </Link>
+                                        <AddressDisplay
+                                          address={
+                                            transaction.method === "Token Created"
+                                              ? ZERO_ADDRESS
+                                              : transaction.fromAddress
+                                          }
+                                          className="text-current hover:underline"
+                                        />
                                       </div>
                                     </span>
                                   </span>
@@ -611,11 +615,14 @@ function SolanaScanView({ transaction }: ViewProps) {
                                   <span className="w-auto max-w-full inline-flex items-center whitespace-nowrap">
                                     <span className="align-middle font-normal text-[14px] leading-[20px] border border-dashed border-transparent box-content break-all px-[3px] -mx-1 rounded-md text-[#2563eb] autoTruncate max-w-[250px]">
                                       <div className="inline">
-                                        <Link href={`/address/${
-                                          transaction.method === "Token Created" ? transaction.fromAddress : transaction.toAddress
-                                        }`} className="text-current hover:underline">
-                                          {shortenAddress(transaction.method === "Token Created" ? transaction.fromAddress : transaction.toAddress)}
-                                        </Link>
+                                        <AddressDisplay
+                                          address={
+                                            transaction.method === "Token Created"
+                                              ? transaction.fromAddress
+                                              : transaction.toAddress
+                                          }
+                                          className="text-current hover:underline"
+                                        />
                                       </div>
                                     </span>
                                   </span>
@@ -836,11 +843,15 @@ function SolanaScanView({ transaction }: ViewProps) {
                                 <span className="w-auto max-w-full inline-flex items-center whitespace-nowrap">
                                   <span className="align-middle font-normal text-[14px] leading-[20px] border border-dashed border-transparent box-content break-all px-[3px] -mx-1 rounded-md text-[#2563eb] autoTruncate">
                                     <div className="inline">
-                                      <Link href={`/address/${
-                                        transaction.method === "Token Created" ? ZERO_ADDRESS : transaction.fromAddress
-                                      }`} className="text-current hover:underline">
-                                        {transaction.method === "Token Created" ? ZERO_ADDRESS : transaction.fromAddress}
-                                      </Link>
+                                      <AddressDisplay
+                                        address={
+                                          transaction.method === "Token Created"
+                                            ? ZERO_ADDRESS
+                                            : transaction.fromAddress
+                                        }
+                                        full
+                                        className="text-current hover:underline"
+                                      />
                                     </div>
                                   </span>
                                   <span className="inline-flex items-center ml-1 gap-2 align-middle">
@@ -916,9 +927,10 @@ function SolanaScanView({ transaction }: ViewProps) {
                                         <span className="w-auto max-w-full inline-flex items-center whitespace-nowrap">
                                           <span className="align-middle font-normal text-[14px] leading-[20px] border border-dashed border-transparent box-content break-all px-[3px] -mx-1 rounded-md text-[#2563eb] autoTruncate max-w-[250px]">
                                             <div className="inline">
-                                              <Link href={`/address/${transaction.toAddress}`} className="text-current hover:underline">
-                                                {shortenAddress(transaction.toAddress)}
-                                              </Link>
+                                              <AddressDisplay
+                                                address={transaction.toAddress}
+                                                className="text-current hover:underline"
+                                              />
                                             </div>
                                           </span>
                                           <span className="inline-flex items-center ml-1 gap-2 align-middle">
@@ -948,9 +960,10 @@ function SolanaScanView({ transaction }: ViewProps) {
                                         <span className="w-auto max-w-full inline-flex items-center whitespace-nowrap">
                                           <span className="align-middle font-normal text-[14px] leading-[20px] border border-dashed border-transparent box-content break-all px-[3px] -mx-1 rounded-md text-[#2563eb] autoTruncate max-w-[250px]">
                                             <div className="inline">
-                                              <Link href={`/address/${transaction.fromAddress}`} className="text-current hover:underline">
-                                                {shortenAddress(transaction.fromAddress)}
-                                              </Link>
+                                              <AddressDisplay
+                                                address={transaction.fromAddress}
+                                                className="text-current hover:underline"
+                                              />
                                             </div>
                                           </span>
                                           <span className="inline-flex items-center ml-1 gap-2 align-middle">
@@ -963,9 +976,10 @@ function SolanaScanView({ transaction }: ViewProps) {
                                         <span className="w-auto max-w-full inline-flex items-center whitespace-nowrap">
                                           <span className="align-middle font-normal text-[14px] leading-[20px] border border-dashed border-transparent box-content break-all px-[3px] -mx-1 rounded-md text-[#2563eb] autoTruncate max-w-[250px]">
                                             <div className="inline">
-                                              <Link href={`/address/${transaction.toAddress}`} className="text-current hover:underline">
-                                                {shortenAddress(transaction.toAddress)}
-                                              </Link>
+                                              <AddressDisplay
+                                                address={transaction.toAddress}
+                                                className="text-current hover:underline"
+                                              />
                                             </div>
                                           </span>
                                           <span className="inline-flex items-center ml-1 gap-2 align-middle">

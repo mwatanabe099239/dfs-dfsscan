@@ -6,9 +6,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileAlt } from "@fortawesome/free-solid-svg-icons";
 import { Transaction } from "@/src/types";
 import { getLatestTransactions } from "@/src/lib/firebase";
-import { formatNumber, formatTimeAgo, shortenAddress, shortenHash } from "@/src/lib/utils";
+import { formatNumber, formatTimeAgo, shortenHash } from "@/src/lib/utils";
 import ItemSkeleton from "../common/ItemSkeleton";
 import { useViewMode } from "@/src/contexts/ViewModeContext";
+import AddressDisplay from "@/src/components/common/AddressDisplay";
 
 export default function LatestTransactions() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -47,11 +48,6 @@ export default function LatestTransactions() {
     );
   }
 
-  const formatAddress = (address: string) => {
-    if (!address) return "";
-    return shortenAddress(address);
-  };
-
   return (
     <div className="flex flex-col h-[90%]">
       <div className={`divide-y text-sm flex-1 ${isSolanaMode ? "divide-gray-700" : "divide-gray-200"}`}>
@@ -76,37 +72,25 @@ export default function LatestTransactions() {
               <div className="flex-1">
                 <div>
                   <span className={isSolanaMode ? "text-gray-200" : "text-black"}>From </span>
-                  <Link
-                    href={`/address/${
+                  <AddressDisplay
+                    address={
                       tx.method === "Token Created"
                         ? ZERO_ADDRESS
                         : tx.fromAddress
-                    }`}
+                    }
                     className={isSolanaMode ? "text-white hover:text-gray-300" : "text-[#0784c3] hover:text-blue-600"}
-                  >
-                    {formatAddress(
-                      tx.method === "Token Created"
-                        ? ZERO_ADDRESS
-                        : tx.fromAddress
-                    )}
-                  </Link>
+                  />
                 </div>
                 <div>
                   <span className={isSolanaMode ? "text-gray-200" : "text-black"}>To </span>
-                  <Link
-                    href={`/address/${
+                  <AddressDisplay
+                    address={
                       tx.method === "Token Created"
                         ? tx.fromAddress
                         : tx.toAddress
-                    }`}
+                    }
                     className={isSolanaMode ? "text-white hover:text-gray-300" : "text-[#0784c3] hover:text-blue-600"}
-                  >
-                    {formatAddress(
-                      tx.method === "Token Created"
-                        ? tx.fromAddress
-                        : tx.toAddress
-                    )}
-                  </Link>
+                  />
                 </div>
               </div>
               <div className="text-right whitespace-nowrap">

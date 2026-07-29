@@ -1,4 +1,4 @@
-import Link from "next/link";
+import AddressDisplay from "@/src/components/common/AddressDisplay";
 
 type Holder = {
   walletAddress: string;
@@ -58,12 +58,11 @@ export default function TokenHolders({
             >
               <td className="p-3 text-gray-500">{index + 1}</td>
               <td className="p-3">
-                <Link
-                  href={`/address/${holder.address}`}
+                <AddressDisplay
+                  address={holder.address}
+                  full
                   className="text-[#0784c3] hover:text-blue-600"
-                >
-                  {holder.address}
-                </Link>
+                />
               </td>
               <td className="p-3">{holder.balance.toLocaleString()}</td>
               <td className="p-3">

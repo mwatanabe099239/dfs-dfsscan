@@ -4,6 +4,10 @@ import {
   isWalletLikeAddress,
 } from "@/src/lib/address";
 import { findTokenAddressByQuery } from "@/src/lib/firebase";
+import {
+  isDfsNameQuery,
+  resolveWalletByDfsName,
+} from "@/src/lib/dfsName";
 
 export type SearchNavigation =
   | { type: "address"; href: string }
@@ -25,6 +29,14 @@ export async function resolveSearchNavigation(
 
   if (isTransactionHash(query)) {
     return { type: "tx", href: `/tx/${query}` };
+  }
+
+  if (isDfsNameQuery(query)) {
+    const wallet = await resolveWalletByDfsName(query);
+    if (wallet) {
+      return { type: "address", href: `/address/${wallet}` };
+    }
+    return { type: "none" };
   }
 
   const tokenAddress = await findTokenAddressByQuery(query);
