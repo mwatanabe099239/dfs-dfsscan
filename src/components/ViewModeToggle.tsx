@@ -24,8 +24,8 @@ export default function ViewModeToggle({ compact = false }: { compact?: boolean 
         >
           {viewMode === "bscscan" ? (
             <Image
-              src="/icons/bnb.svg"
-              alt="BNB"
+              src="/icons/ethereum.svg"
+              alt="Ethereum"
               width={14}
               height={14}
               className="w-3.5 h-3.5"
@@ -68,8 +68,8 @@ export default function ViewModeToggle({ compact = false }: { compact?: boolean 
         >
           {viewMode === "bscscan" ? (
             <Image
-              src="/icons/bnb.svg"
-              alt="BNB"
+              src="/icons/ethereum.svg"
+              alt="Ethereum"
               width={16}
               height={16}
               className="w-4 h-4"
