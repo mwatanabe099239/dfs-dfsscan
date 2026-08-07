@@ -109,7 +109,7 @@ const LINK_COLUMNS: FooterColumn[] = [
     items: [
       { label: "Blog", href: getDfsChainUrl("/blog"), external: true },
       { label: "Whitepaper", href: getDfsChainUrl("/whitepaper"), external: true },
-      { label: "FAQ", href: getDfsChainUrl("/whitepaper#faq"), external: true },
+      { label: "FAQ", href: getDfsChainUrl("/academy/qa"), external: true },
       {
         label: "Privacy Policy",
         href: getDfsChainUrl("/whitepaper#privacy-policy"),
