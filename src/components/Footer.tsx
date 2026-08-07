@@ -98,7 +98,7 @@ const LINK_COLUMNS: FooterColumn[] = [
       },
       {
         label: "Explore DApps",
-        href: getDfsChainUrl("/explore-dapps"),
+        href: getDfsChainUrl("/apps"),
         external: true,
       },
     ],
@@ -109,7 +109,7 @@ const LINK_COLUMNS: FooterColumn[] = [
     items: [
       { label: "Blog", href: getDfsChainUrl("/blog"), external: true },
       { label: "Whitepaper", href: getDfsChainUrl("/whitepaper"), external: true },
-      { label: "FAQ", href: getDfsChainUrl("/academy/qa"), external: true },
+      { label: "FAQ", href: getDfsChainUrl("/academy/en/qa"), external: true },
       {
         label: "Privacy Policy",
         href: getDfsChainUrl("/whitepaper#privacy-policy"),
@@ -237,6 +237,30 @@ function LogoBlock({ size }: { size: "desktop" | "mobile" }) {
   );
 }
 
+function OfficialSiteLink() {
+  return (
+    <a
+      href={getDfsChainUrl("/")}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex w-fit items-center gap-2 rounded-full border border-gray-300 bg-white px-3 py-1.5 text-xs text-gray-900 transition-colors hover:border-gray-400"
+      aria-label="Official Site"
+    >
+      <Image
+        src="/logo-icon.png"
+        alt=""
+        width={16}
+        height={16}
+        className="h-4 w-4 object-contain"
+      />
+      <span>Official Site</span>
+      <span className="text-[#21f201]" aria-hidden>
+        →
+      </span>
+    </a>
+  );
+}
+
 export default function Footer() {
   const [open, setOpen] = useState<number | null>(null);
   const [language, setLanguage] = useState("en");
@@ -276,6 +300,9 @@ export default function Footer() {
             <LogoBlock size="desktop" />
             <div className="text-xs text-gray-500">
               <p>© 2026 DIFINES. All rights reserved.</p>
+            </div>
+            <div className="mt-2">
+              <OfficialSiteLink />
             </div>
             <div className="flex items-center gap-3 mt-2">
               {SOCIAL_LINKS.map((social) => {
@@ -340,6 +367,7 @@ export default function Footer() {
             <div className="text-xs text-gray-500">
               <p>© 2026 DIFINES. All rights reserved.</p>
             </div>
+            <OfficialSiteLink />
             <div className="flex items-center gap-3">
               {SOCIAL_LINKS.map((social) => {
                 const Icon = social.icon;
