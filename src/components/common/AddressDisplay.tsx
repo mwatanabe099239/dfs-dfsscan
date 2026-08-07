@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { BadgeCheck } from "lucide-react";
 import { useDfsNames } from "@/src/hooks/useDfsNames";
 import { shortenAddress } from "@/src/lib/utils";
 import { isUserWalletAddress } from "@/src/lib/address";
@@ -26,7 +27,9 @@ export default function AddressDisplay({
   link = true,
   full = false,
 }: AddressDisplayProps) {
-  const { label } = useDfsNames(isUserWalletAddress(address) ? [address] : []);
+  const { label, verified, badge } = useDfsNames(
+    isUserWalletAddress(address) ? [address] : []
+  );
 
   if (!address) return null;
 
@@ -42,8 +45,41 @@ export default function AddressDisplay({
     resolvedLabel = full ? address : shortenAddress(address, start, end);
   }
 
+  const showBadge = isUserWalletAddress(address) && verified(address);
+  const awarded = showBadge ? badge(address) : null;
+  const badgeLabel =
+    awarded?.description || awarded?.title || "Verified name";
+
+  const content = (
+    <span className="inline-flex items-center gap-1">
+      <span>{resolvedLabel}</span>
+      {showBadge &&
+        (awarded?.imageUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={awarded.imageUrl}
+            alt={badgeLabel}
+            title={badgeLabel}
+            className="inline-block h-3.5 w-3.5 shrink-0 rounded-full object-cover"
+          />
+        ) : (
+          <BadgeCheck
+            className="inline h-3.5 w-3.5 shrink-0"
+            fill="currentColor"
+            absoluteStrokeWidth
+            strokeWidth={2.25}
+            style={{
+              color: awarded?.color || "#0ea5e9",
+              stroke: "var(--background, #fff)",
+            }}
+            aria-label={badgeLabel}
+          />
+        ))}
+    </span>
+  );
+
   if (!link) {
-    return <span className={className}>{resolvedLabel}</span>;
+    return <span className={className}>{content}</span>;
   }
 
   return (
@@ -52,7 +88,7 @@ export default function AddressDisplay({
       className={className}
       title={address}
     >
-      {resolvedLabel}
+      {content}
     </Link>
   );
 }
