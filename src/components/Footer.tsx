@@ -87,6 +87,10 @@ const LINK_COLUMNS: FooterColumn[] = [
     title: "DFS Chain",
     items: [
       {
+        label: "DFS Scan",
+        href: "/",
+      },
+      {
         label: "Make Wallet",
         href: process.env.NEXT_PUBLIC_METAFACE_BASEURL || "https://metaface.dfsscan.com/get-started",
         external: true,
