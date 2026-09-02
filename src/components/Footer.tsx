@@ -76,9 +76,9 @@ const GlobeIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
 
 const SOCIAL_LINKS = [
   { name: "X", href: "https://x.com/difines_ofc", icon: TwitterIcon },
-  { name: "Telegram", href: "https://t.me/DFSChain", icon: TelegramIcon },
-  { name: "Discord", href: "#", icon: DiscordIcon },
-  { name: "YouTube", href: "#", icon: YouTubeIcon },
+  { name: "X", href: "https://x.com/DFS_Chain", icon: TwitterIcon },
+  { name: "Telegram", href: "https://t.me/DFSCommunity", icon: TelegramIcon },
+  { name: "YouTube", href: "https://www.youtube.com/@difines_dapps/videos", icon: YouTubeIcon },
 ];
 
 const LINK_COLUMNS: FooterColumn[] = [
