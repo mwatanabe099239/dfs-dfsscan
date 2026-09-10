@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Transaction } from "@/src/types";
 import {
   formatTimeAgo,
+  formatTxGasFee,
   formatTxValue,
   isNftTransferTx,
   shortenAddress,
@@ -47,7 +48,7 @@ export default function TokenTransactions({
     instructions: { label: "Instructions", key: "instructions" },
     by: { label: "By", key: "by" },
     value: { label: "Value", key: "value" },
-    fee: { label: "Fee (DFS)", key: "fee" },
+    fee: { label: "Fee", key: "fee" },
   };
 
   // Get visible columns in order
@@ -220,7 +221,7 @@ export default function TokenTransactions({
                       )}
                       {columnKey === "fee" && (
                         <div className="not-italic font-normal text-gray-700 text-[14px] leading-[24px]">
-                          <span>{tx.gasFee || "0"} DFS</span>
+                          <span>{formatTxGasFee(tx)}</span>
                         </div>
                       )}
                     </td>
@@ -365,7 +366,7 @@ export default function TokenTransactions({
                   )}
                 </td>
                 <td className="p-3">{formatTxValue(tx)}</td>
-                <td className="p-3 text-gray-600 text-xs">{tx.gasFee} DFS</td>
+                <td className="p-3 text-gray-600 text-xs">{formatTxGasFee(tx)}</td>
               </tr>
             ))}
           </tbody>

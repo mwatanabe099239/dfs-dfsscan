@@ -105,6 +105,56 @@ export function isNftTransferTx(
  * the top-level `tx.tokenId`, or — for purchases mirrored by the marketplace —
  * in `tx.amount`. The function picks the first non-empty source.
  */
+export function isCreditPaymentTx(
+  tx: Pick<Transaction, "paymentMethod" | "token">,
+): boolean {
+  const method = String(tx.paymentMethod || "").toLowerCase();
+  if (method === "credit_card" || method === "credit") return true;
+  const tokenAddress = String(tx.token?.tokenAddress || "").toLowerCase();
+  const tokenId = String(tx.token?.id || "").toLowerCase();
+  return tokenAddress === "credit" || tokenId === "credit";
+}
+
+export function getTxGasFeeUsd(
+  tx: Pick<Transaction, "gasFee" | "gasFeeInUsd" | "paymentMethod" | "token">,
+): number {
+  const storedUsd = Number(tx.gasFeeInUsd);
+  if (Number.isFinite(storedUsd) && storedUsd > 0) return storedUsd;
+  if (isCreditPaymentTx(tx)) {
+    const fee = Number(tx.gasFee);
+    return Number.isFinite(fee) ? fee : 0;
+  }
+  return 0;
+}
+
+/** Credit gas is USD (e.g. 0.02); token gas stays in DFS. */
+export function formatTxGasFee(
+  tx: Pick<Transaction, "gasFee" | "gasFeeInUsd" | "paymentMethod" | "token">,
+  dfsDecimalPlaces: number = 6,
+): string {
+  if (isCreditPaymentTx(tx)) {
+    const usd = getTxGasFeeUsd(tx);
+    const places = usd > 0 && usd < 0.01 ? 4 : 2;
+    return `${formatNumber(usd, places)} USD`;
+  }
+  return `${formatNumber(Number(tx.gasFee || 0), dfsDecimalPlaces)} DFS`;
+}
+
+export function formatTxGasFeeWithFiat(
+  tx: Pick<Transaction, "gasFee" | "gasFeeInUsd" | "paymentMethod" | "token">,
+  dfsDecimalPlaces: number = 9,
+): string {
+  if (isCreditPaymentTx(tx)) {
+    return formatTxGasFee(tx);
+  }
+  const dfs = formatNumber(Number(tx.gasFee || 0), dfsDecimalPlaces);
+  const usd = Number(tx.gasFeeInUsd);
+  if (Number.isFinite(usd) && usd > 0) {
+    return `${dfs} DFS ($${formatNumber(usd, 4)})`;
+  }
+  return `${dfs} DFS`;
+}
+
 export function formatTxValue(
   tx: Pick<
     Transaction,

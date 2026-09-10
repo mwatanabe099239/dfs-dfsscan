@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFileAlt } from "@fortawesome/free-solid-svg-icons";
 import { Transaction } from "@/src/types";
 import { getLatestTransactions } from "@/src/lib/firebase";
-import { formatNumber, formatTimeAgo, shortenHash } from "@/src/lib/utils";
+import { formatTimeAgo, formatTxGasFee, shortenHash } from "@/src/lib/utils";
 import ItemSkeleton from "../common/ItemSkeleton";
 import { useViewMode } from "@/src/contexts/ViewModeContext";
 import AddressDisplay from "@/src/components/common/AddressDisplay";
@@ -99,7 +99,7 @@ export default function LatestTransactions() {
                     ? "border-gray-600 text-gray-300" 
                     : "border-gray-300 text-black"
                 }`}>
-                  {formatNumber(Number(tx.gasFee), 6)} DFS
+                  {formatTxGasFee(tx)}
                 </span>
               </div>
             </div>

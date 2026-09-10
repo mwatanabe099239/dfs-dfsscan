@@ -1698,7 +1698,7 @@ function SolanaScanWalletView({
                           instructions: "Instructions",
                           by: "By",
                           value: "Value",
-                          fee: "Fee (DFS)",
+                          fee: "Fee",
                         };
                         const column = { key: columnKey, label: columnMap[columnKey] };
                         const isDragging = draggedIndex === index;
@@ -2401,7 +2401,7 @@ function SolanaScanTokenView({
                             instructions: "Instructions",
                             by: "By",
                             value: "Value",
-                            fee: "Fee (DFS)",
+                            fee: "Fee",
                           };
                           const column = { key: columnKey, label: columnMap[columnKey] };
                           const isDragging = draggedIndex === index;

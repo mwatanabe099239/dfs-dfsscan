@@ -12,6 +12,7 @@ import {
 import {
   formatNumber,
   formatTimeAgo,
+  formatTxGasFee,
   formatTxValue,
   isNftTransferTx,
   shortenAddress,
@@ -199,7 +200,7 @@ const BSCScanTransactionRow = ({
         </div>
       </td>
       <td className="p-3">{formatTxValue(tx)}</td>
-      <td className="p-3 text-gray-600 text-xs">{formatNumber(Number(tx.gasFee), 6)} DFS</td>
+      <td className="p-3 text-gray-600 text-xs">{formatTxGasFee(tx)}</td>
     </tr>
   );
 };
@@ -220,7 +221,7 @@ const SolanaScanTableHeader = ({
     action: { label: "Action", key: "action" },
     by: { label: "By", key: "by" },
     value: { label: "Value", key: "value" },
-    fee: { label: "Fee (DFS)", key: "fee" },
+    fee: { label: "Fee", key: "fee" },
   };
 
   const visibleColumns = columnOrder.filter((col) => columnVisibility[col]);
@@ -297,7 +298,7 @@ const SolanaScanTransactionRow = ({
     action: { label: "Action", key: "action" },
     by: { label: "By", key: "by" },
     value: { label: "Value", key: "value" },
-    fee: { label: "Fee (DFS)", key: "fee" },
+    fee: { label: "Fee", key: "fee" },
   };
 
   const visibleColumns = columnOrder.filter((col) => columnVisibility[col]);
@@ -405,7 +406,7 @@ const SolanaScanTransactionRow = ({
             )}
             {columnKey === "fee" && (
               <div className="not-italic font-normal text-gray-700 text-[14px] leading-[24px]">
-                <span>{formatNumber(Number(tx.gasFee), 6)}</span> DFS
+                {formatTxGasFee(tx)}
               </div>
             )}
           </td>
@@ -833,7 +834,7 @@ function SolanaScanView({
                               action: "Action",
                               by: "By",
                               value: "Value",
-                              fee: "Fee (DFS)",
+                              fee: "Fee",
                             };
                             const column = { key: columnKey, label: columnMap[columnKey] };
                             const isDragging = draggedIndex === index;

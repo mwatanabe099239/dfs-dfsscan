@@ -15,6 +15,8 @@ import { Transaction } from "@/src/types";
 import {
   formatNumber,
   formatTimeAgo,
+  formatTxGasFee,
+  formatTxGasFeeWithFiat,
   formatTxValue,
   isNftTransferTx,
   shortenAddress,
@@ -336,7 +338,7 @@ function BSCScanView({ transaction }: ViewProps) {
                 tooltip="Amount paid for processing the transaction."
               />
               <div className="flex-1">
-                {formatNumber(Number(transaction.gasFee), 6)} DFS
+                {formatTxGasFee(transaction)}
               </div>
             </div>
           </div>
@@ -1122,7 +1124,7 @@ function SolanaScanView({ transaction }: ViewProps) {
                           </div>
                           <div className="w-full md:w-3/4 block relative box-border my-0 px-4 sm:px-3">
                             <div className="font-normal text-gray-700 text-[14px] leading-[24px]">
-                              <span>{formatNumber(Number(transaction.gasFee || 0), 9)}</span> DFS ($0.00)
+                              {formatTxGasFeeWithFiat(transaction)}
                             </div>
                           </div>
                         </div>

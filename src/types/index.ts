@@ -5,6 +5,9 @@ export interface Transaction {
   fromAddress: string;
   fromEmail: string;
   gasFee: string;
+  /** USD gas when stored separately (credit payments use this as 2× normal gas). */
+  gasFeeInUsd?: number;
+  paymentMethod?: string;
   message: string;
   method: string;
   toAddress: string;
