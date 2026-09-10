@@ -106,8 +106,9 @@ export function isNftTransferTx(
  * in `tx.amount`. The function picks the first non-empty source.
  */
 export function isCreditPaymentTx(
-  tx: Pick<Transaction, "paymentMethod" | "token">,
+  tx: Pick<Transaction, "paymentMethod" | "token" | "gasPaidWith">,
 ): boolean {
+  if (String(tx.gasPaidWith || "").toLowerCase() === "credit") return true;
   const method = String(tx.paymentMethod || "").toLowerCase();
   if (method === "credit_card" || method === "credit") return true;
   const tokenAddress = String(tx.token?.tokenAddress || "").toLowerCase();
@@ -129,10 +130,15 @@ export function getTxGasFeeUsd(
 
 /** Credit gas is USD (e.g. 0.02); token gas stays in DFS. */
 export function formatTxGasFee(
-  tx: Pick<Transaction, "gasFee" | "gasFeeInUsd" | "paymentMethod" | "token">,
+  tx: Pick<Transaction, "gasFee" | "gasFeeInUsd" | "paymentMethod" | "token" | "gasPaidWith" | "gasToken">,
   dfsDecimalPlaces: number = 6,
 ): string {
-  if (isCreditPaymentTx(tx)) {
+  const paidWith = String(tx.gasPaidWith || "").toLowerCase();
+  if (paidWith === "drc20") {
+    const symbol = tx.gasToken?.symbol || tx.token?.symbol || "TOKEN";
+    return `${formatNumber(Number(tx.gasFee || 0), dfsDecimalPlaces)} ${symbol}`;
+  }
+  if (isCreditPaymentTx(tx) || paidWith === "credit") {
     const usd = getTxGasFeeUsd(tx);
     const places = usd > 0 && usd < 0.01 ? 4 : 2;
     return `${formatNumber(usd, places)} USD`;
@@ -141,11 +147,17 @@ export function formatTxGasFee(
 }
 
 export function formatTxGasFeeWithFiat(
-  tx: Pick<Transaction, "gasFee" | "gasFeeInUsd" | "paymentMethod" | "token">,
+  tx: Pick<Transaction, "gasFee" | "gasFeeInUsd" | "paymentMethod" | "token" | "gasPaidWith" | "gasToken">,
   dfsDecimalPlaces: number = 9,
 ): string {
-  if (isCreditPaymentTx(tx)) {
-    return formatTxGasFee(tx);
+  const paidWith = String(tx.gasPaidWith || "").toLowerCase();
+  if (paidWith === "drc20" || paidWith === "credit" || isCreditPaymentTx(tx)) {
+    const labeled = formatTxGasFee(tx);
+    const usd = Number(tx.gasFeeInUsd);
+    if (paidWith === "drc20" && Number.isFinite(usd) && usd > 0) {
+      return `${labeled} ($${formatNumber(usd, 4)})`;
+    }
+    return labeled;
   }
   const dfs = formatNumber(Number(tx.gasFee || 0), dfsDecimalPlaces);
   const usd = Number(tx.gasFeeInUsd);

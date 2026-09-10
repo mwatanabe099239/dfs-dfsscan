@@ -8,6 +8,13 @@ export interface Transaction {
   /** USD gas when stored separately (credit payments use this as 2× normal gas). */
   gasFeeInUsd?: number;
   paymentMethod?: string;
+  /** How gas was settled: DFS, 2× credit USD, or a DRC20 token. */
+  gasPaidWith?: 'dfs' | 'credit' | 'drc20' | string;
+  gasToken?: {
+    symbol?: string;
+    tokenAddress?: string;
+    name?: string;
+  };
   message: string;
   method: string;
   toAddress: string;
